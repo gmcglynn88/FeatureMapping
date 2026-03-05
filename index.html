@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CX Functional Map – Genesys / Elastic CX</title>
+  <title>CX Functional Map – Genesys / ECX License Model</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Aptos:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
@@ -16,10 +16,11 @@
       --text:#2C3E50;
       --muted:#6C757D;
 
-      /* Elastic CX brand colors */
-      --elastic-primary:#7B68EE;  /* Medium slate blue */
-      --elastic-dark:#5A4A9A;
-      --elastic-light:#E6E6FA;
+      /* ECX brand colors */
+      --ecx-voice:#4CAF50;      /* Green for Voice */
+      --ecx-omni:#2196F3;        /* Blue for Omni */
+      --ecx-max:#9C27B0;         /* Purple for Max */
+      --elastic-primary:#7B68EE;
 
       /* Screenshot-like tiles */
       --tile-bg:#D9DEE3;        /* grey fill */
@@ -106,9 +107,9 @@
       border-bottom: 4px solid var(--primary);
       background: white;
     }
-    .tab.elastic.active{
-      color: var(--elastic-primary);
-      border-bottom-color: var(--elastic-primary);
+    .tab.ecx.active{
+      color: var(--ecx-max);
+      border-bottom-color: var(--ecx-max);
     }
 
     /* Legend box like screenshot */
@@ -120,8 +121,8 @@
       box-shadow: var(--shadow);
       min-width: 360px;
     }
-    .legend.elastic{
-      border-color: var(--elastic-primary);
+    .legend.ecx{
+      border-color: var(--ecx-max);
     }
     .legend h3{
       margin:0 0 8px;
@@ -232,12 +233,6 @@
       border: 2px solid var(--roadmap);
     }
     button.danger:hover{ background: rgba(220,38,38,.08); }
-    button.elastic{
-      background: var(--elastic-primary);
-    }
-    button.elastic:hover{
-      background: var(--elastic-dark);
-    }
 
     /* ===== Screenshot-like COLUMN LAYOUT ===== */
     .columns{
@@ -277,10 +272,10 @@
       pointer-events:none;
     }
 
-    .elastic .col::before{
-      border-top-color: var(--elastic-primary);
-      border-left-color: var(--elastic-primary);
-      border-right-color: var(--elastic-primary);
+    .ecx .col::before{
+      border-top-color: var(--ecx-max);
+      border-left-color: var(--ecx-max);
+      border-right-color: var(--ecx-max);
     }
 
     .col-title{
@@ -327,6 +322,17 @@
       color: #111827;
       line-height: 1.2;
       word-break: break-word;
+    }
+
+    /* License tier styling */
+    .feature.license-voice{
+      border-left: 6px solid var(--ecx-voice);
+    }
+    .feature.license-omni{
+      border-left: 6px solid var(--ecx-omni);
+    }
+    .feature.license-max{
+      border-left: 6px solid var(--ecx-max);
     }
 
     /* Add-on styling (dotted border for chargeable features) */
@@ -418,8 +424,8 @@
       justify-content:space-between;
       gap: 12px;
     }
-    .modal-header.elastic{
-      background: var(--elastic-primary);
+    .modal-header.ecx{
+      background: var(--ecx-max);
     }
     .modal-header h2{
       margin:0;
@@ -450,7 +456,7 @@
       background: #fff;
     }
     .panel h3{ margin:0 0 10px; color: var(--primary-dark); font-size: 14px; font-weight: 900; }
-    .elastic .panel h3{ color: var(--elastic-dark); }
+    .ecx .panel h3{ color: var(--ecx-max); }
     .desc{ margin:0; color: var(--text); font-weight: 600; line-height: 1.5; font-size: 14px; }
     .muted{ margin-top: 10px; color: var(--muted); font-size: 12px; font-weight: 700; }
     .field{ margin-bottom: 12px; }
@@ -483,9 +489,9 @@
       font-weight: 700;
       line-height: 1.45;
     }
-    .elastic .note{
-      background: rgba(123,104,238,.06);
-      border-left-color: var(--elastic-primary);
+    .ecx .note{
+      background: rgba(156,39,176,.06);
+      border-left-color: var(--ecx-max);
     }
 
     /* Quick action buttons */
@@ -523,8 +529,8 @@
       align-items: center;
       gap: 16px;
     }
-    .license-selector.elastic{
-      border-color: var(--elastic-primary);
+    .license-selector.ecx{
+      border-color: var(--ecx-max);
     }
     .license-selector label{
       font-weight: 900;
@@ -543,6 +549,20 @@
       background: white;
       min-width: 200px;
     }
+
+    /* License badges */
+    .license-badge{
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 900;
+      margin-left: 6px;
+      color: white;
+    }
+    .badge-voice{ background: var(--ecx-voice); }
+    .badge-omni{ background: var(--ecx-omni); }
+    .badge-max{ background: var(--ecx-max); }
   </style>
 </head>
 
@@ -564,21 +584,28 @@
         <div class="key"><span class="sw notopt"></span> In use but not full optimised</div>
         <div class="key"><span class="sw addon"></span> Chargeable add-on</div>
       </div>
+      <div style="margin-top:8px; font-size:11px; display:flex; gap:12px;">
+        <span style="border-left:6px solid var(--ecx-voice); padding-left:6px;">ECX Voice</span>
+        <span style="border-left:6px solid var(--ecx-omni); padding-left:6px;">ECX Omni</span>
+        <span style="border-left:6px solid var(--ecx-max); padding-left:6px;">ECX Max</span>
+      </div>
     </div>
   </div>
 
   <!-- Tabs -->
   <div class="tabs">
     <button class="tab active" id="genesysTab" data-platform="genesys">Genesys</button>
-    <button class="tab elastic" id="elasticTab" data-platform="elastic">Elastic CX</button>
+    <button class="tab ecx" id="ecxTab" data-platform="ecx">ECX License Model</button>
   </div>
 
   <!-- License Selector -->
   <div class="license-selector" id="licenseSelector">
-    <label for="licenseType">License Type:</label>
+    <label for="licenseType">View by License:</label>
     <select id="licenseType">
-      <option value="all">Show all features</option>
-      <option value="core">Core only (hide add-ons)</option>
+      <option value="all">All ECX Features</option>
+      <option value="voice">ECX Voice only</option>
+      <option value="omni">ECX Omni only</option>
+      <option value="max">ECX Max only</option>
       <option value="addons">Add-ons only</option>
     </select>
   </div>
@@ -673,9 +700,9 @@
 
 <script>
 (() => {
-  // Current platform: 'genesys' or 'elastic'
+  // Current platform: 'genesys' or 'ecx'
   let currentPlatform = 'genesys';
-  let currentLicenseFilter = 'all'; // 'all', 'core', 'addons'
+  let currentLicenseFilter = 'all'; // 'all', 'voice', 'omni', 'max', 'addons'
 
   // ===== Genesys Features (existing) =====
   const GENESYS_FEATURES = [
@@ -772,73 +799,82 @@
     { id:"apis-datastream", section:"Performance Management", name:"APIs / Data stream", short:"APIs and data streaming for integrations/analytics.", helpUrl:"https://help.mypurecloud.com" },
   ];
 
-  // ===== Elastic CX Features (from the provided list) =====
-  const ELASTIC_FEATURES = [
-    // Core Capabilities
-    { id:"elastic-voice", section:"Core Capabilities", name:"Voice", short:"Voice channel handling with routing and queue management.", helpUrl:"#" },
-    { id:"elastic-voicemail", section:"Core Capabilities", name:"Voicemail", short:"Voicemail capabilities for missed calls.", helpUrl:"#" },
-    { id:"elastic-email", section:"Core Capabilities", name:"Email", short:"Email channel routing and handling.", helpUrl:"#" },
-    { id:"elastic-chat", section:"Core Capabilities", name:"Chat", short:"Live chat messaging channel.", helpUrl:"#" },
-    { id:"elastic-sms", section:"Core Capabilities", name:"SMS", short:"SMS text messaging channel.", helpUrl:"#" },
-    { id:"elastic-social", section:"Core Capabilities", name:"Social (Facebook, WhatsApp)", short:"Social media messaging channels.", helpUrl:"#" },
-    { id:"elastic-intelligent-routing", section:"Core Capabilities", name:"Intelligent Routing", short:"Smart routing based on skills, data and context.", helpUrl:"#" },
-    { id:"elastic-contact-blending", section:"Core Capabilities", name:"Contact Blending", short:"Blend inbound/outbound interactions across channels.", helpUrl:"#" },
-    { id:"elastic-ivr-asr", section:"Core Capabilities", name:"IVR – Automatic Speech Recognition (ASR)", short:"Speech recognition for IVR interactions.", helpUrl:"#", addon:true },
-    { id:"elastic-ivr-dtmf", section:"Core Capabilities", name:"IVR – DTMF", short:"Touch-tone keypad input for IVR.", helpUrl:"#" },
-    { id:"elastic-tts", section:"Core Capabilities", name:"Text-to-speech (TTS)", short:"Convert text to spoken voice in IVR.", helpUrl:"#" },
-    { id:"elastic-preview-dialer", section:"Core Capabilities", name:"Preview Dialer", short:"Preview contact details before dialing.", helpUrl:"#" },
-    { id:"elastic-agentless-preview", section:"Core Capabilities", name:"Agentless Preview Dialer", short:"Automated preview dialing without agent initiation.", helpUrl:"#" },
-    { id:"elastic-ai-bots", section:"Core Capabilities", name:"AI Powered Bots (Chat & Voice)", short:"AI-powered chatbots and voice bots.", helpUrl:"#", addon:true },
-    { id:"elastic-recording", section:"Core Capabilities", name:"Recording", short:"Call and interaction recording.", helpUrl:"#" },
-    { id:"elastic-quality-management", section:"Core Capabilities", name:"Quality management", short:"Quality assurance and evaluation tools.", helpUrl:"#" },
-    { id:"elastic-post-survey", section:"Core Capabilities", name:"Post Interaction Survey", short:"Collect feedback after interactions.", helpUrl:"#" },
-    { id:"elastic-post-transcription", section:"Core Capabilities", name:"Post call transcription", short:"Transcribe calls after completion.", helpUrl:"#", addon:true },
-    { id:"elastic-post-sentiment", section:"Core Capabilities", name:"Post call sentiment analysis", short:"Analyze sentiment from completed calls.", helpUrl:"#", addon:true },
-    { id:"elastic-callback", section:"Core Capabilities", name:"Schedule callback", short:"Schedule callbacks at convenient times.", helpUrl:"#" },
-    { id:"elastic-followup", section:"Core Capabilities", name:"Schedule follow-up", short:"Schedule follow-up interactions.", helpUrl:"#" },
-    { id:"elastic-wfm", section:"Core Capabilities", name:"Workforce Management", short:"Forecast, schedule and manage workforce.", helpUrl:"#" },
-    { id:"elastic-mobile-app", section:"Core Capabilities", name:"Mobile Application", short:"Mobile app for agents and supervisors.", helpUrl:"#" },
-    { id:"elastic-desktop-app", section:"Core Capabilities", name:"Desktop Application", short:"Desktop client for agents.", helpUrl:"#" },
-    { id:"elastic-screen-pop", section:"Core Capabilities", name:"Screen Pop", short:"Automatic screen population with customer data.", helpUrl:"#" },
-    { id:"elastic-team-presence", section:"Core Capabilities", name:"Team Presence & Messaging", short:"Team availability status and internal messaging.", helpUrl:"#" },
-    { id:"elastic-quick-texts", section:"Core Capabilities", name:"Quick texts", short:"Predefined text snippets for quick responses.", helpUrl:"#" },
-    { id:"elastic-crm-integration", section:"Core Capabilities", name:"CRM Integration", short:"Integrate with popular CRM platforms.", helpUrl:"#" },
-    { id:"elastic-sso", section:"Core Capabilities", name:"Single Sign On", short:"SSO integration for authentication.", helpUrl:"#" },
-    { id:"elastic-monitoring", section:"Core Capabilities", name:"Monitoring / Coaching / Whispers", short:"Real-time monitoring and coaching capabilities.", helpUrl:"#" },
-    { id:"elastic-rt-reporting", section:"Core Capabilities", name:"Realtime Reporting", short:"Real-time performance dashboards.", helpUrl:"#" },
-    { id:"elastic-historical-reporting", section:"Core Capabilities", name:"Historical Reporting", short:"Historical trend analysis and reporting.", helpUrl:"#" },
-    { id:"elastic-contact-history", section:"Core Capabilities", name:"Advanced contact history", short:"Complete interaction history across channels.", helpUrl:"#" },
-    { id:"elastic-speech-analytics", section:"Core Capabilities", name:"Speech Analytics", short:"Analyze speech patterns and content.", helpUrl:"#", addon:true },
+  // ===== ECX Features organized by license tier =====
+  const ECX_FEATURES = [
+    // Capability section
+    { id:"ecx-voice-core", section:"Capability", name:"ECX Voice", short:"Core voice capabilities for contact centers.", helpUrl:"#", license:"voice" },
+    { id:"ecx-omni-core", section:"Capability", name:"ECX Omni", short:"Omnichannel capabilities including voice, email, chat, SMS.", helpUrl:"#", license:"omni" },
+    { id:"ecx-max-core", section:"Capability", name:"ECX Max", short:"Full suite with advanced features and AI capabilities.", helpUrl:"#", license:"max" },
+    
+    // Voice features (included in ECX Voice and above)
+    { id:"ecx-voice-basic", section:"Capability", name:"Voice", short:"Voice channel handling with routing and queue management.", helpUrl:"#", license:"voice" },
+    { id:"ecx-voicemail", section:"Capability", name:"Voicemail", short:"Voicemail capabilities for missed calls.", helpUrl:"#", license:"voice" },
+    { id:"ecx-ivr-dtmf", section:"Capability", name:"IVR – DTMF", short:"Touch-tone keypad input for IVR.", helpUrl:"#", license:"voice" },
+    { id:"ecx-tts", section:"Capability", name:"Text-to-speech (TTS)", short:"Convert text to spoken voice in IVR.", helpUrl:"#", license:"voice" },
+    { id:"ecx-preview-dialer", section:"Capability", name:"Preview Dialer", short:"Preview contact details before dialing.", helpUrl:"#", license:"voice" },
+    
+    // Omni features (included in ECX Omni and Max)
+    { id:"ecx-email", section:"Capability", name:"Email", short:"Email channel routing and handling.", helpUrl:"#", license:"omni" },
+    { id:"ecx-chat", section:"Capability", name:"Chat", short:"Live chat messaging channel.", helpUrl:"#", license:"omni" },
+    { id:"ecx-sms", section:"Capability", name:"SMS", short:"SMS text messaging channel.", helpUrl:"#", license:"omni" },
+    { id:"ecx-social", section:"Capability", name:"Social (Facebook, WhatsApp)", short:"Social media messaging channels.", helpUrl:"#", license:"omni" },
+    { id:"ecx-intelligent-routing", section:"Capability", name:"Intelligent Routing", short:"Smart routing based on skills, data and context.", helpUrl:"#", license:"omni" },
+    { id:"ecx-contact-blending", section:"Capability", name:"Contact Blending", short:"Blend inbound/outbound interactions across channels.", helpUrl:"#", license:"omni" },
+    
+    // Max features (only in ECX Max)
+    { id:"ecx-agentless-preview", section:"Capability", name:"Agentless Preview Dialer", short:"Automated preview dialing without agent initiation.", helpUrl:"#", license:"max" },
+    { id:"ecx-recording", section:"Capability", name:"Recording", short:"Call and interaction recording.", helpUrl:"#", license:"max" },
+    { id:"ecx-quality-management", section:"Capability", name:"Quality management", short:"Quality assurance and evaluation tools.", helpUrl:"#", license:"max" },
+    { id:"ecx-post-survey", section:"Capability", name:"Post Interaction Survey", short:"Collect feedback after interactions.", helpUrl:"#", license:"max" },
+    { id:"ecx-callback", section:"Capability", name:"Schedule callback", short:"Schedule callbacks at convenient times.", helpUrl:"#", license:"max" },
+    { id:"ecx-followup", section:"Capability", name:"Schedule follow-up", short:"Schedule follow-up interactions.", helpUrl:"#", license:"max" },
+    { id:"ecx-wfm", section:"Capability", name:"Workforce Management", short:"Forecast, schedule and manage workforce.", helpUrl:"#", license:"max" },
+    { id:"ecx-mobile-app", section:"Capability", name:"Mobile Application", short:"Mobile app for agents and supervisors.", helpUrl:"#", license:"max" },
+    { id:"ecx-desktop-app", section:"Capability", name:"Desktop Application", short:"Desktop client for agents.", helpUrl:"#", license:"max" },
+    { id:"ecx-screen-pop", section:"Capability", name:"Screen Pop", short:"Automatic screen population with customer data.", helpUrl:"#", license:"max" },
+    { id:"ecx-team-presence", section:"Capability", name:"Team Presence & Messaging", short:"Team availability status and internal messaging.", helpUrl:"#", license:"max" },
+    { id:"ecx-quick-texts", section:"Capability", name:"Quick texts", short:"Predefined text snippets for quick responses.", helpUrl:"#", license:"max" },
+    { id:"ecx-crm-integration", section:"Capability", name:"CRM Integration", short:"Integrate with popular CRM platforms.", helpUrl:"#", license:"max" },
+    { id:"ecx-sso", section:"Capability", name:"Single Sign On", short:"SSO integration for authentication.", helpUrl:"#", license:"max" },
+    { id:"ecx-monitoring", section:"Capability", name:"Monitoring / Coaching / Whispers", short:"Real-time monitoring and coaching capabilities.", helpUrl:"#", license:"max" },
+    { id:"ecx-rt-reporting", section:"Capability", name:"Realtime Reporting", short:"Real-time performance dashboards.", helpUrl:"#", license:"max" },
+    { id:"ecx-historical-reporting", section:"Capability", name:"Historical Reporting", short:"Historical trend analysis and reporting.", helpUrl:"#", license:"max" },
+    { id:"ecx-contact-history", section:"Capability", name:"Advanced contact history", short:"Complete interaction history across channels.", helpUrl:"#", license:"max" },
 
-    // AI Bolt-On – Chargeable add on
-    { id:"elastic-ai-insights", section:"AI Bolt-On", name:"AI Insights", short:"Advanced AI-powered insights and analytics.", helpUrl:"#", addon:true },
-    { id:"elastic-ai-sidekick", section:"AI Bolt-On", name:"AI Sidekick", short:"AI assistant for agents and supervisors.", helpUrl:"#", addon:true },
-    { id:"elastic-ai-autopilot", section:"AI Bolt-On", name:"AI Autopilot", short:"Automated AI-driven interaction handling.", helpUrl:"#", addon:true },
+    // AI Bolt-On – Chargeable add on (available across tiers with additional cost)
+    { id:"ecx-ai-insights", section:"AI Bolt-On", name:"AI Insights", short:"Advanced AI-powered insights and analytics.", helpUrl:"#", addon:true, license:"max" },
+    { id:"ecx-ai-sidekick", section:"AI Bolt-On", name:"AI Sidekick", short:"AI assistant for agents and supervisors.", helpUrl:"#", addon:true, license:"max" },
+    { id:"ecx-ai-autopilot", section:"AI Bolt-On", name:"AI Autopilot", short:"Automated AI-driven interaction handling.", helpUrl:"#", addon:true, license:"max" },
+    { id:"ecx-ivr-asr", section:"AI Bolt-On", name:"IVR – Automatic Speech Recognition (ASR)", short:"Speech recognition for IVR interactions.", helpUrl:"#", addon:true, license:"max" },
+    { id:"ecx-post-transcription", section:"AI Bolt-On", name:"Post call transcription", short:"Transcribe calls after completion.", helpUrl:"#", addon:true, license:"max" },
+    { id:"ecx-post-sentiment", section:"AI Bolt-On", name:"Post call sentiment analysis", short:"Analyze sentiment from completed calls.", helpUrl:"#", addon:true, license:"max" },
+    { id:"ecx-ai-bots", section:"AI Bolt-On", name:"AI Powered Bots (Chat & Voice)", short:"AI-powered chatbots and voice bots.", helpUrl:"#", addon:true, license:"max" },
+    { id:"ecx-speech-analytics", section:"AI Bolt-On", name:"Speech Analytics", short:"Analyze speech patterns and content.", helpUrl:"#", addon:true, license:"max" },
 
     // Google CCAI Products
-    { id:"elastic-cca-assist", section:"Google CCAI", name:"CCA Insights", short:"Google Contact Center AI assistance.", helpUrl:"#", addon:true },
-    { id:"elastic-dialogue-flow", section:"Google CCAI", name:"Dialogue Flow CX", short:"Google Dialogflow CX for conversational experiences.", helpUrl:"#", addon:true },
-    { id:"elastic-agent-assist", section:"Google CCAI", name:"AgentAssist", short:"Real-time agent assistance powered by Google AI.", helpUrl:"#", addon:true },
+    { id:"ecx-cca-assist", section:"Google CCAI Products", name:"CCA Insights", short:"Google Contact Center AI assistance.", helpUrl:"#", addon:true, license:"max" },
+    { id:"ecx-dialogue-flow", section:"Google CCAI Products", name:"Dialogue Flow CX", short:"Google Dialogflow CX for conversational experiences.", helpUrl:"#", addon:true, license:"max" },
+    { id:"ecx-agent-assist", section:"Google CCAI Products", name:"AgentAssist", short:"Real-time agent assistance powered by Google AI.", helpUrl:"#", addon:true, license:"max" },
 
     // IPI Cloud PCI
-    { id:"elastic-agentpay", section:"IPI Cloud PCI", name:"AgentPay", short:"PCI-compliant payment handling by agents.", helpUrl:"#", pci:true },
-    { id:"elastic-agentpay-link", section:"IPI Cloud PCI", name:"AgentPay By Link", short:"Send payment links for PCI compliance.", helpUrl:"#", pci:true },
-    { id:"elastic-ivr-assist", section:"IPI Cloud PCI", name:"IVR Assist", short:"PCI-compliant payments via IVR.", helpUrl:"#", pci:true },
-    { id:"elastic-pauseable-pci", section:"IPI Cloud PCI", name:"Pauseable Automated PCI", short:"Pause recording for PCI-compliant payment collection.", helpUrl:"#", pci:true },
+    { id:"ecx-agentpay", section:"IPI Cloud PCI", name:"AgentPay", short:"PCI-compliant payment handling by agents.", helpUrl:"#", pci:true, license:"max" },
+    { id:"ecx-agentpay-link", section:"IPI Cloud PCI", name:"AgentPay By Link", short:"Send payment links for PCI compliance.", helpUrl:"#", pci:true, license:"max" },
+    { id:"ecx-ivr-assist", section:"IPI Cloud PCI", name:"IVR Assist", short:"PCI-compliant payments via IVR.", helpUrl:"#", pci:true, license:"max" },
+    { id:"ecx-pauseable-pci", section:"IPI Cloud PCI", name:"Pauseable Automated PCI", short:"Pause recording for PCI-compliant payment collection.", helpUrl:"#", pci:true, license:"max" },
   ];
 
-  // Section layouts for Elastic CX
-  const ELASTIC_SECTION_LAYOUT = {
-    "Core Capabilities": 4,
+  // Section layouts for ECX
+  const ECX_SECTION_LAYOUT = {
+    "Capability": 4,
     "AI Bolt-On": 2,
-    "Google CCAI": 2,
+    "Google CCAI Products": 2,
     "IPI Cloud PCI": 2
   };
 
-  const ELASTIC_SECTION_ORDER = [
-    "Core Capabilities",
+  const ECX_SECTION_ORDER = [
+    "Capability",
     "AI Bolt-On",
-    "Google CCAI",
+    "Google CCAI Products",
     "IPI Cloud PCI"
   ];
 
@@ -850,7 +886,7 @@
     "Performance Management"
   ];
 
-  const STORAGE_KEY = "cx_heatmap_v2";
+  const STORAGE_KEY = "cx_heatmap_v3";
 
   const STATUS_LABEL = {
     unassigned: "Existing feature not in use",
@@ -867,11 +903,11 @@
   };
 
   function getCurrentFeatures() {
-    return currentPlatform === 'genesys' ? GENESYS_FEATURES : ELASTIC_FEATURES;
+    return currentPlatform === 'genesys' ? GENESYS_FEATURES : ECX_FEATURES;
   }
 
   function getCurrentSectionOrder() {
-    return currentPlatform === 'genesys' ? GENESIS_SECTION_ORDER : ELASTIC_SECTION_ORDER;
+    return currentPlatform === 'genesys' ? GENESIS_SECTION_ORDER : ECX_SECTION_ORDER;
   }
 
   function getCurrentSectionLayout(section) {
@@ -885,7 +921,7 @@
       };
       return layout[section] || 2;
     } else {
-      return ELASTIC_SECTION_LAYOUT[section] || 2;
+      return ECX_SECTION_LAYOUT[section] || 2;
     }
   }
 
@@ -899,7 +935,7 @@
     }
 
     // Initialize defaults for all features across both platforms
-    [...GENESYS_FEATURES, ...ELASTIC_FEATURES].forEach(f => {
+    [...GENESYS_FEATURES, ...ECX_FEATURES].forEach(f => {
       if (!state.featureState[f.id]){
         state.featureState[f.id] = {
           status: f.unavailable ? "unavailable" : "unassigned",
@@ -924,7 +960,7 @@
   const resetAllBtn = document.getElementById("resetAll");
   const exportBtn = document.getElementById("exportJson");
   const genesysTab = document.getElementById("genesysTab");
-  const elasticTab = document.getElementById("elasticTab");
+  const ecxTab = document.getElementById("ecxTab");
   const platformKicker = document.getElementById("platformKicker");
   const platformTitle = document.getElementById("platformTitle");
   const legend = document.getElementById("legend");
@@ -939,22 +975,24 @@
     // Update UI
     if (platform === 'genesys') {
       genesysTab.classList.add('active');
-      elasticTab.classList.remove('active');
+      ecxTab.classList.remove('active');
       platformKicker.textContent = 'IPI CUSTOMER SUCCESS – GENESYS HEATMAP';
       platformTitle.textContent = 'Genesys CX3 Functional Map Level 1 – CX / WEM';
-      legend.classList.remove('elastic');
-      modalHeader.classList.remove('elastic');
-      licenseSelector.classList.remove('elastic');
-      document.querySelector('.columns')?.classList.remove('elastic');
+      legend.classList.remove('ecx');
+      modalHeader.classList.remove('ecx');
+      licenseSelector.classList.remove('ecx');
+      document.querySelector('.columns')?.classList.remove('ecx');
+      licenseSelector.style.display = 'none'; // Hide license selector for Genesys
     } else {
       genesysTab.classList.remove('active');
-      elasticTab.classList.add('active');
-      platformKicker.textContent = 'IPI CUSTOMER SUCCESS – ELASTIC CX HEATMAP';
-      platformTitle.textContent = 'Elastic CX Functional Map – Core + Add-ons';
-      legend.classList.add('elastic');
-      modalHeader.classList.add('elastic');
-      licenseSelector.classList.add('elastic');
-      document.querySelector('.columns')?.classList.add('elastic');
+      ecxTab.classList.add('active');
+      platformKicker.textContent = 'IPI CUSTOMER SUCCESS – ECX LICENSE MODEL';
+      platformTitle.textContent = 'ECX License Model – Voice, Omni & Max';
+      legend.classList.add('ecx');
+      modalHeader.classList.add('ecx');
+      licenseSelector.classList.add('ecx');
+      document.querySelector('.columns')?.classList.add('ecx');
+      licenseSelector.style.display = 'inline-flex'; // Show license selector for ECX
     }
     
     render();
@@ -963,9 +1001,13 @@
   function matchesFilters(f){
     const fs = state.featureState[f.id] || { status:"unassigned", notes:"" };
 
-    // Apply license filter
-    if (currentLicenseFilter === 'core' && f.addon) return false;
-    if (currentLicenseFilter === 'addons' && !f.addon) return false;
+    // Apply license filter (only for ECX platform)
+    if (currentPlatform === 'ecx') {
+      if (currentLicenseFilter === 'voice' && f.license !== 'voice') return false;
+      if (currentLicenseFilter === 'omni' && f.license !== 'omni') return false;
+      if (currentLicenseFilter === 'max' && f.license !== 'max') return false;
+      if (currentLicenseFilter === 'addons' && !f.addon) return false;
+    }
 
     // Apply status filter
     if (state.statusFilter !== "all" && fs.status !== state.statusFilter) return false;
@@ -986,7 +1028,7 @@
 
   function render(){
     columnsEl.innerHTML = "";
-    columnsEl.className = `columns ${currentPlatform === 'elastic' ? 'elastic' : ''}`;
+    columnsEl.className = `columns ${currentPlatform === 'ecx' ? 'ecx' : ''}`;
 
     const features = getCurrentFeatures();
     const sectionOrder = getCurrentSectionOrder();
@@ -1033,6 +1075,12 @@
 
     const box = document.createElement("div");
     let boxClass = `feature status-${fs.status}`;
+    
+    // Add license tier class for ECX features
+    if (currentPlatform === 'ecx' && f.license) {
+      boxClass += ` license-${f.license}`;
+    }
+    
     if (f.addon) boxClass += ' add-on';
     box.className = boxClass;
     
@@ -1134,6 +1182,12 @@
     modalDesc.textContent = f.short || "No description provided yet.";
     
     let metaText = `<strong>Status:</strong> ${STATUS_LABEL[fs.status] || fs.status}`;
+    if (currentPlatform === 'ecx') {
+      if (f.license) {
+        let licenseName = f.license === 'voice' ? 'ECX Voice' : f.license === 'omni' ? 'ECX Omni' : 'ECX Max';
+        metaText += `<br><strong>License:</strong> <span style="color:${f.license === 'voice' ? '#4CAF50' : f.license === 'omni' ? '#2196F3' : '#9C27B0'}">${licenseName}</span>`;
+      }
+    }
     if (f.addon) metaText += '<br><strong>💰 Add-on:</strong> Chargeable additional feature';
     if (f.pci) metaText += '<br><strong>🔒 PCI:</strong> IPI Cloud PCI product';
     modalMeta.innerHTML = metaText;
@@ -1239,11 +1293,12 @@
 
   // Tab switching
   genesysTab.addEventListener("click", () => switchPlatform('genesys'));
-  elasticTab.addEventListener("click", () => switchPlatform('elastic'));
+  ecxTab.addEventListener("click", () => switchPlatform('ecx'));
 
   // Init
   loadState();
   render();
+  licenseSelector.style.display = 'none'; // Hide license selector initially (Genesys tab)
 })();
 </script>
 </body>
