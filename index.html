@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Genesys CX3 Functional Map – CX / WEM</title>
+  <title>Genesys CX3 Functional Map</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Aptos:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
@@ -233,42 +233,43 @@
       letter-spacing:.4px;
       text-transform: uppercase;
       color:#111827;
-      margin: 0 0 10px;
+      margin: 0 0 15px;
     }
 
-    /* Feature grid inside each column (varies per section) */
+    /* Feature grid inside each column - improved spacing */
     .feature-grid{
       display:grid;
-      gap: 12px;
+      gap: 16px;  /* Increased from 12px for better spacing */
       justify-content:center;
     }
 
-    /* Fixed tile size like screenshot */
+    /* Fixed tile size like screenshot - with better visual balance */
     .feature{
-      width: 132px;
-      height: 58px;
+      width: 140px;  /* Slightly increased from 132px */
+      height: 62px;  /* Slightly increased from 58px */
       background: var(--tile-bg);
       border: 2px solid var(--tile-border);
-      border-radius: 10px;
-      box-shadow: none;
+      border-radius: 12px;  /* Slightly more rounded corners */
+      box-shadow: var(--shadow);
       display:flex;
       align-items:center;
       justify-content:center;
       text-align:center;
-      padding: 8px;
+      padding: 8px 6px;
       cursor:pointer;
       user-select:none;
       transition: transform .12s ease, box-shadow .12s ease;
     }
     .feature:hover{
-      transform: translateY(-1px);
-      box-shadow: 0 2px 8px rgba(0,0,0,.12);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,.15);
     }
     .feature .label{
       font-size: 11px;
       font-weight: 900;
       color: #111827;
-      line-height: 1.15;
+      line-height: 1.2;
+      word-break: break-word;
     }
 
     /* Status styling (matching your key) */
@@ -279,29 +280,35 @@
     .feature.status-inuse{
       background: rgba(22,163,74,.25);
       border-color: rgba(22,163,74,.70);
+      border-width: 2px;
     }
     .feature.status-notopt{
       background: rgba(245,158,11,.28);
       border-color: rgba(245,158,11,.80);
+      border-width: 2px;
     }
     .feature.status-unavailable{
       background: #fff;
       border-color: var(--roadmap);
-      border-width: 3px;
+      border-width: 2px;
+      border-style: dashed;  /* Added dashed style for roadmap items */
     }
 
-    /* Tiny corner marker if you want (optional, subtle) */
-    .corner{
-      position:absolute;
-      right: 8px;
-      top: 8px;
-      width: 8px;
-      height: 8px;
-      border-radius: 2px;
-      background: rgba(0,0,0,.12);
-      display:none;
+    /* Quick status indicators on tiles */
+    .feature .status-badge{
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid white;
     }
-    .featurewrap{ position:relative; display:inline-block; }
+
+    .featurewrap{ 
+      position:relative; 
+      display:inline-block;
+    }
 
     .footer{
       margin-top: 22px;
@@ -403,6 +410,30 @@
       font-weight: 700;
       line-height: 1.45;
     }
+
+    /* Quick action buttons */
+    .quick-actions{
+      display:flex;
+      gap:6px;
+      margin-top: 8px;
+      justify-content:center;
+    }
+    .quick-btn{
+      padding: 4px 8px;
+      font-size: 10px;
+      font-weight: 800;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text);
+      cursor:pointer;
+    }
+    .quick-btn:hover{
+      background: var(--bg);
+    }
+    .quick-btn.inuse{ background: rgba(22,163,74,.1); border-color: var(--inuse); }
+    .quick-btn.notopt{ background: rgba(245,158,11,.1); border-color: var(--notopt); }
+    .quick-btn.unavailable{ background: rgba(220,38,38,.1); border-color: var(--roadmap); }
   </style>
 </head>
 
@@ -450,7 +481,7 @@
 
   <div id="columns" class="columns"></div>
 
-  <div class="footer">Click a box to open details • Saved in your browser (localStorage)</div>
+  <div class="footer">Click a box to open details • Saved in your browser (localStorage) • Hover for quick actions in edit mode</div>
 </div>
 
 <!-- Modal -->
@@ -482,7 +513,7 @@
 
           <div class="field">
             <label>Status</label>
-            <select id="modalStatus" disabled>
+            <select id="modalStatus">
               <option value="unassigned">Existing not in use</option>
               <option value="inuse">In use</option>
               <option value="notopt">Not fully optimised</option>
@@ -492,12 +523,21 @@
 
           <div class="field">
             <label>Notes</label>
-            <textarea id="modalNotes" placeholder="Optional notes..." disabled></textarea>
+            <textarea id="modalNotes" placeholder="Optional notes..."></textarea>
           </div>
 
-          <button id="saveFeature" disabled>💾 Save</button>
+          <button id="saveFeature">💾 Save</button>
+          
+          <!-- Quick action buttons for status changes -->
+          <div class="quick-actions" id="quickActions">
+            <button class="quick-btn inuse" data-status="inuse">✓ In use</button>
+            <button class="quick-btn notopt" data-status="notopt">⚠ Not optimised</button>
+            <button class="quick-btn unavailable" data-status="unavailable">🗺 Roadmap</button>
+            <button class="quick-btn" data-status="unassigned">◯ Not in use</button>
+          </div>
+          
           <div class="muted" id="editHint" style="margin-top:10px;">
-            Turn on Edit mode to change status/notes.
+            Click save to apply changes
           </div>
         </div>
       </div>
@@ -629,7 +669,7 @@
   };
 
   let state = {
-    editMode: false,
+    editMode: true,  // Set to true by default
     search: "",
     statusFilter: "all",
     featureState: {}
@@ -702,7 +742,7 @@
 
       col.innerHTML = `
         <div class="col-title">${section}</div>
-        <div class="feature-grid" style="grid-template-columns: repeat(${colCount}, 132px);"></div>
+        <div class="feature-grid" style="grid-template-columns: repeat(${colCount}, 140px);"></div>
       `;
 
       const grid = col.querySelector(".feature-grid");
@@ -743,6 +783,59 @@
       if (e.key === "Enter" || e.key === " ") openModal(f.id);
     });
 
+    // Add quick status change buttons in edit mode
+    if (state.editMode) {
+      const actions = document.createElement("div");
+      actions.style.position = "absolute";
+      actions.style.bottom = "-20px";
+      actions.style.left = "50%";
+      actions.style.transform = "translateX(-50%)";
+      actions.style.display = "flex";
+      actions.style.gap = "4px";
+      actions.style.zIndex = "10";
+      actions.style.opacity = "0";
+      actions.style.transition = "opacity 0.2s";
+      
+      wrap.addEventListener("mouseenter", () => { actions.style.opacity = "1"; });
+      wrap.addEventListener("mouseleave", () => { actions.style.opacity = "0"; });
+      
+      const statuses = [
+        { status: "inuse", label: "✓", title: "In use", color: "#16a34a" },
+        { status: "notopt", label: "⚠", title: "Not optimised", color: "#f59e0b" },
+        { status: "unavailable", label: "🗺", title: "Roadmap", color: "#dc2626" },
+        { status: "unassigned", label: "◯", title: "Not in use", color: "#6c757d" }
+      ];
+      
+      statuses.forEach(s => {
+        const btn = document.createElement("button");
+        btn.textContent = s.label;
+        btn.title = s.title;
+        btn.style.background = "white";
+        btn.style.border = `2px solid ${s.color}`;
+        btn.style.borderRadius = "50%";
+        btn.style.width = "24px";
+        btn.style.height = "24px";
+        btn.style.fontSize = "12px";
+        btn.style.padding = "0";
+        btn.style.display = "flex";
+        btn.style.alignItems = "center";
+        btn.style.justifyContent = "center";
+        btn.style.cursor = "pointer";
+        btn.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
+        
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          state.featureState[f.id].status = s.status;
+          saveState();
+          render();
+        });
+        
+        actions.appendChild(btn);
+      });
+      
+      wrap.appendChild(actions);
+    }
+
     wrap.appendChild(box);
     return wrap;
   }
@@ -765,6 +858,7 @@
   const modalNotes = document.getElementById("modalNotes");
   const saveFeatureBtn = document.getElementById("saveFeature");
   const editHint = document.getElementById("editHint");
+  const quickActions = document.getElementById("quickActions");
 
   let activeFeatureId = null;
 
@@ -780,10 +874,10 @@
     modalStatus.value = fs.status;
     modalNotes.value = fs.notes || "";
 
-    modalStatus.disabled = !state.editMode;
-    modalNotes.disabled = !state.editMode;
-    saveFeatureBtn.disabled = !state.editMode;
-    editHint.textContent = state.editMode ? "Edit mode is on. Update and save." : "Turn on Edit mode to change status/notes.";
+    modalStatus.disabled = false;
+    modalNotes.disabled = false;
+    saveFeatureBtn.disabled = false;
+    editHint.textContent = "Click save to apply changes";
 
     openHelpBtn.onclick = () => window.open(f.helpUrl || "https://help.mypurecloud.com", "_blank", "noopener,noreferrer");
 
@@ -798,6 +892,23 @@
       }
     };
 
+    // Set up quick action buttons
+    const actionButtons = quickActions.querySelectorAll('.quick-btn');
+    actionButtons.forEach(btn => {
+      btn.onclick = (e) => {
+        e.preventDefault();
+        const status = btn.dataset.status;
+        modalStatus.value = status;
+        // Optional: auto-save or just update the dropdown
+        if (confirm(`Change status to ${STATUS_LABEL[status]}?`)) {
+          state.featureState[activeFeatureId].status = status;
+          saveState();
+          render();
+          closeModal();
+        }
+      };
+    });
+
     modalOverlay.style.display = "flex";
   }
 
@@ -811,7 +922,7 @@
   document.addEventListener("keydown", (e)=> { if (e.key === "Escape" && modalOverlay.style.display === "flex") closeModal(); });
 
   saveFeatureBtn.addEventListener("click", () => {
-    if (!state.editMode || !activeFeatureId) return;
+    if (!activeFeatureId) return;
     state.featureState[activeFeatureId].status = modalStatus.value;
     state.featureState[activeFeatureId].notes = modalNotes.value.trim();
     saveState();
@@ -855,6 +966,7 @@
   // Init
   loadState();
   render();
+  toggleEditBtn.textContent = "✏️ Edit mode: On"; // Update button text to match default
 })();
 </script>
 </body>
