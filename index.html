@@ -3,316 +3,315 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Genesys Cloud CX | Functional Map</title>
+  <title>Genesys CX3 Functional Map – CX / WEM</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Aptos:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      --primary-color:#63AB8F;
+      --primary:#63AB8F;
       --primary-dark:#4A8C7D;
-      --border-color:#DEE2E6;
-      --light-bg:#F8F9FA;
-      --card-bg:#FFFFFF;
-      --text-color:#2C3E50;
-      --text-light:#6C757D;
+      --border:#DEE2E6;
+      --bg:#F8F9FA;
+      --text:#2C3E50;
+      --muted:#6C757D;
 
-      /* Status colours */
-      --status-unassigned: #F1F3F5;        /* Blank / not populated */
-      --status-unavailable: #ffffff;       /* Not currently available = red outline */
-      --status-inuse: rgba(22,163,74,.18); /* In use = GREEN */
-      --status-notopt: rgba(245,158,11,.22); /* In use but not optimised = amber */
+      /* Screenshot-like tiles */
+      --tile-bg:#D9DEE3;        /* grey fill */
+      --tile-border:#2F3A45;    /* dark border */
+      --tile-text:#1f2937;
 
-      --good:#16a34a;  /* green */
-      --warn:#f59e0b;  /* amber */
-      --bad:#dc2626;   /* red */
-      --info:#3b82f6;
-
-      --shadow: 0 1px 3px rgba(0,0,0,.08);
-      --shadow-hover: 0 2px 8px rgba(0,0,0,.10);
-      --radius: 12px;
+      /* Statuses */
+      --inuse:#16a34a;          /* green */
+      --notopt:#f59e0b;         /* amber */
+      --roadmap:#dc2626;        /* red */
+      --shadow:0 1px 3px rgba(0,0,0,.08);
     }
 
-    body, h1, h2, h3, h4, h5, h6, p, div, span, label, button, input, select, textarea, th, td {
+    body, h1, h2, h3, h4, h5, h6, p, div, span, label, button, input, select, textarea {
       font-family: 'Aptos', 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
     }
 
     body{
       margin:0;
-      padding:20px;
-      background: var(--light-bg);
-      color: var(--text-color);
-      min-height: 100vh;
+      padding:18px 18px 28px;
+      background: var(--bg);
+      color: var(--text);
     }
 
-    .container{ max-width: 1500px; margin: 0 auto; }
+    .wrap{ max-width: 1500px; margin: 0 auto; }
 
-    .header{
-      display:flex; align-items:flex-end; justify-content:space-between;
+    /* Top header like screenshot */
+    .topbar{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
       gap:16px;
-      margin-bottom: 16px;
-      padding-bottom: 16px;
-      border-bottom: 2px solid var(--border-color);
-      flex-wrap: wrap;
+      flex-wrap:wrap;
+      margin-bottom: 14px;
     }
 
-    .brand{
-      display:flex; flex-direction:column; gap:6px;
-      min-width: 280px;
+    .titleblock{
+      min-width: 360px;
     }
-
-    .brand .kicker{
-      color: var(--primary-color);
+    .kicker{
       font-weight: 900;
-      letter-spacing: .4px;
+      color: var(--primary);
+      letter-spacing:.3px;
       font-size: 12px;
       text-transform: uppercase;
+      margin-bottom: 6px;
     }
-
-    .brand h1{
-      margin:0;
-      font-size: 30px;
+    .maintitle{
+      font-size: 34px;
       font-weight: 900;
-      color: var(--primary-dark);
-      line-height: 1.1;
-    }
-
-    .brand .subtitle{
+      line-height: 1.08;
       margin:0;
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text-light);
+      color: #111827;
     }
 
-    .top-actions{
-      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
-      justify-content: flex-end;
-      min-width: 320px;
-      flex: 1;
-    }
-
-    .pill{
-      background: #fff;
-      border: 1px solid var(--border-color);
-      border-radius: 999px;
+    /* Legend box like screenshot */
+    .legend{
+      background:#fff;
+      border: 2px solid var(--primary);
+      border-radius: 12px;
       padding: 10px 12px;
       box-shadow: var(--shadow);
-      display:flex; gap:10px; align-items:center;
+      min-width: 360px;
     }
-
-    .pill label{ margin:0; font-size: 13px; font-weight: 800; color: var(--text-light); }
-    .pill input[type="text"]{
-      border:none; outline:none; width: 280px; max-width: 52vw;
-      font-size: 14px; background: transparent; color: var(--text-color);
+    .legend h3{
+      margin:0 0 8px;
+      font-size: 12px;
+      font-weight: 900;
+      color:#111827;
+      letter-spacing:.3px;
+      text-transform: uppercase;
     }
+    .legend-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 14px;
+      align-items:center;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--muted);
+    }
+    .key{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      white-space:nowrap;
+    }
+    .sw{
+      width: 28px;
+      height: 16px;
+      border-radius: 4px;
+      border: 2px solid var(--tile-border);
+      background: var(--tile-bg);
+    }
+    .sw.roadmap{ background:#fff; border-color: var(--roadmap); }
+    .sw.inuse{ background: rgba(22,163,74,.25); border-color: rgba(22,163,74,.65); }
+    .sw.notopt{ background: rgba(245,158,11,.25); border-color: rgba(245,158,11,.75); }
 
-    .pill select{
-      border:1px solid var(--border-color);
-      border-radius: 10px;
+    /* Controls */
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin: 10px 0 16px;
+    }
+    .pill{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      background:#fff;
+      border: 1px solid var(--border);
+      border-radius: 999px;
       padding: 8px 10px;
-      background: #fff;
+      box-shadow: var(--shadow);
+    }
+    .pill label{
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing:.2px;
+    }
+    .pill input{
+      border:none;
+      outline:none;
       font-weight: 700;
       font-size: 13px;
-      color: var(--text-color);
-      outline:none;
+      width: 260px;
+      max-width: 60vw;
     }
-
-    button{
-      padding: 10px 14px;
+    .pill select{
+      border: 1px solid var(--border);
       border-radius: 10px;
-      border: none;
-      cursor:pointer;
+      padding: 7px 10px;
       font-weight: 800;
-      background: var(--primary-color);
-      color: #fff;
-      box-shadow: var(--shadow);
-      transition: all .2s ease;
-      display:inline-flex; align-items:center; gap:8px;
+      font-size: 12px;
+      outline:none;
+      background:#fff;
+      color: var(--text);
     }
-    button:hover{ background: var(--primary-dark); transform: translateY(-1px); box-shadow: var(--shadow-hover); }
+    button{
+      border:none;
+      cursor:pointer;
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-weight: 900;
+      font-size: 13px;
+      background: var(--primary);
+      color:#fff;
+      box-shadow: var(--shadow);
+      transition: all .15s ease;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    button:hover{ background: var(--primary-dark); transform: translateY(-1px); }
     button.secondary{
-      background:#fff; color: var(--primary-color);
-      border: 2px solid var(--primary-color);
+      background:#fff;
+      color: var(--primary-dark);
+      border: 2px solid var(--primary);
     }
     button.secondary:hover{
-      background: rgba(99,171,143,0.08);
-      color: var(--primary-dark);
+      background: rgba(99,171,143,.08);
       border-color: var(--primary-dark);
     }
     button.danger{
-      background:#fff; color: var(--bad);
-      border: 2px solid var(--bad);
-    }
-    button.danger:hover{
-      background: rgba(220,38,38,.08);
-    }
-
-    .legend{
       background:#fff;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      padding: 12px 14px;
-      box-shadow: var(--shadow);
-      display:flex; gap:14px; align-items:center; flex-wrap:wrap;
-      margin-bottom: 18px;
+      color: var(--roadmap);
+      border: 2px solid var(--roadmap);
     }
-    .legend strong{ color: var(--primary-dark); }
-    .legend-item{ display:flex; align-items:center; gap:8px; font-size: 13px; font-weight: 800; color: var(--text-light); }
-    .swatch{
-      width: 22px; height: 14px; border-radius: 4px; border: 1px solid var(--border-color);
-      background: var(--status-unassigned);
-    }
-    .swatch.unassigned{ background: var(--status-unassigned); border-style: dashed; }
-    .swatch.inuse{ background: var(--status-inuse); border-color: rgba(22,163,74,.55); }
-    .swatch.notopt{ background: var(--status-notopt); border-color: rgba(245,158,11,.75); }
-    .swatch.unavailable{ background: #fff; border: 2px solid var(--bad); }
+    button.danger:hover{ background: rgba(220,38,38,.08); }
 
-    .grid{
+    /* ===== Screenshot-like COLUMN LAYOUT ===== */
+    .columns{
       display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 16px;
-      margin-bottom: 28px;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 18px;
+      align-items:start;
+    }
+    @media (max-width: 1250px){
+      .columns{ grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 700px){
+      .columns{ grid-template-columns: 1fr; }
+      .legend{ width: 100%; min-width: unset; }
+      .titleblock{ min-width: unset; }
+      .pill input{ width: 180px; }
     }
 
-    .section{
-      grid-column: span 12;
-      background:#fff;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 14px;
+    .col{
+      position:relative;
+      padding-top: 16px;
     }
 
-    .section-header{
-      display:flex; align-items:center; justify-content:space-between;
-      gap: 12px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid var(--border-color);
-      margin-bottom: 12px;
-      flex-wrap: wrap;
+    /* Green bracket line above each section like screenshot */
+    .col::before{
+      content:"";
+      position:absolute;
+      top: 0;
+      left: 6px;
+      right: 6px;
+      height: 10px;
+      border-top: 4px solid var(--primary);
+      border-left: 4px solid var(--primary);
+      border-right: 4px solid var(--primary);
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+      pointer-events:none;
     }
 
-    .section-title{
-      margin:0;
-      color: var(--primary-dark);
+    .col-title{
+      text-align:center;
       font-weight: 900;
-      font-size: 14px;
+      font-size: 12px;
       letter-spacing:.4px;
       text-transform: uppercase;
+      color:#111827;
+      margin: 0 0 10px;
     }
 
-    .section-sub{
-      color: var(--text-light);
-      font-weight: 800;
-      font-size: 12px;
-      margin-top: 4px;
-    }
-
-    .tiles{
+    /* Feature grid inside each column (varies per section) */
+    .feature-grid{
       display:grid;
-      grid-template-columns: repeat(6, minmax(160px, 1fr));
       gap: 12px;
+      justify-content:center;
     }
 
-    @media (max-width: 1200px){
-      .tiles{ grid-template-columns: repeat(4, minmax(160px, 1fr)); }
-    }
-    @media (max-width: 900px){
-      .tiles{ grid-template-columns: repeat(2, minmax(160px, 1fr)); }
-      .pill input[type="text"]{ width: 180px; }
-    }
-    @media (max-width: 520px){
-      body{ padding: 10px; }
-      .tiles{ grid-template-columns: 1fr; }
-      .pill{ width:100%; }
-      .pill input[type="text"]{ width: 100%; max-width: unset; }
-      .top-actions{ width:100%; justify-content: flex-start; }
-    }
-
-    .tile{
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
-      background: var(--status-unassigned);
-      padding: 14px 12px;
+    /* Fixed tile size like screenshot */
+    .feature{
+      width: 132px;
+      height: 58px;
+      background: var(--tile-bg);
+      border: 2px solid var(--tile-border);
+      border-radius: 10px;
+      box-shadow: none;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding: 8px;
       cursor:pointer;
-      box-shadow: 0 1px 2px rgba(0,0,0,.06);
-      transition: all 0.18s ease;
-      min-height: 62px;
-      display:flex; align-items:center; justify-content:space-between;
-      gap: 10px;
+      user-select:none;
+      transition: transform .12s ease, box-shadow .12s ease;
     }
-    .tile:hover{ transform: translateY(-1px); box-shadow: var(--shadow-hover); }
-
-    .tile .name{
-      font-weight: 900;
-      font-size: 13px;
-      line-height: 1.2;
-      color: var(--text-color);
-      display:flex; flex-direction:column; gap:6px;
+    .feature:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0,0,0,.12);
     }
-    .tile .meta{
-      font-weight: 800;
-      font-size: 11px;
-      color: rgba(44,62,80,.70);
-      letter-spacing: .2px;
-    }
-
-    .tile .right{
-      display:flex; align-items:center; gap:8px;
-      flex-shrink: 0;
-    }
-
-    .tiny-badge{
+    .feature .label{
       font-size: 11px;
       font-weight: 900;
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(0,0,0,.10);
-      background: rgba(255,255,255,.55);
-      color: rgba(44,62,80,.85);
-      white-space: nowrap;
+      color: #111827;
+      line-height: 1.15;
     }
 
-    /* Status variants */
-    .tile.status-unassigned{
-      background: var(--status-unassigned);
-      border-style: dashed;
-      border-color: rgba(108,117,125,.55);
+    /* Status styling (matching your key) */
+    .feature.status-unassigned{ /* default grey, as screenshot */
+      background: var(--tile-bg);
+      border-color: var(--tile-border);
     }
-    .tile.status-inuse{
-      background: var(--status-inuse);
-      border-color: rgba(22,163,74,.55);
+    .feature.status-inuse{
+      background: rgba(22,163,74,.25);
+      border-color: rgba(22,163,74,.70);
     }
-    .tile.status-notopt{
-      background: var(--status-notopt);
+    .feature.status-notopt{
+      background: rgba(245,158,11,.28);
       border-color: rgba(245,158,11,.80);
     }
-    .tile.status-unavailable{
+    .feature.status-unavailable{
       background: #fff;
-      border: 2px solid var(--bad);
+      border-color: var(--roadmap);
+      border-width: 3px;
     }
 
-    .status-dot{
-      width: 10px; height: 10px; border-radius: 50%;
-      background: rgba(108,117,125,.75);
-      border: 1px solid rgba(0,0,0,.15);
+    /* Tiny corner marker if you want (optional, subtle) */
+    .corner{
+      position:absolute;
+      right: 8px;
+      top: 8px;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: rgba(0,0,0,.12);
+      display:none;
     }
-    .tile.status-inuse .status-dot{ background: var(--good); border-color: rgba(22,163,74,.25); }
-    .tile.status-notopt .status-dot{ background: var(--warn); border-color: rgba(245,158,11,.35); }
-    .tile.status-unavailable .status-dot{ background: var(--bad); border-color: rgba(220,38,38,.25); }
-    .tile.status-unassigned .status-dot{ background: rgba(108,117,125,.75); border-color: rgba(108,117,125,.20); }
+    .featurewrap{ position:relative; display:inline-block; }
 
     .footer{
-      margin-top: 34px;
-      padding-top: 18px;
-      border-top: 1px solid var(--border-color);
+      margin-top: 22px;
       text-align:center;
-      color: var(--text-light);
+      color: var(--muted);
       font-size: 12px;
       font-weight: 700;
     }
 
-    /* Modal */
+    /* ===== Modal (kept from earlier) ===== */
     .modal-overlay{
       display:none;
       position:fixed;
@@ -336,7 +335,7 @@
     }
     .modal-header{
       padding: 18px 20px;
-      background: var(--primary-color);
+      background: var(--primary);
       color:#fff;
       display:flex;
       align-items:center;
@@ -362,89 +361,44 @@
       align-items:center;
       justify-content:center;
     }
-    .modal-close:hover{ background: rgba(255,255,255,.20); }
-
-    .modal-body{
-      padding: 18px 20px;
-      overflow:auto;
-    }
-
-    .modal-grid{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap: 14px;
-    }
-    @media (max-width: 820px){
-      .modal-grid{ grid-template-columns: 1fr; }
-    }
-
+    .modal-body{ padding: 18px 20px; overflow:auto; }
+    .modal-grid{ display:grid; grid-template-columns: 1.2fr .8fr; gap: 14px; }
+    @media (max-width: 820px){ .modal-grid{ grid-template-columns: 1fr; } }
     .panel{
-      border: 1px solid var(--border-color);
+      border: 1px solid var(--border);
       border-radius: 12px;
       padding: 14px;
       background: #fff;
     }
-
-    .panel h3{
-      margin:0 0 10px;
-      color: var(--primary-dark);
-      font-size: 14px;
-      font-weight: 900;
-    }
-
-    .desc{
-      margin:0;
-      color: var(--text-color);
-      font-weight: 600;
-      line-height: 1.5;
-      font-size: 14px;
-    }
-
-    .muted{
-      margin-top: 10px;
-      color: var(--text-light);
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .field{
-      margin-bottom: 12px;
-    }
+    .panel h3{ margin:0 0 10px; color: var(--primary-dark); font-size: 14px; font-weight: 900; }
+    .desc{ margin:0; color: var(--text); font-weight: 600; line-height: 1.5; font-size: 14px; }
+    .muted{ margin-top: 10px; color: var(--muted); font-size: 12px; font-weight: 700; }
+    .field{ margin-bottom: 12px; }
     .field label{
-      display:block;
-      font-size: 12px;
-      font-weight: 900;
-      color: var(--text-light);
-      margin-bottom: 6px;
-      letter-spacing: .2px;
-      text-transform: uppercase;
+      display:block; font-size: 12px; font-weight: 900; color: var(--muted);
+      margin-bottom: 6px; letter-spacing: .2px; text-transform: uppercase;
     }
     .field select, .field textarea{
       width:100%;
-      border: 1px solid var(--border-color);
+      border: 1px solid var(--border);
       border-radius: 10px;
       padding: 10px 12px;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 13px;
       outline:none;
       background: #fff;
+      color: var(--text);
     }
-    .field textarea{
-      resize: vertical;
-      min-height: 90px;
-      font-weight: 600;
-    }
-
+    .field textarea{ resize: vertical; min-height: 90px; font-weight: 600; }
     .mini-row{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 10px; }
     .mini-row button{ flex:1; min-width: 180px; justify-content:center; }
-
     .note{
       background: rgba(99,171,143,.06);
-      border-left: 4px solid var(--primary-color);
-      padding: 12px 12px;
+      border-left: 4px solid var(--primary);
+      padding: 12px;
       border-radius: 10px;
       margin-top: 12px;
-      color: var(--text-color);
+      color: var(--text);
       font-size: 12px;
       font-weight: 700;
       line-height: 1.45;
@@ -453,279 +407,271 @@
 </head>
 
 <body>
-  <div class="container">
-    <div class="header">
-      <div class="brand">
-        <div class="kicker">IPI Customer Success – Genesys Heatmap</div>
-        <h1>Genesys Cloud CX<br/>Functional Map</h1>
-        <p class="subtitle">Click a capability to view what it does</p>
-      </div>
+<div class="wrap">
 
-      <div class="top-actions">
-        <div class="pill">
-          <label for="search">Search</label>
-          <input id="search" type="text" placeholder="Try: Copilot, recording, WFM, analytics..." />
-        </div>
-
-        <div class="pill">
-          <label for="statusFilter">Status</label>
-          <select id="statusFilter">
-            <option value="all">All</option>
-            <option value="unassigned">Unassigned (blank)</option>
-            <option value="inuse">In use</option>
-            <option value="notopt">In use (not optimised)</option>
-            <option value="unavailable">Not currently available</option>
-          </select>
-        </div>
-
-        <button class="secondary" id="toggleEdit">✏️ Edit mode: Off</button>
-        <button class="secondary" id="resetAll">🧽 Reset all</button>
-        <button id="exportJson">📤 Export JSON</button>
-      </div>
+  <div class="topbar">
+    <div class="titleblock">
+      <div class="kicker">IPI CUSTOMER SUCCESS – GENESYS HEATMAP</div>
+      <h1 class="maintitle">Genesys CX3 Functional Map Level 1 – CX / WEM</h1>
     </div>
 
     <div class="legend">
-      <strong>Heatmap feature key</strong>
-      <span class="legend-item"><span class="swatch unassigned"></span> Unassigned (blank)</span>
-      <span class="legend-item"><span class="swatch unavailable"></span> Not currently available</span>
-      <span class="legend-item"><span class="swatch inuse"></span> Feature in use</span>
-      <span class="legend-item"><span class="swatch notopt"></span> In use but not optimised</span>
-    </div>
-
-    <div id="grid" class="grid"></div>
-
-    <div class="footer">
-      Genesys Cloud CX Functional Map | Persisted locally in your browser (no server needed)
+      <h3>Heatmap Feature Key</h3>
+      <div class="legend-grid">
+        <div class="key"><span class="sw"></span> Existing feature not in use</div>
+        <div class="key"><span class="sw inuse"></span> Feature in use</div>
+        <div class="key"><span class="sw roadmap"></span> Roadmap item</div>
+        <div class="key"><span class="sw notopt"></span> In use but not full optimised</div>
+      </div>
     </div>
   </div>
 
-  <!-- Modal -->
-  <div id="modalOverlay" class="modal-overlay" role="dialog" aria-modal="true">
-    <div class="modal">
-      <div class="modal-header">
-        <h2 id="modalTitle">Feature</h2>
-        <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="modal-grid">
-          <div class="panel">
-            <h3>What it does</h3>
-            <p id="modalDesc" class="desc"></p>
-            <div id="modalMeta" class="muted"></div>
+  <div class="controls">
+    <div class="pill">
+      <label for="search">Search</label>
+      <input id="search" type="text" placeholder="Copilot, recording, WFM, analytics..." />
+    </div>
 
-            <div class="mini-row">
-              <button id="openHelp">📚 Open Resource Centre</button>
-              <button id="copyLink" class="secondary">🔗 Copy link</button>
-            </div>
+    <div class="pill">
+      <label for="statusFilter">Status</label>
+      <select id="statusFilter">
+        <option value="all">All</option>
+        <option value="unassigned">Existing not in use</option>
+        <option value="inuse">In use</option>
+        <option value="notopt">Not fully optimised</option>
+        <option value="unavailable">Roadmap</option>
+      </select>
+    </div>
 
-            <div class="note">
-              Keep descriptions short here, and use the button for the full official article.
-              Saves you becoming “that person” with a 400-slide deck.
-            </div>
+    <button class="secondary" id="toggleEdit">✏️ Edit mode: Off</button>
+    <button class="danger" id="resetAll">🧽 Reset</button>
+    <button id="exportJson">📤 Export JSON</button>
+  </div>
+
+  <div id="columns" class="columns"></div>
+
+  <div class="footer">Click a box to open details • Saved in your browser (localStorage)</div>
+</div>
+
+<!-- Modal -->
+<div id="modalOverlay" class="modal-overlay" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modalTitle">Feature</h2>
+      <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-grid">
+        <div class="panel">
+          <h3>What it does</h3>
+          <p id="modalDesc" class="desc"></p>
+          <div id="modalMeta" class="muted"></div>
+
+          <div class="mini-row">
+            <button id="openHelp">📚 Open Resource Centre</button>
+            <button id="copyLink" class="secondary">🔗 Copy link</button>
           </div>
 
-          <div class="panel">
-            <h3>Heatmap settings</h3>
+          <div class="note">
+            Keep the blurbs short here and link out for the official detail. Your future self will thank you.
+          </div>
+        </div>
 
-            <div class="field">
-              <label>Status</label>
-              <select id="modalStatus" disabled>
-                <option value="unassigned">Unassigned (blank)</option>
-                <option value="inuse">In use</option>
-                <option value="notopt">In use (not optimised)</option>
-                <option value="unavailable">Not currently available</option>
-              </select>
-            </div>
+        <div class="panel">
+          <h3>Heatmap settings</h3>
 
-            <div class="field">
-              <label>Notes</label>
-              <textarea id="modalNotes" placeholder="Optional notes..." disabled></textarea>
-            </div>
+          <div class="field">
+            <label>Status</label>
+            <select id="modalStatus" disabled>
+              <option value="unassigned">Existing not in use</option>
+              <option value="inuse">In use</option>
+              <option value="notopt">Not fully optimised</option>
+              <option value="unavailable">Roadmap</option>
+            </select>
+          </div>
 
-            <button id="saveFeature" class="primary" disabled>💾 Save</button>
-            <div class="muted" id="editHint" style="margin-top:10px;">
-              Turn on Edit mode to change status/notes.
-            </div>
+          <div class="field">
+            <label>Notes</label>
+            <textarea id="modalNotes" placeholder="Optional notes..." disabled></textarea>
+          </div>
+
+          <button id="saveFeature" disabled>💾 Save</button>
+          <div class="muted" id="editHint" style="margin-top:10px;">
+            Turn on Edit mode to change status/notes.
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
 
 <script>
 (() => {
-  /******************************************************************
-   * DATA
-   * - Add more features by extending FEATURES.
-   * - Set unavailable: true for anything "not currently available"
-   *   (those will be the ONLY ones pre-populated on first load).
-   ******************************************************************/
-const FEATURES = [
-  // =========================
-  // CHANNELS & AUTOMATION
-  // =========================
-  { id:"voice", section:"Channels & Automation", name:"Voice", short:"Voice channel for inbound and outbound customer calls with routing and agent handling.", helpUrl:"https://help.mypurecloud.com", tags:["voice","acd","telephony"] },
-  { id:"email", section:"Channels & Automation", name:"Email", short:"Email as a digital channel with routing, queues and agent handling.", helpUrl:"https://help.mypurecloud.com", tags:["email","digital"] },
-  { id:"web-messenger", section:"Channels & Automation", name:"Web Messenger", short:"Web messaging channel for customer conversations routed to agents.", helpUrl:"https://help.mypurecloud.com", tags:["web messaging","digital","messaging"] },
-  { id:"social-channels", section:"Channels & Automation", name:"Social Channels", short:"Connect and manage social messaging channels routed through digital queues.", helpUrl:"https://help.mypurecloud.com", tags:["social","digital","messaging"] },
-  { id:"voice-bots", section:"Channels & Automation", name:"Voice Bots", short:"Automate voice interactions using bots with escalation to agents when needed.", helpUrl:"https://help.mypurecloud.com", tags:["bots","voice","automation"] },
-  { id:"whatsapp", section:"Channels & Automation", name:"Whatsapp", short:"Support WhatsApp messaging as a digital channel with routing and templates.", helpUrl:"https://help.mypurecloud.com", tags:["whatsapp","digital","messaging"] },
-  { id:"outbound-dialling", section:"Channels & Automation", name:"Outbound Dialling", short:"Outbound campaigns and dialling capabilities for proactive customer contact.", helpUrl:"https://help.mypurecloud.com", tags:["outbound","dialler","campaigns"] },
-  { id:"digital-bots", section:"Channels & Automation", name:"Digital Bots", short:"Automate digital conversations using bots with handoff to agents.", helpUrl:"https://help.mypurecloud.com", tags:["bots","digital","automation"] },
-  { id:"crm-integration", section:"Channels & Automation", name:"CRM Integration", short:"Integrate Genesys Cloud with CRM systems for screen-pop and context.", helpUrl:"https://help.mypurecloud.com", tags:["crm","integration"] },
-  { id:"agentless-outbound", section:"Channels & Automation", name:"Agentless Outbound", short:"Automated outbound messaging/calling without a live agent for certain use cases.", helpUrl:"https://help.mypurecloud.com", tags:["outbound","automation"] },
-  { id:"crm-cti-integration", section:"Channels & Automation", name:"CRM CTI Integration", short:"CTI integration to embed calling controls and interaction context into CRMs.", helpUrl:"https://help.mypurecloud.com", tags:["cti","crm","integration"] },
-  { id:"work-automation", section:"Channels & Automation", name:"Work Automation", short:"Automate work and workflows across systems to reduce manual effort.", helpUrl:"https://help.mypurecloud.com", tags:["automation","workflow"], unavailable:true }, // ** roadmap
-  { id:"case", section:"Channels & Automation", name:"Case", short:"Case management style work items and tracking alongside interactions.", helpUrl:"https://help.mypurecloud.com", tags:["case","work items"], unavailable:true }, // ** roadmap
-  { id:"cx-connector", section:"Channels & Automation", name:"CX Connector (e.g. Salesforce ServiceNow)", short:"Connector capability to integrate CX workflows with external platforms like Salesforce or ServiceNow.", helpUrl:"https://help.mypurecloud.com", tags:["connector","salesforce","servicenow","integration"], unavailable:true }, // ** roadmap
-
-  // =========================
-  // RESOURCE MANAGEMENT
-  // =========================
-  { id:"ai-powered-forecasting-voice-digital", section:"Resource Management", name:"AI Powered Forecasting (Voice & Digital)", short:"AI-assisted forecasting across voice and digital workloads.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","forecasting","ai"] },
-  { id:"manual-load-based-scheduling", section:"Resource Management", name:"Manual & Load Based Scheduling", short:"Create schedules manually or using load-based methods.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","scheduling"] },
-  { id:"meeting-planner", section:"Resource Management", name:"Meeting Planner", short:"Plan meetings and non-phone activities within schedules.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","meetings","planning"] },
-  { id:"schedule-rules-management", section:"Resource Management", name:"Schedule Rules Management", short:"Define and manage schedule rules and constraints for scheduling.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","rules","scheduling"] },
-  { id:"work-item-forecasting-scheduling", section:"Resource Management", name:"Work Item Forecasting & Scheduling", short:"Forecast and schedule non-interaction work items alongside staffing.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","work items","forecasting","scheduling"] },
-  { id:"shift-rotations", section:"Resource Management", name:"Shift rotations", short:"Create and manage rotating shifts and patterns.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","shifts"] },
-  { id:"capacity-planning", section:"Resource Management", name:"Capacity Planning", short:"Plan staffing capacity based on demand and constraints.", helpUrl:"https://help.mypurecloud.com", tags:["capacity","planning","wfm"] },
-  { id:"shift-trading", section:"Resource Management", name:"Shift Trading", short:"Allow agents to trade shifts subject to rules and approvals.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","shift trading"] },
-  { id:"continuous-forecasting", section:"Resource Management", name:"Continuous Forecasting", short:"Update forecasts continuously based on latest data and trends.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","forecasting"] },
-  { id:"shift-bidding", section:"Resource Management", name:"Shift Bidding", short:"Allow agents to bid for shifts within defined rules.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","shift bidding"] },
-  { id:"outbound-forecasting", section:"Resource Management", name:"Outbound Forecasting", short:"Forecast outbound workload to plan staffing and scheduling.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","outbound","forecasting"] },
-  { id:"availability-preferences", section:"Resource Management", name:"Availability and Preferences", short:"Capture agent availability and scheduling preferences.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","preferences"] },
-  { id:"overtime-voluntary-timeoff", section:"Resource Management", name:"Over Time and Voluntary Time Off", short:"Offer overtime and VTO programmes to adjust intraday staffing.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","overtime","vto"] },
-  { id:"time-off-management", section:"Resource Management", name:"Time Off Management", short:"Manage time-off requests, balances and approvals.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","time off"] },
-  { id:"mobile-app-tempo", section:"Resource Management", name:"Mobile App (Tempo)", short:"Mobile experience for schedules, time off and workforce tasks.", helpUrl:"https://help.mypurecloud.com", tags:["tempo","mobile","wfm"] },
-  { id:"monitoring-adherence", section:"Resource Management", name:"Monitoring & Adherence", short:"Track schedule adherence and intraday performance against plans.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","adherence","intraday"] },
-
-  // =========================
-  // RECORDING, QUALITY & INSIGHT
-  // =========================
-  { id:"voice-digital-recording", section:"Recording, Quality & Insight", name:"Voice and Digital Recording", short:"Record voice and digital interactions for compliance and quality.", helpUrl:"https://help.mypurecloud.com", tags:["recording","voice","digital"] },
-  { id:"station-side-recording", section:"Recording, Quality & Insight", name:"Station side recording", short:"Station-side recording options for specific telephony setups.", helpUrl:"https://help.mypurecloud.com", tags:["recording","telephony"] },
-  { id:"speech-text-analytics", section:"Recording, Quality & Insight", name:"Speech & Text Analytics", short:"Analyse interaction content (voice/digital) for insights like topics and sentiment.", helpUrl:"https://help.mypurecloud.com", tags:["analytics","speech","text","sentiment"] },
-  { id:"transcription", section:"Recording, Quality & Insight", name:"Transcription", short:"Convert voice interactions into searchable text for review and analysis.", helpUrl:"https://help.mypurecloud.com", tags:["transcription","speech"] },
-  { id:"screen-recording", section:"Recording, Quality & Insight", name:"Screen Recording", short:"Record agent screens for compliance, training and quality.", helpUrl:"https://help.mypurecloud.com", tags:["screen recording","qm"] },
-  { id:"quality-evaluations", section:"Recording, Quality & Insight", name:"Quality Evaluations", short:"Evaluate interactions using scorecards and forms to drive quality.", helpUrl:"https://help.mypurecloud.com", tags:["quality","evaluations","qm"] },
-  { id:"acoustic-analysis", section:"Recording, Quality & Insight", name:"Acoustic Analysis", short:"Analyse acoustic signals (e.g. silence/overlap) for deeper insight.", helpUrl:"https://help.mypurecloud.com", tags:["acoustic","analysis"] },
-  { id:"sensitive-data-masking", section:"Recording, Quality & Insight", name:"Sensitive Data Masking", short:"Mask sensitive information in recordings/transcripts for compliance.", helpUrl:"https://help.mypurecloud.com", tags:["pci","pii","masking"] },
-  { id:"recording-retention-archival", section:"Recording, Quality & Insight", name:"Recording Retention and Archival", short:"Retention policies and archival of recordings to manage storage/compliance.", helpUrl:"https://help.mypurecloud.com", tags:["retention","archival","recording"] },
-  { id:"quality-management-eval-assistance", section:"Recording, Quality & Insight", name:"Quality Management / Evaluation assistance", short:"Tools to support evaluation workflows and consistency.", helpUrl:"https://help.mypurecloud.com", tags:["quality","assistance"] },
-  { id:"customer-sentiment-analysis", section:"Recording, Quality & Insight", name:"Customer Sentiment Analysis", short:"Detect and report sentiment from interaction content.", helpUrl:"https://help.mypurecloud.com", tags:["sentiment","analytics"] },
-  { id:"agent-empathy-analysis", section:"Recording, Quality & Insight", name:"Agent Empathy Analysis", short:"Analyse interactions for empathy signals and coaching opportunities.", helpUrl:"https://help.mypurecloud.com", tags:["empathy","coaching","analytics"] },
-  { id:"recording-consent-secure-pause", section:"Recording, Quality & Insight", name:"Recording Consent & Secure Pause", short:"Support consent handling and secure pause to avoid capturing sensitive data.", helpUrl:"https://help.mypurecloud.com", tags:["consent","secure pause","compliance"] },
-  { id:"voc-web-surveys", section:"Recording, Quality & Insight", name:"Voice of the Customer Web Surveys", short:"Collect customer feedback via web surveys post-interaction.", helpUrl:"https://help.mypurecloud.com", tags:["voc","surveys","web"] },
-  { id:"topic-spotting", section:"Recording, Quality & Insight", name:"Topic Spotting", short:"Identify key topics in interactions for insight and trending.", helpUrl:"https://help.mypurecloud.com", tags:["topics","analytics"] },
-  { id:"social-listening-rqi", section:"Recording, Quality & Insight", name:"Social Listening", short:"Listen and analyse social content for customer insight signals.", helpUrl:"https://help.mypurecloud.com", tags:["social listening","insights"] },
-  { id:"realtime-voice-monitor-coach-barge", section:"Recording, Quality & Insight", name:"Real Time Voice Monitor, Coach and Barge", short:"Supervisors can monitor, coach and barge into voice interactions in real time.", helpUrl:"https://help.mypurecloud.com", tags:["monitor","coach","barge","voice"] },
-  { id:"voc-voice-surveys", section:"Recording, Quality & Insight", name:"Voice of the Customer Voice Surveys", short:"Collect feedback through voice surveys for customer experience measurement.", helpUrl:"https://help.mypurecloud.com", tags:["voc","surveys","voice"] },
-  { id:"topic-mining", section:"Recording, Quality & Insight", name:"Topic Mining", short:"Discover emerging topics across interaction sets for insight and action.", helpUrl:"https://help.mypurecloud.com", tags:["topics","mining","analytics"] },
-  { id:"transcript-content-search", section:"Recording, Quality & Insight", name:"Transcript / Content Search", short:"Search across transcripts/content to find interactions and evidence quickly.", helpUrl:"https://help.mypurecloud.com", tags:["search","transcript"] },
-  { id:"realtime-screen-monitoring", section:"Recording, Quality & Insight", name:"Real Time Screen Monitoring", short:"Monitor agent screens in real time for support and compliance.", helpUrl:"https://help.mypurecloud.com", tags:["screen monitoring","realtime"] },
-  { id:"realtime-digital-monitor-coach-barge", section:"Recording, Quality & Insight", name:"Real Time Digital Monitor, Coach and Barge", short:"Monitor/coaching/barge capabilities for digital conversations in real time.", helpUrl:"https://help.mypurecloud.com", tags:["digital","monitor","coach","barge"] },
-
-  // =========================
-  // AI POWERED
-  // =========================
-  { id:"knowledge-base", section:"AI Powered", name:"Knowledge Base", short:"Knowledge management for authoring and surfacing articles to agents/bots.", helpUrl:"https://help.mypurecloud.com", tags:["knowledge","kb"] },
-  { id:"support-centre", section:"AI Powered", name:"Support Centre", short:"Support experiences and guidance for users/admins.", helpUrl:"https://help.mypurecloud.com", tags:["support","help"] },
-  { id:"agent-copilot", section:"AI Powered", name:"Agent Copilot", short:"AI assistance for agents: knowledge surfacing, guidance and productivity support.", helpUrl:"https://help.mypurecloud.com", tags:["copilot","ai","agent"] },
-  { id:"performance-insights-dashboard-ai", section:"AI Powered", name:"Performance Insights Dashboard", short:"Insights dashboard to surface performance signals and trends.", helpUrl:"https://help.mypurecloud.com", tags:["insights","dashboard"] },
-  { id:"supervisor-copilot", section:"AI Powered", name:"Supervisor Copilot", short:"AI support for supervisors to guide decisions and actions.", helpUrl:"https://help.mypurecloud.com", tags:["copilot","ai","supervisor"] },
-  { id:"admin-copilot", section:"AI Powered", name:"Admin Copilot", short:"AI support for administrators to speed up configuration and troubleshooting.", helpUrl:"https://help.mypurecloud.com", tags:["copilot","ai","admin"] },
-  { id:"ai-studio", section:"AI Powered", name:"AI Studio", short:"Build/configure AI experiences, bots and related automation.", helpUrl:"https://help.mypurecloud.com", tags:["ai","studio","bots"] },
-  { id:"journey-management", section:"AI Powered", name:"Journey Management", short:"Understand and optimise customer journeys across touchpoints.", helpUrl:"https://help.mypurecloud.com", tags:["journey","cx"] },
-  { id:"ai-guides", section:"AI Powered", name:"AI Guides", short:"Guided experiences to support agents/customers with contextual assistance.", helpUrl:"https://help.mypurecloud.com", tags:["ai","guides"] },
-  { id:"virtual-agent", section:"AI Powered", name:"Virtual Agent", short:"Virtual agent experiences for self-service and automation.", helpUrl:"https://help.mypurecloud.com", tags:["virtual agent","bots","ai"] },
-  { id:"ai-qa-automated", section:"AI Powered", name:"AI QA / Automated", short:"Automated quality evaluation using AI to scale QA coverage.", helpUrl:"https://help.mypurecloud.com", tags:["ai","qa","quality"] },
-  { id:"social-listening-ai", section:"AI Powered", name:"Social Listening", short:"AI-powered social listening capability for insight and detection.", helpUrl:"https://help.mypurecloud.com", tags:["social listening","ai"], unavailable:true }, // ** roadmap
-  { id:"predictive-routing", section:"AI Powered", name:"Predictive Routing", short:"Use predictive models to route interactions to the best agent.", helpUrl:"https://help.mypurecloud.com", tags:["predictive","routing","ai"] },
-  { id:"predictive-engagement", section:"AI Powered", name:"Predictive Engagement", short:"Proactively engage customers based on behaviour and predicted intent.", helpUrl:"https://help.mypurecloud.com", tags:["predictive","engagement"] },
-  { id:"operations-hub", section:"AI Powered", name:"Operations Hub", short:"Centralised operational tooling and dashboards to support CX operations.", helpUrl:"https://help.mypurecloud.com", tags:["operations","hub"] },
-  { id:"realtime-anomaly-detection", section:"AI Powered", name:"Real-time Anomaly Detection", short:"Detect anomalies in operational metrics/events in near real time.", helpUrl:"https://help.mypurecloud.com", tags:["anomaly","realtime","insights"] },
-
-  // =========================
-  // PERFORMANCE MANAGEMENT
-  // =========================
-  { id:"realtime-reporting", section:"Performance Management", name:"Real-time reporting", short:"Monitor live performance and operational KPIs.", helpUrl:"https://help.mypurecloud.com", tags:["realtime","reporting"] },
-  { id:"historical-reporting", section:"Performance Management", name:"Historical Reporting", short:"Analyse historical trends and performance over time.", helpUrl:"https://help.mypurecloud.com", tags:["historical","reporting"] },
-  { id:"onboarding-learning", section:"Performance Management", name:"Onboarding & Learning", short:"Support onboarding and learning journeys for employees.", helpUrl:"https://help.mypurecloud.com", tags:["learning","onboarding"] },
-  { id:"employee-performance-scorecards", section:"Performance Management", name:"Employee Performance Scorecards", short:"Track performance using scorecards and structured KPIs.", helpUrl:"https://help.mypurecloud.com", tags:["scorecards","performance"] },
-  { id:"skills-knowledge-assessment", section:"Performance Management", name:"Skills & Knowledge Assessment", short:"Assess agent skills and knowledge to guide development.", helpUrl:"https://help.mypurecloud.com", tags:["assessment","skills"] },
-  { id:"external-performance-metrics", section:"Performance Management", name:"External Performance Metrics", short:"Bring in external metrics to complement contact centre reporting.", helpUrl:"https://help.mypurecloud.com", tags:["external","metrics"] },
-  { id:"scheduled-coaching", section:"Performance Management", name:"Scheduled Coaching", short:"Plan and manage coaching sessions to improve performance.", helpUrl:"https://help.mypurecloud.com", tags:["coaching","performance"] },
-  { id:"custom-analytics", section:"Performance Management", name:"Custom Analytics", short:"Create custom analytics views/dashboards tailored to your KPIs.", helpUrl:"https://help.mypurecloud.com", tags:["analytics","custom"] },
-  { id:"voice-of-the-employee", section:"Performance Management", name:"Voice of the Employee", short:"Capture employee feedback and sentiment to improve EX.", helpUrl:"https://help.mypurecloud.com", tags:["voe","employee"] },
-  { id:"gamification-leaderboards", section:"Performance Management", name:"Gamification / Leaderboards", short:"Drive engagement using gamification mechanics and leaderboards.", helpUrl:"https://help.mypurecloud.com", tags:["gamification","leaderboards"] },
-  { id:"contests-challenges", section:"Performance Management", name:"Contests & Challenges", short:"Run contests/challenges to motivate and recognise performance.", helpUrl:"https://help.mypurecloud.com", tags:["contests","challenges"] },
-  { id:"performance-insights-dashboard-pm", section:"Performance Management", name:"Performance Insights Dashboard", short:"Insights dashboard for performance trends and coaching opportunities.", helpUrl:"https://help.mypurecloud.com", tags:["insights","dashboard"] },
-  { id:"rewards-recognition", section:"Performance Management", name:"Rewards & Recognition", short:"Recognise achievements and reward strong performance.", helpUrl:"https://help.mypurecloud.com", tags:["rewards","recognition"] },
-  { id:"apis-data-stream", section:"Performance Management", name:"APIs / Data stream", short:"Access data via APIs and streams for integrations and advanced analytics.", helpUrl:"https://help.mypurecloud.com", tags:["apis","data","stream"] },
-];
-
-  const STATUS_LABEL = {
-    unassigned: "Unassigned",
-    inuse: "In use",
-    notopt: "Needs optimisation",
-    unavailable: "Not available"
+  // Per-section column counts (to match the screenshot layout)
+  const SECTION_LAYOUT = {
+    "Channels & Automation": 2,
+    "Resource Management": 2,
+    "Recording, Quality & Insight": 4,
+    "AI Powered": 2,
+    "Performance Management": 2
   };
 
-  const STORAGE_KEY = "gcFunctionalMap_v2_blankByDefault";
+  const SECTION_ORDER = [
+    "Channels & Automation",
+    "Resource Management",
+    "Recording, Quality & Insight",
+    "AI Powered",
+    "Performance Management"
+  ];
+
+  // ===== Features (from your image). `unavailable:true` = ** roadmap =====
+  const FEATURES = [
+    // Channels & Automation
+    { id:"voice", section:"Channels & Automation", name:"Voice", short:"Voice channel for inbound/outbound calls with routing, queues and agent handling.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"email", section:"Channels & Automation", name:"Email", short:"Email routing and handling as a digital channel.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"web-messenger", section:"Channels & Automation", name:"Web Messenger", short:"Web messaging channel routed through digital queues.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"social-channels", section:"Channels & Automation", name:"Social Channels", short:"Social messaging channels routed through Genesys Cloud digital.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"voice-bots", section:"Channels & Automation", name:"Voice Bots", short:"Bot automation for voice journeys with escalation to agents.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"whatsapp", section:"Channels & Automation", name:"Whatsapp", short:"WhatsApp digital messaging channel support.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"outbound-dialling", section:"Channels & Automation", name:"Outbound Dialling", short:"Outbound calling capabilities including campaign dialling.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"digital-bots", section:"Channels & Automation", name:"Digital Bots", short:"Bot automation for digital messaging channels.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"crm-integration", section:"Channels & Automation", name:"CRM Integration", short:"Integrations with CRM platforms for context and workflows.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"agentless-outbound", section:"Channels & Automation", name:"Agentless Outbound", short:"Automated outbound delivery without a live agent.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"crm-cti-integration", section:"Channels & Automation", name:"CRM CTI Integration", short:"Embed CTI controls into CRM systems for calling and context.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"work-automation", section:"Channels & Automation", name:"Work Automation**", short:"Roadmap item: automate work and workflows across systems.", helpUrl:"https://help.mypurecloud.com", unavailable:true },
+    { id:"case", section:"Channels & Automation", name:"Case**", short:"Roadmap item: case-style work tracking and management.", helpUrl:"https://help.mypurecloud.com", unavailable:true },
+    { id:"cx-connector", section:"Channels & Automation", name:"CX Connector** e.g. Salesforce ServiceNow", short:"Roadmap item: connectors to external platforms like Salesforce/ServiceNow.", helpUrl:"https://help.mypurecloud.com", unavailable:true },
+
+    // Resource Management
+    { id:"ai-forecasting", section:"Resource Management", name:"AI Powered Forecasting (Voice & Digital)", short:"AI-assisted forecasting across voice and digital workloads.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"manual-load-scheduling", section:"Resource Management", name:"Manual & Load Based Scheduling", short:"Create schedules manually or via load-based methods.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"meeting-planner", section:"Resource Management", name:"Meeting Planner", short:"Plan and schedule meetings within workforce schedules.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"schedule-rules", section:"Resource Management", name:"Schedule Rules Management", short:"Define and manage rules/constraints for scheduling.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"work-item-forecasting", section:"Resource Management", name:"Work Item Forecasting & Scheduling", short:"Forecast and schedule work items alongside staffing.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"shift-rotations", section:"Resource Management", name:"Shift rotations", short:"Define rotating shift patterns.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"capacity-planning", section:"Resource Management", name:"Capacity Planning", short:"Plan staffing capacity based on demand and constraints.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"shift-trading", section:"Resource Management", name:"Shift Trading", short:"Agent shift trading with approvals and rules.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"continuous-forecasting", section:"Resource Management", name:"Continuous Forecasting", short:"Continuously update forecasts using the latest data.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"shift-bidding", section:"Resource Management", name:"Shift Bidding", short:"Agents bid for shifts within defined constraints.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"outbound-forecasting", section:"Resource Management", name:"Outbound Forecasting", short:"Forecast outbound workload for staffing and scheduling.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"availability-preferences", section:"Resource Management", name:"Availability and Preferences", short:"Capture availability and scheduling preferences.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"overtime-vto", section:"Resource Management", name:"Over Time and Voluntary Time Off", short:"Offer overtime/VTO to manage intraday staffing.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"time-off", section:"Resource Management", name:"Time Off Management", short:"Time off requests, balances and approvals.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"tempo", section:"Resource Management", name:"Mobile App (Tempo)", short:"Mobile access for schedules and workforce actions.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"monitoring-adherence", section:"Resource Management", name:"Monitoring & Adherence", short:"Track adherence and intraday performance vs plans.", helpUrl:"https://help.mypurecloud.com" },
+
+    // Recording, Quality & Insight
+    { id:"voice-digital-recording", section:"Recording, Quality & Insight", name:"Voice and Digital Recording", short:"Record voice and digital interactions.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"station-side", section:"Recording, Quality & Insight", name:"Station side recording", short:"Station-side recording options for specific setups.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"speech-text", section:"Recording, Quality & Insight", name:"Speech & Text Analytics", short:"Analytics on interaction content including topics/sentiment.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"transcription", section:"Recording, Quality & Insight", name:"Transcription", short:"Convert voice to text for search and insight.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"screen-recording", section:"Recording, Quality & Insight", name:"Screen Recording", short:"Record agent screens for compliance/training.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"quality-evaluations", section:"Recording, Quality & Insight", name:"Quality Evaluations", short:"Scorecards/forms to evaluate interactions.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"acoustic-analysis", section:"Recording, Quality & Insight", name:"Acoustic Analysis", short:"Analyse acoustic signals like silence/overlap.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"sensitive-masking", section:"Recording, Quality & Insight", name:"Sensitive Data Masking", short:"Mask sensitive information for compliance.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"retention-archival", section:"Recording, Quality & Insight", name:"Recording Retention and Archival", short:"Retention policies and archival for recordings.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"qm-assistance", section:"Recording, Quality & Insight", name:"Quality Management / Evaluation assistance", short:"Support evaluation workflows and consistency.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"cust-sentiment", section:"Recording, Quality & Insight", name:"Customer Sentiment Analysis", short:"Sentiment detection and reporting.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"agent-empathy", section:"Recording, Quality & Insight", name:"Agent Empathy Analysis", short:"Analyse empathy signals for coaching.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"consent-securepause", section:"Recording, Quality & Insight", name:"Recording Consent & Secure Pause", short:"Consent handling and secure pause.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"voc-web", section:"Recording, Quality & Insight", name:"Voice of the Customer Web Surveys", short:"Collect feedback via web surveys.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"topic-spotting", section:"Recording, Quality & Insight", name:"Topic Spotting", short:"Identify topics in interactions.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"social-listening-rqi", section:"Recording, Quality & Insight", name:"Social Listening", short:"Listen/analyse social content for insights.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"rt-voice-mcb", section:"Recording, Quality & Insight", name:"Real Time Voice Monitor, Coach and Barge", short:"Real-time monitor/coach/barge for voice.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"voc-voice", section:"Recording, Quality & Insight", name:"Voice of the Customer Voice Surveys", short:"Collect feedback via voice surveys.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"topic-mining", section:"Recording, Quality & Insight", name:"Topic Mining", short:"Discover emerging topics across interactions.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"transcript-search", section:"Recording, Quality & Insight", name:"Transcript / Content Search", short:"Search transcripts and content.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"rt-screen-monitoring", section:"Recording, Quality & Insight", name:"Real Time Screen Monitoring", short:"Monitor screens in real time.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"rt-digital-mcb", section:"Recording, Quality & Insight", name:"Real Time Digital Monitor, Coach and Barge", short:"Real-time monitor/coach/barge for digital.", helpUrl:"https://help.mypurecloud.com" },
+
+    // AI Powered
+    { id:"knowledge-base", section:"AI Powered", name:"Knowledge Base", short:"Author and serve knowledge articles to agents/bots.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"support-centre", section:"AI Powered", name:"Support Centre", short:"Support experiences and guidance for users/admins.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"agent-copilot", section:"AI Powered", name:"Agent Copilot", short:"AI assistance for agents: guidance, knowledge surfacing and productivity.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"perf-insights-ai", section:"AI Powered", name:"Performance Insights Dashboard", short:"Insights dashboard for performance signals/trends.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"supervisor-copilot", section:"AI Powered", name:"Supervisor Copilot", short:"AI support for supervisors to speed decision-making.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"admin-copilot", section:"AI Powered", name:"Admin Copilot", short:"AI support for administrators.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"ai-studio", section:"AI Powered", name:"AI Studio", short:"Build/configure AI experiences.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"journey-management", section:"AI Powered", name:"Journey Management", short:"Understand and optimise journeys across touchpoints.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"ai-guides", section:"AI Powered", name:"AI Guides", short:"Guided assistance to support agents/customers.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"virtual-agent", section:"AI Powered", name:"Virtual Agent", short:"Virtual agent self-service experiences.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"ai-qa", section:"AI Powered", name:"AI QA / Automated", short:"Automated QA using AI.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"social-listening-ai", section:"AI Powered", name:"Social Listening**", short:"Roadmap item: AI-powered social listening.", helpUrl:"https://help.mypurecloud.com", unavailable:true },
+    { id:"predictive-routing", section:"AI Powered", name:"Predictive Routing", short:"Route to best agent using predictive models.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"predictive-engagement", section:"AI Powered", name:"Predictive Engagement", short:"Proactively engage based on predicted intent/behaviour.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"operations-hub", section:"AI Powered", name:"Operations Hub", short:"Operational tooling and dashboards.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"anomaly-detection", section:"AI Powered", name:"Real-time Anomaly Detection", short:"Detect anomalies in operational metrics in near real time.", helpUrl:"https://help.mypurecloud.com" },
+
+    // Performance Management
+    { id:"rt-reporting", section:"Performance Management", name:"Real-time reporting", short:"Live queue/agent performance monitoring.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"hist-reporting", section:"Performance Management", name:"Historical Reporting", short:"Trend analysis over time.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"onboarding-learning", section:"Performance Management", name:"Onboarding & Learning", short:"Onboarding and learning experiences.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"perf-scorecards", section:"Performance Management", name:"Employee Performance Scorecards", short:"Structured performance scorecards.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"skills-assessment", section:"Performance Management", name:"Skills & Knowledge Assessment", short:"Assess skills and knowledge for development.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"external-metrics", section:"Performance Management", name:"External Performance Metrics", short:"Bring in external metrics for reporting.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"scheduled-coaching", section:"Performance Management", name:"Scheduled Coaching", short:"Plan and track coaching.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"custom-analytics", section:"Performance Management", name:"Custom Analytics", short:"Custom analytics views/dashboards.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"voe", section:"Performance Management", name:"Voice of the Employee", short:"Capture employee feedback and sentiment.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"gamification", section:"Performance Management", name:"Gamification / Leaderboards", short:"Gamification mechanics and leaderboards.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"contests", section:"Performance Management", name:"Contests & Challenges", short:"Run contests and challenges.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"perf-insights-pm", section:"Performance Management", name:"Performance Insights Dashboard", short:"Performance insights dashboard.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"rewards", section:"Performance Management", name:"Rewards & Recognition", short:"Recognise and reward performance.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"apis-datastream", section:"Performance Management", name:"APIs / Data stream", short:"APIs and data streaming for integrations/analytics.", helpUrl:"https://help.mypurecloud.com" },
+  ];
+
+  const STORAGE_KEY = "gcHeatmap_screenshotLayout_v1";
+
+  const STATUS_LABEL = {
+    unassigned: "Existing feature not in use",
+    inuse: "Feature in use",
+    notopt: "In use but not full optimised",
+    unavailable: "Roadmap item"
+  };
 
   let state = {
     editMode: false,
     search: "",
     statusFilter: "all",
-    featureState: {} // { [id]: { status, notes } }
+    featureState: {}
   };
 
-  function loadState() {
+  function loadState(){
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
+    if (saved){
+      try{
         const parsed = JSON.parse(saved);
         state.featureState = parsed.featureState || {};
-      } catch (e) {}
+      }catch(e){}
     }
 
-    // IMPORTANT: default is BLANK (unassigned) unless feature.unavailable === true
+    // Default: everything looks like screenshot grey unless it's roadmap (**)
     FEATURES.forEach(f => {
-      if (!state.featureState[f.id]) {
+      if (!state.featureState[f.id]){
         state.featureState[f.id] = {
           status: f.unavailable ? "unavailable" : "unassigned",
           notes: ""
         };
       } else {
-        // keep previous choices, but ensure keys exist
         state.featureState[f.id].status ||= (f.unavailable ? "unavailable" : "unassigned");
         state.featureState[f.id].notes ||= "";
       }
     });
   }
 
-  function saveState() {
+  function saveState(){
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ featureState: state.featureState }));
   }
 
-  const gridEl = document.getElementById("grid");
+  // ===== Rendering columns like screenshot =====
+  const columnsEl = document.getElementById("columns");
   const searchEl = document.getElementById("search");
   const statusFilterEl = document.getElementById("statusFilter");
   const toggleEditBtn = document.getElementById("toggleEdit");
-  const exportBtn = document.getElementById("exportJson");
   const resetAllBtn = document.getElementById("resetAll");
+  const exportBtn = document.getElementById("exportJson");
 
-  function groupBySection(items) {
-    const map = new Map();
-    items.forEach(it => {
-      if (!map.has(it.section)) map.set(it.section, []);
-      map.get(it.section).push(it);
-    });
-    return map;
-  }
-
-  function matchesFilters(feature) {
-    const fs = state.featureState[feature.id] || { status:"unassigned", notes:"" };
+  function matchesFilters(f){
+    const fs = state.featureState[f.id] || { status:"unassigned", notes:"" };
 
     if (state.statusFilter !== "all" && fs.status !== state.statusFilter) return false;
 
@@ -733,124 +679,81 @@ const FEATURES = [
     if (!q) return true;
 
     const hay = [
-      feature.name,
-      feature.section,
-      feature.short,
-      (feature.tags || []).join(" "),
+      f.name,
+      f.section,
+      f.short,
       fs.notes || ""
     ].join(" ").toLowerCase();
 
     return hay.includes(q);
   }
 
-  function render() {
-    gridEl.innerHTML = "";
+  function render(){
+    columnsEl.innerHTML = "";
 
     const filtered = FEATURES.filter(matchesFilters);
-    const sections = groupBySection(filtered);
 
-    if (filtered.length === 0) {
-      const empty = document.createElement("div");
-      empty.className = "section";
-      empty.innerHTML = `
-        <div class="section-header">
-          <div>
-            <div class="section-title">No matches</div>
-            <div class="section-sub">Try clearing filters or searching something broader.</div>
-          </div>
-        </div>
-        <div style="color: var(--text-light); font-weight: 800; padding: 6px 2px;">
-          Example searches: <strong>copilot</strong>, <strong>recording</strong>, <strong>wfm</strong>, <strong>analytics</strong>.
-        </div>
-      `;
-      gridEl.appendChild(empty);
-      return;
-    }
+    SECTION_ORDER.forEach(section => {
+      const items = filtered.filter(f => f.section === section);
+      const colCount = SECTION_LAYOUT[section] || 2;
 
-    const order = [
-      "Channels & Automation",
-      "Resource Management",
-      "Recording, Quality & Insight",
-      "AI Powered",
-      "Performance Management"
-    ];
+      const col = document.createElement("div");
+      col.className = "col";
 
-    const orderedSections = order
-      .filter(s => sections.has(s))
-      .map(s => [s, sections.get(s)]);
-
-    orderedSections.forEach(([sectionName, items]) => {
-      const sec = document.createElement("div");
-      sec.className = "section";
-
-      const counts = items.reduce((acc, f) => {
-        const st = state.featureState[f.id]?.status || "unassigned";
-        acc[st] = (acc[st] || 0) + 1;
-        return acc;
-      }, {});
-
-      sec.innerHTML = `
-        <div class="section-header">
-          <div>
-            <div class="section-title">${sectionName}</div>
-            <div class="section-sub">
-              ${Object.entries(counts).map(([k,v]) => `${v} ${STATUS_LABEL[k]}`).join(" • ")}
-            </div>
-          </div>
-          <div style="color: var(--text-light); font-weight: 900; font-size: 12px;">
-            ${state.editMode ? "Edit mode: On (update status/notes in the modal)" : "Click a tile to view details"}
-          </div>
-        </div>
-        <div class="tiles"></div>
+      col.innerHTML = `
+        <div class="col-title">${section}</div>
+        <div class="feature-grid" style="grid-template-columns: repeat(${colCount}, 132px);"></div>
       `;
 
-      const tiles = sec.querySelector(".tiles");
-      items.forEach(f => tiles.appendChild(renderTile(f)));
+      const grid = col.querySelector(".feature-grid");
 
-      gridEl.appendChild(sec);
+      // If a section is empty due to filters, still show it but keep it tidy
+      if (items.length === 0){
+        const ghost = document.createElement("div");
+        ghost.style.color = "var(--muted)";
+        ghost.style.fontWeight = "800";
+        ghost.style.fontSize = "12px";
+        ghost.style.textAlign = "center";
+        ghost.style.gridColumn = `span ${colCount}`;
+        ghost.style.padding = "6px 0 10px";
+        ghost.textContent = "No matches";
+        grid.appendChild(ghost);
+      } else {
+        items.forEach(f => grid.appendChild(renderFeature(f)));
+      }
+
+      columnsEl.appendChild(col);
     });
   }
 
-  function renderTile(feature) {
-    const fs = state.featureState[feature.id] || { status:"unassigned", notes:"" };
+  function renderFeature(f){
+    const fs = state.featureState[f.id] || { status:"unassigned", notes:"" };
 
-    const tile = document.createElement("div");
-    tile.className = `tile status-${fs.status}`;
-    tile.setAttribute("role", "button");
-    tile.setAttribute("tabindex", "0");
+    const wrap = document.createElement("div");
+    wrap.className = "featurewrap";
 
-    const badge =
-      fs.status === "unavailable" ? "Not available" :
-      fs.status === "inuse" ? "In use" :
-      fs.status === "notopt" ? "Not optimised" :
-      "Unassigned";
+    const box = document.createElement("div");
+    box.className = `feature status-${fs.status}`;
+    box.setAttribute("role","button");
+    box.setAttribute("tabindex","0");
+    box.innerHTML = `<div class="label">${escapeHtml(f.name)}</div>`;
 
-    tile.innerHTML = `
-      <div class="name">
-        <span>${escapeHtml(feature.name)}</span>
-        <span class="meta">${escapeHtml(feature.section)}</span>
-      </div>
-      <div class="right">
-        <span class="status-dot" title="${escapeHtml(badge)}"></span>
-        <span class="tiny-badge">${escapeHtml(badge)}</span>
-      </div>
-    `;
-
-    tile.addEventListener("click", () => openModal(feature.id));
-    tile.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") openModal(feature.id);
+    box.addEventListener("click", () => openModal(f.id));
+    box.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") openModal(f.id);
     });
 
-    return tile;
+    wrap.appendChild(box);
+    return wrap;
   }
 
-  function escapeHtml(str) {
+  function escapeHtml(str){
     return (str || "").replace(/[&<>"']/g, m => ({
       "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
     }[m]));
   }
 
-  // Modal
+  // ===== Modal =====
   const modalOverlay = document.getElementById("modalOverlay");
   const modalTitle = document.getElementById("modalTitle");
   const modalDesc = document.getElementById("modalDesc");
@@ -865,17 +768,14 @@ const FEATURES = [
 
   let activeFeatureId = null;
 
-  function openModal(featureId) {
-    activeFeatureId = featureId;
-    const feature = FEATURES.find(f => f.id === featureId);
-    const fs = state.featureState[featureId] || { status:"unassigned", notes:"" };
+  function openModal(id){
+    activeFeatureId = id;
+    const f = FEATURES.find(x => x.id === id);
+    const fs = state.featureState[id] || { status:"unassigned", notes:"" };
 
-    modalTitle.textContent = feature.name;
-    modalDesc.textContent = feature.short || "No description yet.";
-    modalMeta.innerHTML = `
-      <strong>Status:</strong> ${STATUS_LABEL[fs.status] || fs.status}
-      ${feature.tags?.length ? `<br><strong>Tags:</strong> ${feature.tags.join(", ")}` : ""}
-    `;
+    modalTitle.textContent = f.name;
+    modalDesc.textContent = f.short || "No description provided yet.";
+    modalMeta.innerHTML = `<strong>Status:</strong> ${STATUS_LABEL[fs.status] || fs.status}`;
 
     modalStatus.value = fs.status;
     modalNotes.value = fs.notes || "";
@@ -883,37 +783,32 @@ const FEATURES = [
     modalStatus.disabled = !state.editMode;
     modalNotes.disabled = !state.editMode;
     saveFeatureBtn.disabled = !state.editMode;
-    editHint.textContent = state.editMode
-      ? "Edit mode is on. Update and save."
-      : "Turn on Edit mode to change status/notes.";
+    editHint.textContent = state.editMode ? "Edit mode is on. Update and save." : "Turn on Edit mode to change status/notes.";
 
-    openHelpBtn.onclick = () => {
-      const url = feature.helpUrl || "https://help.mypurecloud.com";
-      window.open(url, "_blank", "noopener,noreferrer");
-    };
+    openHelpBtn.onclick = () => window.open(f.helpUrl || "https://help.mypurecloud.com", "_blank", "noopener,noreferrer");
 
     copyLinkBtn.onclick = async () => {
-      const url = feature.helpUrl || "https://help.mypurecloud.com";
-      try {
+      const url = f.helpUrl || "https://help.mypurecloud.com";
+      try{
         await navigator.clipboard.writeText(url);
         copyLinkBtn.textContent = "✅ Copied";
-        setTimeout(() => (copyLinkBtn.textContent = "🔗 Copy link"), 1200);
-      } catch (e) {
-        alert("Couldn’t copy automatically. Here’s the link:\n\n" + url);
+        setTimeout(()=> copyLinkBtn.textContent = "🔗 Copy link", 1200);
+      }catch(e){
+        alert("Couldn’t copy automatically. Link:\n\n" + url);
       }
     };
 
     modalOverlay.style.display = "flex";
   }
 
-  function closeModal() {
+  function closeModal(){
     modalOverlay.style.display = "none";
     activeFeatureId = null;
   }
 
   modalClose.addEventListener("click", closeModal);
-  modalOverlay.addEventListener("click", (e) => { if (e.target === modalOverlay) closeModal(); });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && modalOverlay.style.display === "flex") closeModal(); });
+  modalOverlay.addEventListener("click", (e)=> { if (e.target === modalOverlay) closeModal(); });
+  document.addEventListener("keydown", (e)=> { if (e.key === "Escape" && modalOverlay.style.display === "flex") closeModal(); });
 
   saveFeatureBtn.addEventListener("click", () => {
     if (!state.editMode || !activeFeatureId) return;
@@ -924,16 +819,9 @@ const FEATURES = [
     closeModal();
   });
 
-  // Top controls
-  searchEl.addEventListener("input", () => {
-    state.search = searchEl.value;
-    render();
-  });
-
-  statusFilterEl.addEventListener("change", () => {
-    state.statusFilter = statusFilterEl.value;
-    render();
-  });
+  // ===== Controls =====
+  searchEl.addEventListener("input", () => { state.search = searchEl.value; render(); });
+  statusFilterEl.addEventListener("change", () => { state.statusFilter = statusFilterEl.value; render(); });
 
   toggleEditBtn.addEventListener("click", () => {
     state.editMode = !state.editMode;
@@ -942,7 +830,7 @@ const FEATURES = [
   });
 
   resetAllBtn.addEventListener("click", () => {
-    if (!confirm("Reset all statuses/notes back to defaults (blank unless unavailable)?")) return;
+    if (!confirm("Reset all statuses/notes back to defaults (grey unless roadmap)?")) return;
     localStorage.removeItem(STORAGE_KEY);
     state.featureState = {};
     loadState();
@@ -959,7 +847,7 @@ const FEATURES = [
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `genesys-functional-map-${new Date().toISOString().slice(0,10)}.json`;
+    a.download = `genesys-heatmap-${new Date().toISOString().slice(0,10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
   });
