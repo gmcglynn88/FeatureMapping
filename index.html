@@ -17,15 +17,15 @@
       --text-color:#2C3E50;
       --text-light:#6C757D;
 
-      /* Status colours (match your key concept) */
-      --status-existing: #E9ECEF;          /* Existing feature not in use (grey) */
-      --status-roadmap: #ffffff;           /* Roadmap item uses red outline */
-      --status-inuse: #FDE68A;             /* In use (yellow) */
-      --status-inuse-notopt: #F59E0B;      /* In use but not optimised (amber) */
+      /* Status colours */
+      --status-unassigned: #F1F3F5;        /* Blank / not populated */
+      --status-unavailable: #ffffff;       /* Not currently available = red outline */
+      --status-inuse: rgba(22,163,74,.18); /* In use = GREEN */
+      --status-notopt: rgba(245,158,11,.22); /* In use but not optimised = amber */
 
-      --good:#16a34a;
-      --warn:#f59e0b;
-      --bad:#dc2626;
+      --good:#16a34a;  /* green */
+      --warn:#f59e0b;  /* amber */
+      --bad:#dc2626;   /* red */
       --info:#3b82f6;
 
       --shadow: 0 1px 3px rgba(0,0,0,.08);
@@ -139,6 +139,13 @@
       color: var(--primary-dark);
       border-color: var(--primary-dark);
     }
+    button.danger{
+      background:#fff; color: var(--bad);
+      border: 2px solid var(--bad);
+    }
+    button.danger:hover{
+      background: rgba(220,38,38,.08);
+    }
 
     .legend{
       background:#fff;
@@ -153,11 +160,12 @@
     .legend-item{ display:flex; align-items:center; gap:8px; font-size: 13px; font-weight: 800; color: var(--text-light); }
     .swatch{
       width: 22px; height: 14px; border-radius: 4px; border: 1px solid var(--border-color);
-      background: var(--status-existing);
+      background: var(--status-unassigned);
     }
-    .swatch.inuse{ background: var(--status-inuse); border-color: rgba(0,0,0,.08); }
-    .swatch.notopt{ background: rgba(245,158,11,.25); border-color: rgba(245,158,11,.75); }
-    .swatch.roadmap{ background: #fff; border: 2px solid var(--bad); }
+    .swatch.unassigned{ background: var(--status-unassigned); border-style: dashed; }
+    .swatch.inuse{ background: var(--status-inuse); border-color: rgba(22,163,74,.55); }
+    .swatch.notopt{ background: var(--status-notopt); border-color: rgba(245,158,11,.75); }
+    .swatch.unavailable{ background: #fff; border: 2px solid var(--bad); }
 
     .grid{
       display:grid;
@@ -185,7 +193,6 @@
     }
 
     .section-title{
-      display:flex; align-items:center; gap:10px;
       margin:0;
       color: var(--primary-dark);
       font-weight: 900;
@@ -198,6 +205,7 @@
       color: var(--text-light);
       font-weight: 800;
       font-size: 12px;
+      margin-top: 4px;
     }
 
     .tiles{
@@ -224,11 +232,11 @@
     .tile{
       border-radius: 12px;
       border: 1px solid var(--border-color);
-      background: var(--status-existing);
+      background: var(--status-unassigned);
       padding: 14px 12px;
       cursor:pointer;
       box-shadow: 0 1px 2px rgba(0,0,0,.06);
-      transition: all .18s ease;
+      transition: all 0.18s ease;
       min-height: 62px;
       display:flex; align-items:center; justify-content:space-between;
       gap: 10px;
@@ -266,20 +274,33 @@
     }
 
     /* Status variants */
-    .tile.status-existing{ background: var(--status-existing); }
-    .tile.status-inuse{ background: var(--status-inuse); border-color: rgba(0,0,0,.10); }
-    .tile.status-notopt{ background: rgba(245,158,11,.22); border-color: rgba(245,158,11,.75); }
-    .tile.status-roadmap{ background: #fff; border: 2px solid var(--bad); }
+    .tile.status-unassigned{
+      background: var(--status-unassigned);
+      border-style: dashed;
+      border-color: rgba(108,117,125,.55);
+    }
+    .tile.status-inuse{
+      background: var(--status-inuse);
+      border-color: rgba(22,163,74,.55);
+    }
+    .tile.status-notopt{
+      background: var(--status-notopt);
+      border-color: rgba(245,158,11,.80);
+    }
+    .tile.status-unavailable{
+      background: #fff;
+      border: 2px solid var(--bad);
+    }
 
     .status-dot{
       width: 10px; height: 10px; border-radius: 50%;
-      background: rgba(0,0,0,.25);
+      background: rgba(108,117,125,.75);
       border: 1px solid rgba(0,0,0,.15);
     }
-    .tile.status-inuse .status-dot{ background: rgba(245,158,11,.95); border-color: rgba(245,158,11,.35); }
-    .tile.status-notopt .status-dot{ background: rgba(245,158,11,.95); border-color: rgba(245,158,11,.35); }
-    .tile.status-roadmap .status-dot{ background: var(--bad); border-color: rgba(220,38,38,.25); }
-    .tile.status-existing .status-dot{ background: rgba(108,117,125,.65); border-color: rgba(108,117,125,.20); }
+    .tile.status-inuse .status-dot{ background: var(--good); border-color: rgba(22,163,74,.25); }
+    .tile.status-notopt .status-dot{ background: var(--warn); border-color: rgba(245,158,11,.35); }
+    .tile.status-unavailable .status-dot{ background: var(--bad); border-color: rgba(220,38,38,.25); }
+    .tile.status-unassigned .status-dot{ background: rgba(108,117,125,.75); border-color: rgba(108,117,125,.20); }
 
     .footer{
       margin-top: 34px;
@@ -406,6 +427,7 @@
       font-weight: 700;
       font-size: 13px;
       outline:none;
+      background: #fff;
     }
     .field textarea{
       resize: vertical;
@@ -449,32 +471,31 @@
           <label for="statusFilter">Status</label>
           <select id="statusFilter">
             <option value="all">All</option>
-            <option value="existing">Existing (not in use)</option>
+            <option value="unassigned">Unassigned (blank)</option>
             <option value="inuse">In use</option>
             <option value="notopt">In use (not optimised)</option>
-            <option value="roadmap">Roadmap</option>
+            <option value="unavailable">Not currently available</option>
           </select>
         </div>
 
         <button class="secondary" id="toggleEdit">✏️ Edit mode: Off</button>
+        <button class="secondary" id="resetAll">🧽 Reset all</button>
         <button id="exportJson">📤 Export JSON</button>
       </div>
     </div>
 
     <div class="legend">
       <strong>Heatmap feature key</strong>
-      <span class="legend-item"><span class="swatch"></span> Existing feature not in use</span>
-      <span class="legend-item"><span class="swatch roadmap"></span> Roadmap item</span>
+      <span class="legend-item"><span class="swatch unassigned"></span> Unassigned (blank)</span>
+      <span class="legend-item"><span class="swatch unavailable"></span> Not currently available</span>
       <span class="legend-item"><span class="swatch inuse"></span> Feature in use</span>
       <span class="legend-item"><span class="swatch notopt"></span> In use but not optimised</span>
     </div>
 
-    <div id="grid" class="grid">
-      <!-- Sections render here -->
-    </div>
+    <div id="grid" class="grid"></div>
 
     <div class="footer">
-      Genesys Cloud CX Functional Map | Click tiles for definitions • Persisted locally in your browser (no server needed)
+      Genesys Cloud CX Functional Map | Persisted locally in your browser (no server needed)
     </div>
   </div>
 
@@ -498,8 +519,8 @@
             </div>
 
             <div class="note">
-              Tip: If you want the content to stay “official”, keep descriptions short here and use the button to jump to the full article.
-              (Also avoids your app turning into a 900-page novella.)
+              Keep descriptions short here, and use the button for the full official article.
+              Saves you becoming “that person” with a 400-slide deck.
             </div>
           </div>
 
@@ -509,16 +530,16 @@
             <div class="field">
               <label>Status</label>
               <select id="modalStatus" disabled>
-                <option value="existing">Existing (not in use)</option>
+                <option value="unassigned">Unassigned (blank)</option>
                 <option value="inuse">In use</option>
                 <option value="notopt">In use (not optimised)</option>
-                <option value="roadmap">Roadmap</option>
+                <option value="unavailable">Not currently available</option>
               </select>
             </div>
 
             <div class="field">
               <label>Notes</label>
-              <textarea id="modalNotes" placeholder="Optional notes (e.g. ‘Configured for 3 queues, needs tuning’)..." disabled></textarea>
+              <textarea id="modalNotes" placeholder="Optional notes..." disabled></textarea>
             </div>
 
             <button id="saveFeature" class="primary" disabled>💾 Save</button>
@@ -534,72 +555,44 @@
 <script>
 (() => {
   /******************************************************************
-   * 1) DATA MODEL
-   * - Add tiles by extending FEATURES.
-   * - Each item can include:
-   *   id, section, name, short, helpUrl, tags[]
-   * - Status + notes are stored in localStorage (per browser).
+   * DATA
+   * - Add more features by extending FEATURES.
+   * - Set unavailable: true for anything "not currently available"
+   *   (those will be the ONLY ones pre-populated on first load).
    ******************************************************************/
   const FEATURES = [
-    // CHANNELS & AUTOMATION
+    // CHANNELS & AUTOMATION (add the rest from your doc here)
     { id:"voice", section:"Channels & Automation", name:"Voice", short:"Handle inbound/outbound voice interactions through ACD routing, queues, IVR and agent tools.", helpUrl:"https://help.mypurecloud.com/", tags:["voice","acd","telephony"] },
     { id:"email", section:"Channels & Automation", name:"Email", short:"Route and manage email as an interaction channel with queues, SLAs and agent handling.", helpUrl:"https://help.mypurecloud.com/", tags:["email","digital"] },
     { id:"webmessaging", section:"Channels & Automation", name:"Web Messaging", short:"Offer web-based messaging that routes into Genesys Cloud digital queues for agent handling.", helpUrl:"https://help.mypurecloud.com/", tags:["messaging","digital","web"] },
     { id:"whatsapp", section:"Channels & Automation", name:"WhatsApp", short:"Support WhatsApp as a digital channel with routing, templates and agent responses.", helpUrl:"https://help.mypurecloud.com/", tags:["whatsapp","digital"] },
-    { id:"bots", section:"Channels & Automation", name:"Voice Bots", short:"Use bots to automate common intents and hand off to agents when needed.", helpUrl:"https://help.mypurecloud.com/", tags:["bots","ivr","automation"] },
-    { id:"outbound", section:"Channels & Automation", name:"Outbound Dialling", short:"Run outbound calling campaigns with list management, pacing and compliance controls.", helpUrl:"https://help.mypurecloud.com/", tags:["outbound","campaigns"] },
+    { id:"voicebots", section:"Channels & Automation", name:"Voice Bots", short:"Use bots to automate common intents and hand off to agents when needed.", helpUrl:"https://help.mypurecloud.com/", tags:["bots","ivr","automation"], unavailable:true },
 
-    // RESOURCE MANAGEMENT (WFM)
-    { id:"wfm-overview", section:"Resource Management", name:"Workforce Management", short:"Forecast demand, build schedules, manage time off and track adherence to optimise staffing.", helpUrl:"https://help.mypurecloud.com/articles/about-workforce-management/", tags:["wfm","forecasting","scheduling","adherence"] },
-    { id:"wfm-scheduling", section:"Resource Management", name:"Forecast-based Scheduling", short:"Generate schedules from forecasts and manage schedule creation methods for business units.", helpUrl:"https://help.mypurecloud.com/articles/generate-a-schedule-from-a-forecast/", tags:["wfm","scheduling","forecast"] },
+    // RESOURCE MANAGEMENT
+    { id:"wfm", section:"Resource Management", name:"Workforce Management", short:"Forecast demand, build schedules, manage time off and track adherence to optimise staffing.", helpUrl:"https://help.mypurecloud.com/articles/about-workforce-management/", tags:["wfm","forecasting","scheduling","adherence"] },
     { id:"timeoff", section:"Resource Management", name:"Time Off Management", short:"Enable agents to request time off and planners to manage balances and approvals.", helpUrl:"https://help.mypurecloud.com/?p=47338", tags:["wfm","timeoff"] },
 
     // RECORDING, QUALITY & INSIGHT
-    { id:"recording", section:"Recording, Quality & Insight", name:"Recording", short:"Record calls and screens using user or policy-based recording, with retention and suppression options.", helpUrl:"https://help.mypurecloud.com/articles/recording-in-genesys-cloud/", tags:["recording","qm","compliance"] },
-    { id:"speechtext", section:"Recording, Quality & Insight", name:"Speech & Text Analytics", short:"Analyse interaction content with NLP, including transcription, sentiment and topic spotting to extract insights.", helpUrl:"https://help.mypurecloud.com/articles/speech-and-text-analytics-overview/", tags:["analytics","nlp","transcription","sentiment"] },
+    { id:"recording", section:"Recording, Quality & Insight", name:"Recording", short:"Record calls and screens, with retention and suppression options.", helpUrl:"https://help.mypurecloud.com/articles/recording-in-genesys-cloud/", tags:["recording","qm","compliance"] },
+    { id:"speechtext", section:"Recording, Quality & Insight", name:"Speech & Text Analytics", short:"Analyse interaction content with transcription, sentiment and topics to extract insights.", helpUrl:"https://help.mypurecloud.com/articles/speech-and-text-analytics-overview/", tags:["analytics","nlp","transcription","sentiment"] },
 
     // AI POWERED
-    { id:"agentcopilot", section:"AI Powered", name:"Agent Copilot", short:"AI assistance for agents: surfaces knowledge, transcribes, recommends next actions and helps complete work faster.", helpUrl:"https://help.mypurecloud.com/articles/agent-copilot-overview/", tags:["copilot","ai","agent","knowledge"] },
-    { id:"gccopilot", section:"AI Powered", name:"Genesys Cloud Copilot", short:"AI assistant for admins/supervisors to get guided, context-aware help and complete tasks in natural language.", helpUrl:"https://help.mypurecloud.com/articles/genesys-cloud-copilot-overview/", tags:["copilot","ai","admin","supervisor"] },
+    { id:"agentcopilot", section:"AI Powered", name:"Agent Copilot", short:"AI assistance for agents: surfaces knowledge, transcribes and recommends next actions.", helpUrl:"https://help.mypurecloud.com/articles/agent-copilot-overview/", tags:["copilot","ai","agent","knowledge"], unavailable:true },
 
     // PERFORMANCE MANAGEMENT
-    { id:"realtime", section:"Performance Management", name:"Real-time Reporting", short:"Monitor queues and performance live with real-time views, wallboards and operational KPIs.", helpUrl:"https://help.mypurecloud.com/", tags:["realtime","reporting"] },
-    { id:"historical", section:"Performance Management", name:"Historical Reporting", short:"Analyse trends over time using historical views, filters and exported datasets.", helpUrl:"https://help.mypurecloud.com/", tags:["historical","reporting"] },
-    { id:"coaching", section:"Performance Management", name:"Scheduled Coaching", short:"Plan, track and deliver coaching to improve agent performance and consistency.", helpUrl:"https://help.mypurecloud.com/", tags:["coaching","performance"] },
+    { id:"realtime", section:"Performance Management", name:"Real-time Reporting", short:"Monitor queues and performance live with real-time views and KPIs.", helpUrl:"https://help.mypurecloud.com/", tags:["realtime","reporting"] },
+    { id:"historical", section:"Performance Management", name:"Historical Reporting", short:"Analyse trends over time using historical views and exports.", helpUrl:"https://help.mypurecloud.com/", tags:["historical","reporting"] },
   ];
 
-  // default statuses (you can tweak these)
-  const DEFAULT_STATUS = {
-    voice: "existing",
-    email: "existing",
-    webmessaging: "existing",
-    whatsapp: "existing",
-    bots: "roadmap",
-    outbound: "existing",
-    "wfm-overview": "inuse",
-    "wfm-scheduling": "notopt",
-    timeoff: "existing",
-    recording: "inuse",
-    speechtext: "notopt",
-    agentcopilot: "roadmap",
-    gccopilot: "roadmap",
-    realtime: "existing",
-    historical: "existing",
-    coaching: "existing"
-  };
-
   const STATUS_LABEL = {
-    existing: "Existing",
+    unassigned: "Unassigned",
     inuse: "In use",
     notopt: "Needs optimisation",
-    roadmap: "Roadmap"
+    unavailable: "Not available"
   };
 
-  const STORAGE_KEY = "gcFunctionalMap_v1";
+  const STORAGE_KEY = "gcFunctionalMap_v2_blankByDefault";
 
-  /******************************************************************
-   * 2) STATE + STORAGE
-   ******************************************************************/
   let state = {
     editMode: false,
     search: "",
@@ -616,12 +609,16 @@
       } catch (e) {}
     }
 
-    // apply defaults for any missing feature
+    // IMPORTANT: default is BLANK (unassigned) unless feature.unavailable === true
     FEATURES.forEach(f => {
       if (!state.featureState[f.id]) {
-        state.featureState[f.id] = { status: DEFAULT_STATUS[f.id] || "existing", notes: "" };
+        state.featureState[f.id] = {
+          status: f.unavailable ? "unavailable" : "unassigned",
+          notes: ""
+        };
       } else {
-        state.featureState[f.id].status ||= DEFAULT_STATUS[f.id] || "existing";
+        // keep previous choices, but ensure keys exist
+        state.featureState[f.id].status ||= (f.unavailable ? "unavailable" : "unassigned");
         state.featureState[f.id].notes ||= "";
       }
     });
@@ -631,14 +628,12 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ featureState: state.featureState }));
   }
 
-  /******************************************************************
-   * 3) RENDER
-   ******************************************************************/
   const gridEl = document.getElementById("grid");
   const searchEl = document.getElementById("search");
   const statusFilterEl = document.getElementById("statusFilter");
   const toggleEditBtn = document.getElementById("toggleEdit");
   const exportBtn = document.getElementById("exportJson");
+  const resetAllBtn = document.getElementById("resetAll");
 
   function groupBySection(items) {
     const map = new Map();
@@ -650,12 +645,10 @@
   }
 
   function matchesFilters(feature) {
-    const fs = state.featureState[feature.id] || { status:"existing", notes:"" };
+    const fs = state.featureState[feature.id] || { status:"unassigned", notes:"" };
 
-    // status filter
     if (state.statusFilter !== "all" && fs.status !== state.statusFilter) return false;
 
-    // search filter
     const q = state.search.trim().toLowerCase();
     if (!q) return true;
 
@@ -683,7 +676,7 @@
         <div class="section-header">
           <div>
             <div class="section-title">No matches</div>
-            <div class="section-sub">Try clearing filters or searching something less… specific.</div>
+            <div class="section-sub">Try clearing filters or searching something broader.</div>
           </div>
         </div>
         <div style="color: var(--text-light); font-weight: 800; padding: 6px 2px;">
@@ -694,7 +687,6 @@
       return;
     }
 
-    // Keep a consistent order
     const order = [
       "Channels & Automation",
       "Resource Management",
@@ -712,21 +704,21 @@
       sec.className = "section";
 
       const counts = items.reduce((acc, f) => {
-        const st = state.featureState[f.id]?.status || "existing";
+        const st = state.featureState[f.id]?.status || "unassigned";
         acc[st] = (acc[st] || 0) + 1;
         return acc;
       }, {});
 
       sec.innerHTML = `
         <div class="section-header">
-          <div style="display:flex; flex-direction:column; gap:4px;">
+          <div>
             <div class="section-title">${sectionName}</div>
             <div class="section-sub">
               ${Object.entries(counts).map(([k,v]) => `${v} ${STATUS_LABEL[k]}`).join(" • ")}
             </div>
           </div>
           <div style="color: var(--text-light); font-weight: 900; font-size: 12px;">
-            ${state.editMode ? "Edit mode: On (click tiles to update status/notes)" : "Click a tile to view details"}
+            ${state.editMode ? "Edit mode: On (update status/notes in the modal)" : "Click a tile to view details"}
           </div>
         </div>
         <div class="tiles"></div>
@@ -740,18 +732,18 @@
   }
 
   function renderTile(feature) {
-    const fs = state.featureState[feature.id] || { status:"existing", notes:"" };
+    const fs = state.featureState[feature.id] || { status:"unassigned", notes:"" };
 
     const tile = document.createElement("div");
     tile.className = `tile status-${fs.status}`;
     tile.setAttribute("role", "button");
     tile.setAttribute("tabindex", "0");
 
-    const rightBadge =
-      fs.status === "roadmap" ? "Roadmap" :
+    const badge =
+      fs.status === "unavailable" ? "Not available" :
       fs.status === "inuse" ? "In use" :
       fs.status === "notopt" ? "Not optimised" :
-      "Not in use";
+      "Unassigned";
 
     tile.innerHTML = `
       <div class="name">
@@ -759,8 +751,8 @@
         <span class="meta">${escapeHtml(feature.section)}</span>
       </div>
       <div class="right">
-        <span class="status-dot" title="${escapeHtml(rightBadge)}"></span>
-        <span class="tiny-badge">${escapeHtml(rightBadge)}</span>
+        <span class="status-dot" title="${escapeHtml(badge)}"></span>
+        <span class="tiny-badge">${escapeHtml(badge)}</span>
       </div>
     `;
 
@@ -778,9 +770,7 @@
     }[m]));
   }
 
-  /******************************************************************
-   * 4) MODAL
-   ******************************************************************/
+  // Modal
   const modalOverlay = document.getElementById("modalOverlay");
   const modalTitle = document.getElementById("modalTitle");
   const modalDesc = document.getElementById("modalDesc");
@@ -798,10 +788,10 @@
   function openModal(featureId) {
     activeFeatureId = featureId;
     const feature = FEATURES.find(f => f.id === featureId);
-    const fs = state.featureState[featureId] || { status:"existing", notes:"" };
+    const fs = state.featureState[featureId] || { status:"unassigned", notes:"" };
 
     modalTitle.textContent = feature.name;
-    modalDesc.textContent = feature.short || "No description yet. Add one in your feature list.";
+    modalDesc.textContent = feature.short || "No description yet.";
     modalMeta.innerHTML = `
       <strong>Status:</strong> ${STATUS_LABEL[fs.status] || fs.status}
       ${feature.tags?.length ? `<br><strong>Tags:</strong> ${feature.tags.join(", ")}` : ""}
@@ -810,7 +800,6 @@
     modalStatus.value = fs.status;
     modalNotes.value = fs.notes || "";
 
-    // enable/disable edit controls
     modalStatus.disabled = !state.editMode;
     modalNotes.disabled = !state.editMode;
     saveFeatureBtn.disabled = !state.editMode;
@@ -855,9 +844,7 @@
     closeModal();
   });
 
-  /******************************************************************
-   * 5) TOP CONTROLS
-   ******************************************************************/
+  // Top controls
   searchEl.addEventListener("input", () => {
     state.search = searchEl.value;
     render();
@@ -871,10 +858,14 @@
   toggleEditBtn.addEventListener("click", () => {
     state.editMode = !state.editMode;
     toggleEditBtn.textContent = state.editMode ? "✏️ Edit mode: On" : "✏️ Edit mode: Off";
-    toggleEditBtn.classList.toggle("secondary", !state.editMode);
-    // keep button styling consistent
-    if (state.editMode) toggleEditBtn.classList.remove("secondary");
-    else toggleEditBtn.classList.add("secondary");
+    render();
+  });
+
+  resetAllBtn.addEventListener("click", () => {
+    if (!confirm("Reset all statuses/notes back to defaults (blank unless unavailable)?")) return;
+    localStorage.removeItem(STORAGE_KEY);
+    state.featureState = {};
+    loadState();
     render();
   });
 
@@ -893,12 +884,9 @@
     URL.revokeObjectURL(url);
   });
 
-  /******************************************************************
-   * 6) INIT
-   ******************************************************************/
+  // Init
   loadState();
   render();
-
 })();
 </script>
 </body>
