@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Genesys CX3 Functional Map</title>
+  <title>CX Functional Map – Genesys / Elastic CX</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Aptos:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
@@ -15,6 +15,11 @@
       --bg:#F8F9FA;
       --text:#2C3E50;
       --muted:#6C757D;
+
+      /* Elastic CX brand colors */
+      --elastic-primary:#7B68EE;  /* Medium slate blue */
+      --elastic-dark:#5A4A9A;
+      --elastic-light:#E6E6FA;
 
       /* Screenshot-like tiles */
       --tile-bg:#D9DEE3;        /* grey fill */
@@ -70,6 +75,41 @@
       color: #111827;
     }
 
+    /* Tab navigation */
+    .tabs{
+      display:flex;
+      gap:4px;
+      margin:0 0 20px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0;
+    }
+    .tab{
+      padding: 12px 28px;
+      font-weight: 900;
+      font-size: 16px;
+      background: transparent;
+      color: var(--muted);
+      border: none;
+      border-radius: 12px 12px 0 0;
+      cursor: pointer;
+      position: relative;
+      bottom: -2px;
+      transition: all 0.2s ease;
+    }
+    .tab:hover{
+      color: var(--text);
+      background: rgba(99,171,143,0.05);
+    }
+    .tab.active{
+      color: var(--primary);
+      border-bottom: 4px solid var(--primary);
+      background: white;
+    }
+    .tab.elastic.active{
+      color: var(--elastic-primary);
+      border-bottom-color: var(--elastic-primary);
+    }
+
     /* Legend box like screenshot */
     .legend{
       background:#fff;
@@ -78,6 +118,9 @@
       padding: 10px 12px;
       box-shadow: var(--shadow);
       min-width: 360px;
+    }
+    .legend.elastic{
+      border-color: var(--elastic-primary);
     }
     .legend h3{
       margin:0 0 8px;
@@ -187,6 +230,12 @@
       border: 2px solid var(--roadmap);
     }
     button.danger:hover{ background: rgba(220,38,38,.08); }
+    button.elastic{
+      background: var(--elastic-primary);
+    }
+    button.elastic:hover{
+      background: var(--elastic-dark);
+    }
 
     /* ===== Screenshot-like COLUMN LAYOUT ===== */
     .columns{
@@ -226,6 +275,12 @@
       pointer-events:none;
     }
 
+    .elastic .col::before{
+      border-top-color: var(--elastic-primary);
+      border-left-color: var(--elastic-primary);
+      border-right-color: var(--elastic-primary);
+    }
+
     .col-title{
       text-align:center;
       font-weight: 900;
@@ -239,17 +294,17 @@
     /* Feature grid inside each column - improved spacing */
     .feature-grid{
       display:grid;
-      gap: 16px;  /* Increased from 12px for better spacing */
+      gap: 16px;
       justify-content:center;
     }
 
     /* Fixed tile size like screenshot - with better visual balance */
     .feature{
-      width: 140px;  /* Slightly increased from 132px */
-      height: 62px;  /* Slightly increased from 58px */
+      width: 140px;
+      height: 62px;
       background: var(--tile-bg);
       border: 2px solid var(--tile-border);
-      border-radius: 12px;  /* Slightly more rounded corners */
+      border-radius: 12px;
       box-shadow: var(--shadow);
       display:flex;
       align-items:center;
@@ -273,7 +328,7 @@
     }
 
     /* Status styling (matching your key) */
-    .feature.status-unassigned{ /* default grey, as screenshot */
+    .feature.status-unassigned{
       background: var(--tile-bg);
       border-color: var(--tile-border);
     }
@@ -291,18 +346,7 @@
       background: #fff;
       border-color: var(--roadmap);
       border-width: 2px;
-      border-style: dashed;  /* Added dashed style for roadmap items */
-    }
-
-    /* Quick status indicators on tiles */
-    .feature .status-badge{
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      border: 2px solid white;
+      border-style: dashed;
     }
 
     .featurewrap{ 
@@ -318,7 +362,7 @@
       font-weight: 700;
     }
 
-    /* ===== Modal (kept from earlier) ===== */
+    /* ===== Modal ===== */
     .modal-overlay{
       display:none;
       position:fixed;
@@ -349,6 +393,9 @@
       justify-content:space-between;
       gap: 12px;
     }
+    .modal-header.elastic{
+      background: var(--elastic-primary);
+    }
     .modal-header h2{
       margin:0;
       font-size: 18px;
@@ -378,6 +425,7 @@
       background: #fff;
     }
     .panel h3{ margin:0 0 10px; color: var(--primary-dark); font-size: 14px; font-weight: 900; }
+    .elastic .panel h3{ color: var(--elastic-dark); }
     .desc{ margin:0; color: var(--text); font-weight: 600; line-height: 1.5; font-size: 14px; }
     .muted{ margin-top: 10px; color: var(--muted); font-size: 12px; font-weight: 700; }
     .field{ margin-bottom: 12px; }
@@ -409,6 +457,10 @@
       font-size: 12px;
       font-weight: 700;
       line-height: 1.45;
+    }
+    .elastic .note{
+      background: rgba(123,104,238,.06);
+      border-left-color: var(--elastic-primary);
     }
 
     /* Quick action buttons */
@@ -442,11 +494,11 @@
 
   <div class="topbar">
     <div class="titleblock">
-      <div class="kicker">IPI CUSTOMER SUCCESS – GENESYS HEATMAP</div>
-      <h1 class="maintitle">Genesys CX3 Functional Map Level 1 – CX / WEM</h1>
+      <div class="kicker" id="platformKicker">IPI CUSTOMER SUCCESS – GENESYS HEATMAP</div>
+      <h1 class="maintitle" id="platformTitle">Genesys CX3 Functional Map Level 1 – CX / WEM</h1>
     </div>
 
-    <div class="legend">
+    <div class="legend" id="legend">
       <h3>Heatmap Feature Key</h3>
       <div class="legend-grid">
         <div class="key"><span class="sw"></span> Existing feature not in use</div>
@@ -455,6 +507,12 @@
         <div class="key"><span class="sw notopt"></span> In use but not full optimised</div>
       </div>
     </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" id="genesysTab" data-platform="genesys">Genesys</button>
+    <button class="tab elastic" id="elasticTab" data-platform="elastic">Elastic CX</button>
   </div>
 
   <div class="controls">
@@ -474,7 +532,7 @@
       </select>
     </div>
 
-    <button class="secondary" id="toggleEdit">✏️ Edit mode: Off</button>
+    <button class="secondary" id="toggleEdit">✏️ Edit mode: On</button>
     <button class="danger" id="resetAll">🧽 Reset</button>
     <button id="exportJson">📤 Export JSON</button>
   </div>
@@ -487,7 +545,7 @@
 <!-- Modal -->
 <div id="modalOverlay" class="modal-overlay" role="dialog" aria-modal="true">
   <div class="modal">
-    <div class="modal-header">
+    <div class="modal-header" id="modalHeader">
       <h2 id="modalTitle">Feature</h2>
       <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
     </div>
@@ -503,7 +561,7 @@
             <button id="copyLink" class="secondary">🔗 Copy link</button>
           </div>
 
-          <div class="note">
+          <div class="note" id="modalNote">
             Keep the blurbs short here and link out for the official detail. Your future self will thank you.
           </div>
         </div>
@@ -547,25 +605,11 @@
 
 <script>
 (() => {
-  // Per-section column counts (to match the screenshot layout)
-  const SECTION_LAYOUT = {
-    "Channels & Automation": 2,
-    "Resource Management": 2,
-    "Recording, Quality & Insight": 4,
-    "AI Powered": 2,
-    "Performance Management": 2
-  };
+  // Current platform: 'genesys' or 'elastic'
+  let currentPlatform = 'genesys';
 
-  const SECTION_ORDER = [
-    "Channels & Automation",
-    "Resource Management",
-    "Recording, Quality & Insight",
-    "AI Powered",
-    "Performance Management"
-  ];
-
-  // ===== Features (from your image). `unavailable:true` = ** roadmap =====
-  const FEATURES = [
+  // ===== Genesys Features (existing) =====
+  const GENESYS_FEATURES = [
     // Channels & Automation
     { id:"voice", section:"Channels & Automation", name:"Voice", short:"Voice channel for inbound/outbound calls with routing, queues and agent handling.", helpUrl:"https://help.mypurecloud.com" },
     { id:"email", section:"Channels & Automation", name:"Email", short:"Email routing and handling as a digital channel.", helpUrl:"https://help.mypurecloud.com" },
@@ -659,7 +703,85 @@
     { id:"apis-datastream", section:"Performance Management", name:"APIs / Data stream", short:"APIs and data streaming for integrations/analytics.", helpUrl:"https://help.mypurecloud.com" },
   ];
 
-  const STORAGE_KEY = "gcHeatmap_screenshotLayout_v1";
+  // ===== Elastic CX Features (from the provided list) =====
+  const ELASTIC_FEATURES = [
+    // Core Capabilities
+    { id:"elastic-voice", section:"Core Capabilities", name:"Voice", short:"Voice channel handling with routing and queue management.", helpUrl:"#" },
+    { id:"elastic-voicemail", section:"Core Capabilities", name:"Voicemail", short:"Voicemail capabilities for missed calls.", helpUrl:"#" },
+    { id:"elastic-email", section:"Core Capabilities", name:"Email", short:"Email channel routing and handling.", helpUrl:"#" },
+    { id:"elastic-chat", section:"Core Capabilities", name:"Chat", short:"Live chat messaging channel.", helpUrl:"#" },
+    { id:"elastic-sms", section:"Core Capabilities", name:"SMS", short:"SMS text messaging channel.", helpUrl:"#" },
+    { id:"elastic-social", section:"Core Capabilities", name:"Social (Facebook, WhatsApp)", short:"Social media messaging channels.", helpUrl:"#" },
+    { id:"elastic-intelligent-routing", section:"Core Capabilities", name:"Intelligent Routing", short:"Smart routing based on skills, data and context.", helpUrl:"#" },
+    { id:"elastic-contact-blending", section:"Core Capabilities", name:"Contact Blending", short:"Blend inbound/outbound interactions across channels.", helpUrl:"#" },
+    { id:"elastic-ivr-asr", section:"Core Capabilities", name:"IVR – Automatic Speech Recognition (ASR)", short:"Speech recognition for IVR interactions.", helpUrl:"#" },
+    { id:"elastic-ivr-dtmf", section:"Core Capabilities", name:"IVR – DTMF", short:"Touch-tone keypad input for IVR.", helpUrl:"#" },
+    { id:"elastic-tts", section:"Core Capabilities", name:"Text-to-speech (TTS)", short:"Convert text to spoken voice in IVR.", helpUrl:"#" },
+    { id:"elastic-preview-dialer", section:"Core Capabilities", name:"Preview Dialer", short:"Preview contact details before dialing.", helpUrl:"#" },
+    { id:"elastic-agentless-preview", section:"Core Capabilities", name:"Agentless Preview Dialer", short:"Automated preview dialing without agent initiation.", helpUrl:"#" },
+    { id:"elastic-ai-bots", section:"Core Capabilities", name:"AI Powered Bots (Chat & Voice)", short:"AI-powered chatbots and voice bots.", helpUrl:"#" },
+    { id:"elastic-recording", section:"Core Capabilities", name:"Recording", short:"Call and interaction recording.", helpUrl:"#" },
+    { id:"elastic-quality-management", section:"Core Capabilities", name:"Quality management", short:"Quality assurance and evaluation tools.", helpUrl:"#" },
+    { id:"elastic-post-survey", section:"Core Capabilities", name:"Post Interaction Survey", short:"Collect feedback after interactions.", helpUrl:"#" },
+    { id:"elastic-post-transcription", section:"Core Capabilities", name:"Post call transcription", short:"Transcribe calls after completion.", helpUrl:"#" },
+    { id:"elastic-post-sentiment", section:"Core Capabilities", name:"Post call sentiment analysis", short:"Analyze sentiment from completed calls.", helpUrl:"#" },
+    { id:"elastic-callback", section:"Core Capabilities", name:"Schedule callback", short:"Schedule callbacks at convenient times.", helpUrl:"#" },
+    { id:"elastic-followup", section:"Core Capabilities", name:"Schedule follow-up", short:"Schedule follow-up interactions.", helpUrl:"#" },
+    { id:"elastic-wfm", section:"Core Capabilities", name:"Workforce Management", short:"Forecast, schedule and manage workforce.", helpUrl:"#" },
+    { id:"elastic-mobile-app", section:"Core Capabilities", name:"Mobile Application", short:"Mobile app for agents and supervisors.", helpUrl:"#" },
+    { id:"elastic-desktop-app", section:"Core Capabilities", name:"Desktop Application", short:"Desktop client for agents.", helpUrl:"#" },
+    { id:"elastic-screen-pop", section:"Core Capabilities", name:"Screen Pop", short:"Automatic screen population with customer data.", helpUrl:"#" },
+    { id:"elastic-team-presence", section:"Core Capabilities", name:"Team Presence & Messaging", short:"Team availability status and internal messaging.", helpUrl:"#" },
+    { id:"elastic-quick-texts", section:"Core Capabilities", name:"Quick texts", short:"Predefined text snippets for quick responses.", helpUrl:"#" },
+    { id:"elastic-crm-integration", section:"Core Capabilities", name:"CRM Integration", short:"Integrate with popular CRM platforms.", helpUrl:"#" },
+    { id:"elastic-sso", section:"Core Capabilities", name:"Single Sign On", short:"SSO integration for authentication.", helpUrl:"#" },
+    { id:"elastic-monitoring", section:"Core Capabilities", name:"Monitoring / Coaching / Whispers", short:"Real-time monitoring and coaching capabilities.", helpUrl:"#" },
+    { id:"elastic-rt-reporting", section:"Core Capabilities", name:"Realtime Reporting", short:"Real-time performance dashboards.", helpUrl:"#" },
+    { id:"elastic-historical-reporting", section:"Core Capabilities", name:"Historical Reporting", short:"Historical trend analysis and reporting.", helpUrl:"#" },
+    { id:"elastic-contact-history", section:"Core Capabilities", name:"Advanced contact history", short:"Complete interaction history across channels.", helpUrl:"#" },
+    { id:"elastic-speech-analytics", section:"Core Capabilities", name:"Speech Analytics", short:"Analyze speech patterns and content.", helpUrl:"#" },
+
+    // AI Bolt-On – Chargeable add on
+    { id:"elastic-ai-insights", section:"AI Bolt-On", name:"AI Insights", short:"Advanced AI-powered insights and analytics.", helpUrl:"#", addon:true },
+    { id:"elastic-ai-sidekick", section:"AI Bolt-On", name:"AI Sidekick", short:"AI assistant for agents and supervisors.", helpUrl:"#", addon:true },
+    { id:"elastic-ai-autopilot", section:"AI Bolt-On", name:"AI Autopilot", short:"Automated AI-driven interaction handling.", helpUrl:"#", addon:true },
+
+    // Google CCAI Products
+    { id:"elastic-cca-assist", section:"Google CCAI", name:"CCA Assist", short:"Google Contact Center AI assistance.", helpUrl:"#", addon:true },
+    { id:"elastic-dialogue-flow", section:"Google CCAI", name:"Dialogue Flow CX", short:"Google Dialogflow CX for conversational experiences.", helpUrl:"#", addon:true },
+    { id:"elastic-agent-assist", section:"Google CCAI", name:"AgentAssist", short:"Agent assistance powered by Google AI.", helpUrl:"#", addon:true },
+
+    // IPI Cloud PCI
+    { id:"elastic-agentpay", section:"IPI Cloud PCI", name:"AgentPay", short:"PCI-compliant payment handling by agents.", helpUrl:"#", pci:true },
+    { id:"elastic-agentpay-link", section:"IPI Cloud PCI", name:"AgentPay By Link", short:"Send payment links for PCI compliance.", helpUrl:"#", pci:true },
+    { id:"elastic-ivr-assist", section:"IPI Cloud PCI", name:"IVR Assist", short:"PCI-compliant payments via IVR.", helpUrl:"#", pci:true },
+    { id:"elastic-pauseable-pci", section:"IPI Cloud PCI", name:"Pauseable Automated PCI", short:"Pause recording for PCI-compliant payment collection.", helpUrl:"#", pci:true },
+  ];
+
+  // Section layouts for Elastic CX
+  const ELASTIC_SECTION_LAYOUT = {
+    "Core Capabilities": 4,
+    "AI Bolt-On": 2,
+    "Google CCAI": 2,
+    "IPI Cloud PCI": 2
+  };
+
+  const ELASTIC_SECTION_ORDER = [
+    "Core Capabilities",
+    "AI Bolt-On",
+    "Google CCAI",
+    "IPI Cloud PCI"
+  ];
+
+  const GENESIS_SECTION_ORDER = [
+    "Channels & Automation",
+    "Resource Management",
+    "Recording, Quality & Insight",
+    "AI Powered",
+    "Performance Management"
+  ];
+
+  const STORAGE_KEY = "cx_heatmap_v2";
 
   const STATUS_LABEL = {
     unassigned: "Existing feature not in use",
@@ -669,11 +791,34 @@
   };
 
   let state = {
-    editMode: true,  // Set to true by default
+    editMode: true,
     search: "",
     statusFilter: "all",
     featureState: {}
   };
+
+  function getCurrentFeatures() {
+    return currentPlatform === 'genesys' ? GENESYS_FEATURES : ELASTIC_FEATURES;
+  }
+
+  function getCurrentSectionOrder() {
+    return currentPlatform === 'genesys' ? GENESIS_SECTION_ORDER : ELASTIC_SECTION_ORDER;
+  }
+
+  function getCurrentSectionLayout(section) {
+    if (currentPlatform === 'genesys') {
+      const layout = {
+        "Channels & Automation": 2,
+        "Resource Management": 2,
+        "Recording, Quality & Insight": 4,
+        "AI Powered": 2,
+        "Performance Management": 2
+      };
+      return layout[section] || 2;
+    } else {
+      return ELASTIC_SECTION_LAYOUT[section] || 2;
+    }
+  }
 
   function loadState(){
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -684,8 +829,8 @@
       }catch(e){}
     }
 
-    // Default: everything looks like screenshot grey unless it's roadmap (**)
-    FEATURES.forEach(f => {
+    // Initialize defaults for all features across both platforms
+    [...GENESYS_FEATURES, ...ELASTIC_FEATURES].forEach(f => {
       if (!state.featureState[f.id]){
         state.featureState[f.id] = {
           status: f.unavailable ? "unavailable" : "unassigned",
@@ -702,13 +847,45 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ featureState: state.featureState }));
   }
 
-  // ===== Rendering columns like screenshot =====
+  // ===== UI Elements =====
   const columnsEl = document.getElementById("columns");
   const searchEl = document.getElementById("search");
   const statusFilterEl = document.getElementById("statusFilter");
   const toggleEditBtn = document.getElementById("toggleEdit");
   const resetAllBtn = document.getElementById("resetAll");
   const exportBtn = document.getElementById("exportJson");
+  const genesysTab = document.getElementById("genesysTab");
+  const elasticTab = document.getElementById("elasticTab");
+  const platformKicker = document.getElementById("platformKicker");
+  const platformTitle = document.getElementById("platformTitle");
+  const legend = document.getElementById("legend");
+  const modalHeader = document.getElementById("modalHeader");
+  const modalNote = document.getElementById("modalNote");
+
+  function switchPlatform(platform) {
+    currentPlatform = platform;
+    
+    // Update UI
+    if (platform === 'genesys') {
+      genesysTab.classList.add('active');
+      elasticTab.classList.remove('active');
+      platformKicker.textContent = 'IPI CUSTOMER SUCCESS – GENESYS HEATMAP';
+      platformTitle.textContent = 'Genesys CX3 Functional Map Level 1 – CX / WEM';
+      legend.classList.remove('elastic');
+      modalHeader.classList.remove('elastic');
+      document.querySelector('.columns')?.classList.remove('elastic');
+    } else {
+      genesysTab.classList.remove('active');
+      elasticTab.classList.add('active');
+      platformKicker.textContent = 'IPI CUSTOMER SUCCESS – ELASTIC CX HEATMAP';
+      platformTitle.textContent = 'Elastic CX Functional Map – Core + Add-ons';
+      legend.classList.add('elastic');
+      modalHeader.classList.add('elastic');
+      document.querySelector('.columns')?.classList.add('elastic');
+    }
+    
+    render();
+  }
 
   function matchesFilters(f){
     const fs = state.featureState[f.id] || { status:"unassigned", notes:"" };
@@ -730,12 +907,16 @@
 
   function render(){
     columnsEl.innerHTML = "";
+    columnsEl.className = `columns ${currentPlatform === 'elastic' ? 'elastic' : ''}`;
 
-    const filtered = FEATURES.filter(matchesFilters);
+    const features = getCurrentFeatures();
+    const sectionOrder = getCurrentSectionOrder();
+    
+    const filtered = features.filter(matchesFilters);
 
-    SECTION_ORDER.forEach(section => {
+    sectionOrder.forEach(section => {
       const items = filtered.filter(f => f.section === section);
-      const colCount = SECTION_LAYOUT[section] || 2;
+      const colCount = getCurrentSectionLayout(section);
 
       const col = document.createElement("div");
       col.className = "col";
@@ -747,7 +928,6 @@
 
       const grid = col.querySelector(".feature-grid");
 
-      // If a section is empty due to filters, still show it but keep it tidy
       if (items.length === 0){
         const ghost = document.createElement("div");
         ghost.style.color = "var(--muted)";
@@ -864,12 +1044,17 @@
 
   function openModal(id){
     activeFeatureId = id;
-    const f = FEATURES.find(x => x.id === id);
+    const features = getCurrentFeatures();
+    const f = features.find(x => x.id === id);
     const fs = state.featureState[id] || { status:"unassigned", notes:"" };
 
     modalTitle.textContent = f.name;
     modalDesc.textContent = f.short || "No description provided yet.";
-    modalMeta.innerHTML = `<strong>Status:</strong> ${STATUS_LABEL[fs.status] || fs.status}`;
+    
+    let metaText = `<strong>Status:</strong> ${STATUS_LABEL[fs.status] || fs.status}`;
+    if (f.addon) metaText += '<br><strong>Add-on:</strong> Chargeable additional feature';
+    if (f.pci) metaText += '<br><strong>PCI:</strong> IPI Cloud PCI product';
+    modalMeta.innerHTML = metaText;
 
     modalStatus.value = fs.status;
     modalNotes.value = fs.notes || "";
@@ -879,10 +1064,10 @@
     saveFeatureBtn.disabled = false;
     editHint.textContent = "Click save to apply changes";
 
-    openHelpBtn.onclick = () => window.open(f.helpUrl || "https://help.mypurecloud.com", "_blank", "noopener,noreferrer");
+    openHelpBtn.onclick = () => window.open(f.helpUrl || "#", "_blank", "noopener,noreferrer");
 
     copyLinkBtn.onclick = async () => {
-      const url = f.helpUrl || "https://help.mypurecloud.com";
+      const url = f.helpUrl || "#";
       try{
         await navigator.clipboard.writeText(url);
         copyLinkBtn.textContent = "✅ Copied";
@@ -899,7 +1084,6 @@
         e.preventDefault();
         const status = btn.dataset.status;
         modalStatus.value = status;
-        // Optional: auto-save or just update the dropdown
         if (confirm(`Change status to ${STATUS_LABEL[status]}?`)) {
           state.featureState[activeFeatureId].status = status;
           saveState();
@@ -941,7 +1125,7 @@
   });
 
   resetAllBtn.addEventListener("click", () => {
-    if (!confirm("Reset all statuses/notes back to defaults (grey unless roadmap)?")) return;
+    if (!confirm("Reset all statuses/notes back to defaults?")) return;
     localStorage.removeItem(STORAGE_KEY);
     state.featureState = {};
     loadState();
@@ -951,22 +1135,26 @@
   exportBtn.addEventListener("click", () => {
     const exportData = {
       exportedAt: new Date().toISOString(),
-      features: FEATURES,
+      platform: currentPlatform,
+      features: getCurrentFeatures(),
       featureState: state.featureState
     };
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `genesys-heatmap-${new Date().toISOString().slice(0,10)}.json`;
+    a.download = `cx-heatmap-${currentPlatform}-${new Date().toISOString().slice(0,10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
   });
 
+  // Tab switching
+  genesysTab.addEventListener("click", () => switchPlatform('genesys'));
+  elasticTab.addEventListener("click", () => switchPlatform('elastic'));
+
   // Init
   loadState();
   render();
-  toggleEditBtn.textContent = "✏️ Edit mode: On"; // Update button text to match default
 })();
 </script>
 </body>
