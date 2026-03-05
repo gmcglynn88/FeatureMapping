@@ -32,6 +32,7 @@
       --notopt:#f59e0b;         /* amber */
       --roadmap:#dc2626;        /* red */
       --addon:#9333EA;          /* purple for add-ons */
+      --shadow:0 1px 3px rgba(0,0,0,.08);
     }
 
     body, h1, h2, h3, h4, h5, h6, p, div, span, label, button, input, select, textarea {
@@ -117,6 +118,7 @@
       border: 2px solid var(--primary);
       border-radius: 12px;
       padding: 10px 12px;
+      box-shadow: var(--shadow);
       min-width: 360px;
     }
     .legend.ecx{
@@ -173,6 +175,7 @@
       border: 1px solid var(--border);
       border-radius: 999px;
       padding: 8px 10px;
+      box-shadow: var(--shadow);
     }
     .pill label{
       font-size: 12px;
@@ -188,7 +191,6 @@
       font-size: 13px;
       width: 260px;
       max-width: 60vw;
-      background: transparent;
     }
     .pill select{
       border: 1px solid var(--border);
@@ -209,12 +211,13 @@
       font-size: 13px;
       background: var(--primary);
       color:#fff;
+      box-shadow: var(--shadow);
       transition: all .15s ease;
       display:inline-flex;
       align-items:center;
       gap:8px;
     }
-    button:hover{ background: var(--primary-dark); }
+    button:hover{ background: var(--primary-dark); transform: translateY(-1px); }
     button.secondary{
       background:#fff;
       color: var(--primary-dark);
@@ -288,17 +291,18 @@
     /* Feature grid inside each column */
     .feature-grid{
       display:grid;
-      gap: 12px;
+      gap: 16px;
       justify-content:center;
     }
 
-    /* Fixed tile size */
+    /* Fixed tile size - with normal borders (not thick black) */
     .feature{
       width: 140px;
       height: 62px;
       background: var(--tile-bg);
-      border: 2px solid var(--tile-border);
+      border: 1px solid #5a6874;  /* Changed from 2px var(--tile-border) to 1px lighter grey */
       border-radius: 12px;
+      box-shadow: var(--shadow);
       display:flex;
       align-items:center;
       justify-content:center;
@@ -306,6 +310,11 @@
       padding: 8px 6px;
       cursor:pointer;
       user-select:none;
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .feature:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,.15);
     }
     .feature .label{
       font-size: 11px;
@@ -315,7 +324,7 @@
       word-break: break-word;
     }
 
-    /* License tier styling - just a simple left border */
+    /* License tier styling - left border indicators */
     .feature.license-voice{
       border-left: 6px solid var(--ecx-voice);
     }
@@ -328,14 +337,31 @@
 
     /* Add-on styling (dotted border for chargeable features) */
     .feature.add-on{
-      border: 2px dotted var(--addon);
+      border: 1px dotted var(--addon);  /* Changed from 2px to 1px */
       background: rgba(147,51,234,.05);
+      position: relative;
+    }
+    .feature.add-on::after{
+      content: "💰";
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      font-size: 14px;
+      background: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--addon);
+      box-shadow: var(--shadow);
     }
 
     /* Status styling */
     .feature.status-unassigned{
       background: var(--tile-bg);
-      border-color: var(--tile-border);
+      border-color: #5a6874;  /* Match the new border color */
     }
     .feature.status-inuse{
       background: rgba(22,163,74,.25);
@@ -381,6 +407,7 @@
       background:#fff;
       border-radius: 14px;
       overflow:hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
       max-height: 92vh;
       display:flex;
       flex-direction:column;
@@ -498,6 +525,7 @@
       display: inline-flex;
       align-items: center;
       gap: 16px;
+      box-shadow: var(--shadow);
     }
     .license-selector.ecx{
       border-color: var(--ecx-max);
@@ -1048,7 +1076,7 @@
         btn.style.alignItems = "center";
         btn.style.justifyContent = "center";
         btn.style.cursor = "pointer";
-        btn.style.boxShadow = "none";
+        btn.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
         
         btn.addEventListener("click", (e) => {
           e.stopPropagation();
