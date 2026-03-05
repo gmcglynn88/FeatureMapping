@@ -560,29 +560,109 @@
    * - Set unavailable: true for anything "not currently available"
    *   (those will be the ONLY ones pre-populated on first load).
    ******************************************************************/
-  const FEATURES = [
-    // CHANNELS & AUTOMATION (add the rest from your doc here)
-    { id:"voice", section:"Channels & Automation", name:"Voice", short:"Handle inbound/outbound voice interactions through ACD routing, queues, IVR and agent tools.", helpUrl:"https://help.mypurecloud.com/", tags:["voice","acd","telephony"] },
-    { id:"email", section:"Channels & Automation", name:"Email", short:"Route and manage email as an interaction channel with queues, SLAs and agent handling.", helpUrl:"https://help.mypurecloud.com/", tags:["email","digital"] },
-    { id:"webmessaging", section:"Channels & Automation", name:"Web Messaging", short:"Offer web-based messaging that routes into Genesys Cloud digital queues for agent handling.", helpUrl:"https://help.mypurecloud.com/", tags:["messaging","digital","web"] },
-    { id:"whatsapp", section:"Channels & Automation", name:"WhatsApp", short:"Support WhatsApp as a digital channel with routing, templates and agent responses.", helpUrl:"https://help.mypurecloud.com/", tags:["whatsapp","digital"] },
-    { id:"voicebots", section:"Channels & Automation", name:"Voice Bots", short:"Use bots to automate common intents and hand off to agents when needed.", helpUrl:"https://help.mypurecloud.com/", tags:["bots","ivr","automation"], unavailable:true },
+const FEATURES = [
+  // =========================
+  // CHANNELS & AUTOMATION
+  // =========================
+  { id:"voice", section:"Channels & Automation", name:"Voice", short:"Voice channel for inbound and outbound customer calls with routing and agent handling.", helpUrl:"https://help.mypurecloud.com", tags:["voice","acd","telephony"] },
+  { id:"email", section:"Channels & Automation", name:"Email", short:"Email as a digital channel with routing, queues and agent handling.", helpUrl:"https://help.mypurecloud.com", tags:["email","digital"] },
+  { id:"web-messenger", section:"Channels & Automation", name:"Web Messenger", short:"Web messaging channel for customer conversations routed to agents.", helpUrl:"https://help.mypurecloud.com", tags:["web messaging","digital","messaging"] },
+  { id:"social-channels", section:"Channels & Automation", name:"Social Channels", short:"Connect and manage social messaging channels routed through digital queues.", helpUrl:"https://help.mypurecloud.com", tags:["social","digital","messaging"] },
+  { id:"voice-bots", section:"Channels & Automation", name:"Voice Bots", short:"Automate voice interactions using bots with escalation to agents when needed.", helpUrl:"https://help.mypurecloud.com", tags:["bots","voice","automation"] },
+  { id:"whatsapp", section:"Channels & Automation", name:"Whatsapp", short:"Support WhatsApp messaging as a digital channel with routing and templates.", helpUrl:"https://help.mypurecloud.com", tags:["whatsapp","digital","messaging"] },
+  { id:"outbound-dialling", section:"Channels & Automation", name:"Outbound Dialling", short:"Outbound campaigns and dialling capabilities for proactive customer contact.", helpUrl:"https://help.mypurecloud.com", tags:["outbound","dialler","campaigns"] },
+  { id:"digital-bots", section:"Channels & Automation", name:"Digital Bots", short:"Automate digital conversations using bots with handoff to agents.", helpUrl:"https://help.mypurecloud.com", tags:["bots","digital","automation"] },
+  { id:"crm-integration", section:"Channels & Automation", name:"CRM Integration", short:"Integrate Genesys Cloud with CRM systems for screen-pop and context.", helpUrl:"https://help.mypurecloud.com", tags:["crm","integration"] },
+  { id:"agentless-outbound", section:"Channels & Automation", name:"Agentless Outbound", short:"Automated outbound messaging/calling without a live agent for certain use cases.", helpUrl:"https://help.mypurecloud.com", tags:["outbound","automation"] },
+  { id:"crm-cti-integration", section:"Channels & Automation", name:"CRM CTI Integration", short:"CTI integration to embed calling controls and interaction context into CRMs.", helpUrl:"https://help.mypurecloud.com", tags:["cti","crm","integration"] },
+  { id:"work-automation", section:"Channels & Automation", name:"Work Automation", short:"Automate work and workflows across systems to reduce manual effort.", helpUrl:"https://help.mypurecloud.com", tags:["automation","workflow"], unavailable:true }, // ** roadmap
+  { id:"case", section:"Channels & Automation", name:"Case", short:"Case management style work items and tracking alongside interactions.", helpUrl:"https://help.mypurecloud.com", tags:["case","work items"], unavailable:true }, // ** roadmap
+  { id:"cx-connector", section:"Channels & Automation", name:"CX Connector (e.g. Salesforce ServiceNow)", short:"Connector capability to integrate CX workflows with external platforms like Salesforce or ServiceNow.", helpUrl:"https://help.mypurecloud.com", tags:["connector","salesforce","servicenow","integration"], unavailable:true }, // ** roadmap
 
-    // RESOURCE MANAGEMENT
-    { id:"wfm", section:"Resource Management", name:"Workforce Management", short:"Forecast demand, build schedules, manage time off and track adherence to optimise staffing.", helpUrl:"https://help.mypurecloud.com/articles/about-workforce-management/", tags:["wfm","forecasting","scheduling","adherence"] },
-    { id:"timeoff", section:"Resource Management", name:"Time Off Management", short:"Enable agents to request time off and planners to manage balances and approvals.", helpUrl:"https://help.mypurecloud.com/?p=47338", tags:["wfm","timeoff"] },
+  // =========================
+  // RESOURCE MANAGEMENT
+  // =========================
+  { id:"ai-powered-forecasting-voice-digital", section:"Resource Management", name:"AI Powered Forecasting (Voice & Digital)", short:"AI-assisted forecasting across voice and digital workloads.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","forecasting","ai"] },
+  { id:"manual-load-based-scheduling", section:"Resource Management", name:"Manual & Load Based Scheduling", short:"Create schedules manually or using load-based methods.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","scheduling"] },
+  { id:"meeting-planner", section:"Resource Management", name:"Meeting Planner", short:"Plan meetings and non-phone activities within schedules.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","meetings","planning"] },
+  { id:"schedule-rules-management", section:"Resource Management", name:"Schedule Rules Management", short:"Define and manage schedule rules and constraints for scheduling.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","rules","scheduling"] },
+  { id:"work-item-forecasting-scheduling", section:"Resource Management", name:"Work Item Forecasting & Scheduling", short:"Forecast and schedule non-interaction work items alongside staffing.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","work items","forecasting","scheduling"] },
+  { id:"shift-rotations", section:"Resource Management", name:"Shift rotations", short:"Create and manage rotating shifts and patterns.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","shifts"] },
+  { id:"capacity-planning", section:"Resource Management", name:"Capacity Planning", short:"Plan staffing capacity based on demand and constraints.", helpUrl:"https://help.mypurecloud.com", tags:["capacity","planning","wfm"] },
+  { id:"shift-trading", section:"Resource Management", name:"Shift Trading", short:"Allow agents to trade shifts subject to rules and approvals.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","shift trading"] },
+  { id:"continuous-forecasting", section:"Resource Management", name:"Continuous Forecasting", short:"Update forecasts continuously based on latest data and trends.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","forecasting"] },
+  { id:"shift-bidding", section:"Resource Management", name:"Shift Bidding", short:"Allow agents to bid for shifts within defined rules.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","shift bidding"] },
+  { id:"outbound-forecasting", section:"Resource Management", name:"Outbound Forecasting", short:"Forecast outbound workload to plan staffing and scheduling.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","outbound","forecasting"] },
+  { id:"availability-preferences", section:"Resource Management", name:"Availability and Preferences", short:"Capture agent availability and scheduling preferences.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","preferences"] },
+  { id:"overtime-voluntary-timeoff", section:"Resource Management", name:"Over Time and Voluntary Time Off", short:"Offer overtime and VTO programmes to adjust intraday staffing.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","overtime","vto"] },
+  { id:"time-off-management", section:"Resource Management", name:"Time Off Management", short:"Manage time-off requests, balances and approvals.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","time off"] },
+  { id:"mobile-app-tempo", section:"Resource Management", name:"Mobile App (Tempo)", short:"Mobile experience for schedules, time off and workforce tasks.", helpUrl:"https://help.mypurecloud.com", tags:["tempo","mobile","wfm"] },
+  { id:"monitoring-adherence", section:"Resource Management", name:"Monitoring & Adherence", short:"Track schedule adherence and intraday performance against plans.", helpUrl:"https://help.mypurecloud.com", tags:["wfm","adherence","intraday"] },
 
-    // RECORDING, QUALITY & INSIGHT
-    { id:"recording", section:"Recording, Quality & Insight", name:"Recording", short:"Record calls and screens, with retention and suppression options.", helpUrl:"https://help.mypurecloud.com/articles/recording-in-genesys-cloud/", tags:["recording","qm","compliance"] },
-    { id:"speechtext", section:"Recording, Quality & Insight", name:"Speech & Text Analytics", short:"Analyse interaction content with transcription, sentiment and topics to extract insights.", helpUrl:"https://help.mypurecloud.com/articles/speech-and-text-analytics-overview/", tags:["analytics","nlp","transcription","sentiment"] },
+  // =========================
+  // RECORDING, QUALITY & INSIGHT
+  // =========================
+  { id:"voice-digital-recording", section:"Recording, Quality & Insight", name:"Voice and Digital Recording", short:"Record voice and digital interactions for compliance and quality.", helpUrl:"https://help.mypurecloud.com", tags:["recording","voice","digital"] },
+  { id:"station-side-recording", section:"Recording, Quality & Insight", name:"Station side recording", short:"Station-side recording options for specific telephony setups.", helpUrl:"https://help.mypurecloud.com", tags:["recording","telephony"] },
+  { id:"speech-text-analytics", section:"Recording, Quality & Insight", name:"Speech & Text Analytics", short:"Analyse interaction content (voice/digital) for insights like topics and sentiment.", helpUrl:"https://help.mypurecloud.com", tags:["analytics","speech","text","sentiment"] },
+  { id:"transcription", section:"Recording, Quality & Insight", name:"Transcription", short:"Convert voice interactions into searchable text for review and analysis.", helpUrl:"https://help.mypurecloud.com", tags:["transcription","speech"] },
+  { id:"screen-recording", section:"Recording, Quality & Insight", name:"Screen Recording", short:"Record agent screens for compliance, training and quality.", helpUrl:"https://help.mypurecloud.com", tags:["screen recording","qm"] },
+  { id:"quality-evaluations", section:"Recording, Quality & Insight", name:"Quality Evaluations", short:"Evaluate interactions using scorecards and forms to drive quality.", helpUrl:"https://help.mypurecloud.com", tags:["quality","evaluations","qm"] },
+  { id:"acoustic-analysis", section:"Recording, Quality & Insight", name:"Acoustic Analysis", short:"Analyse acoustic signals (e.g. silence/overlap) for deeper insight.", helpUrl:"https://help.mypurecloud.com", tags:["acoustic","analysis"] },
+  { id:"sensitive-data-masking", section:"Recording, Quality & Insight", name:"Sensitive Data Masking", short:"Mask sensitive information in recordings/transcripts for compliance.", helpUrl:"https://help.mypurecloud.com", tags:["pci","pii","masking"] },
+  { id:"recording-retention-archival", section:"Recording, Quality & Insight", name:"Recording Retention and Archival", short:"Retention policies and archival of recordings to manage storage/compliance.", helpUrl:"https://help.mypurecloud.com", tags:["retention","archival","recording"] },
+  { id:"quality-management-eval-assistance", section:"Recording, Quality & Insight", name:"Quality Management / Evaluation assistance", short:"Tools to support evaluation workflows and consistency.", helpUrl:"https://help.mypurecloud.com", tags:["quality","assistance"] },
+  { id:"customer-sentiment-analysis", section:"Recording, Quality & Insight", name:"Customer Sentiment Analysis", short:"Detect and report sentiment from interaction content.", helpUrl:"https://help.mypurecloud.com", tags:["sentiment","analytics"] },
+  { id:"agent-empathy-analysis", section:"Recording, Quality & Insight", name:"Agent Empathy Analysis", short:"Analyse interactions for empathy signals and coaching opportunities.", helpUrl:"https://help.mypurecloud.com", tags:["empathy","coaching","analytics"] },
+  { id:"recording-consent-secure-pause", section:"Recording, Quality & Insight", name:"Recording Consent & Secure Pause", short:"Support consent handling and secure pause to avoid capturing sensitive data.", helpUrl:"https://help.mypurecloud.com", tags:["consent","secure pause","compliance"] },
+  { id:"voc-web-surveys", section:"Recording, Quality & Insight", name:"Voice of the Customer Web Surveys", short:"Collect customer feedback via web surveys post-interaction.", helpUrl:"https://help.mypurecloud.com", tags:["voc","surveys","web"] },
+  { id:"topic-spotting", section:"Recording, Quality & Insight", name:"Topic Spotting", short:"Identify key topics in interactions for insight and trending.", helpUrl:"https://help.mypurecloud.com", tags:["topics","analytics"] },
+  { id:"social-listening-rqi", section:"Recording, Quality & Insight", name:"Social Listening", short:"Listen and analyse social content for customer insight signals.", helpUrl:"https://help.mypurecloud.com", tags:["social listening","insights"] },
+  { id:"realtime-voice-monitor-coach-barge", section:"Recording, Quality & Insight", name:"Real Time Voice Monitor, Coach and Barge", short:"Supervisors can monitor, coach and barge into voice interactions in real time.", helpUrl:"https://help.mypurecloud.com", tags:["monitor","coach","barge","voice"] },
+  { id:"voc-voice-surveys", section:"Recording, Quality & Insight", name:"Voice of the Customer Voice Surveys", short:"Collect feedback through voice surveys for customer experience measurement.", helpUrl:"https://help.mypurecloud.com", tags:["voc","surveys","voice"] },
+  { id:"topic-mining", section:"Recording, Quality & Insight", name:"Topic Mining", short:"Discover emerging topics across interaction sets for insight and action.", helpUrl:"https://help.mypurecloud.com", tags:["topics","mining","analytics"] },
+  { id:"transcript-content-search", section:"Recording, Quality & Insight", name:"Transcript / Content Search", short:"Search across transcripts/content to find interactions and evidence quickly.", helpUrl:"https://help.mypurecloud.com", tags:["search","transcript"] },
+  { id:"realtime-screen-monitoring", section:"Recording, Quality & Insight", name:"Real Time Screen Monitoring", short:"Monitor agent screens in real time for support and compliance.", helpUrl:"https://help.mypurecloud.com", tags:["screen monitoring","realtime"] },
+  { id:"realtime-digital-monitor-coach-barge", section:"Recording, Quality & Insight", name:"Real Time Digital Monitor, Coach and Barge", short:"Monitor/coaching/barge capabilities for digital conversations in real time.", helpUrl:"https://help.mypurecloud.com", tags:["digital","monitor","coach","barge"] },
 
-    // AI POWERED
-    { id:"agentcopilot", section:"AI Powered", name:"Agent Copilot", short:"AI assistance for agents: surfaces knowledge, transcribes and recommends next actions.", helpUrl:"https://help.mypurecloud.com/articles/agent-copilot-overview/", tags:["copilot","ai","agent","knowledge"], unavailable:true },
+  // =========================
+  // AI POWERED
+  // =========================
+  { id:"knowledge-base", section:"AI Powered", name:"Knowledge Base", short:"Knowledge management for authoring and surfacing articles to agents/bots.", helpUrl:"https://help.mypurecloud.com", tags:["knowledge","kb"] },
+  { id:"support-centre", section:"AI Powered", name:"Support Centre", short:"Support experiences and guidance for users/admins.", helpUrl:"https://help.mypurecloud.com", tags:["support","help"] },
+  { id:"agent-copilot", section:"AI Powered", name:"Agent Copilot", short:"AI assistance for agents: knowledge surfacing, guidance and productivity support.", helpUrl:"https://help.mypurecloud.com", tags:["copilot","ai","agent"] },
+  { id:"performance-insights-dashboard-ai", section:"AI Powered", name:"Performance Insights Dashboard", short:"Insights dashboard to surface performance signals and trends.", helpUrl:"https://help.mypurecloud.com", tags:["insights","dashboard"] },
+  { id:"supervisor-copilot", section:"AI Powered", name:"Supervisor Copilot", short:"AI support for supervisors to guide decisions and actions.", helpUrl:"https://help.mypurecloud.com", tags:["copilot","ai","supervisor"] },
+  { id:"admin-copilot", section:"AI Powered", name:"Admin Copilot", short:"AI support for administrators to speed up configuration and troubleshooting.", helpUrl:"https://help.mypurecloud.com", tags:["copilot","ai","admin"] },
+  { id:"ai-studio", section:"AI Powered", name:"AI Studio", short:"Build/configure AI experiences, bots and related automation.", helpUrl:"https://help.mypurecloud.com", tags:["ai","studio","bots"] },
+  { id:"journey-management", section:"AI Powered", name:"Journey Management", short:"Understand and optimise customer journeys across touchpoints.", helpUrl:"https://help.mypurecloud.com", tags:["journey","cx"] },
+  { id:"ai-guides", section:"AI Powered", name:"AI Guides", short:"Guided experiences to support agents/customers with contextual assistance.", helpUrl:"https://help.mypurecloud.com", tags:["ai","guides"] },
+  { id:"virtual-agent", section:"AI Powered", name:"Virtual Agent", short:"Virtual agent experiences for self-service and automation.", helpUrl:"https://help.mypurecloud.com", tags:["virtual agent","bots","ai"] },
+  { id:"ai-qa-automated", section:"AI Powered", name:"AI QA / Automated", short:"Automated quality evaluation using AI to scale QA coverage.", helpUrl:"https://help.mypurecloud.com", tags:["ai","qa","quality"] },
+  { id:"social-listening-ai", section:"AI Powered", name:"Social Listening", short:"AI-powered social listening capability for insight and detection.", helpUrl:"https://help.mypurecloud.com", tags:["social listening","ai"], unavailable:true }, // ** roadmap
+  { id:"predictive-routing", section:"AI Powered", name:"Predictive Routing", short:"Use predictive models to route interactions to the best agent.", helpUrl:"https://help.mypurecloud.com", tags:["predictive","routing","ai"] },
+  { id:"predictive-engagement", section:"AI Powered", name:"Predictive Engagement", short:"Proactively engage customers based on behaviour and predicted intent.", helpUrl:"https://help.mypurecloud.com", tags:["predictive","engagement"] },
+  { id:"operations-hub", section:"AI Powered", name:"Operations Hub", short:"Centralised operational tooling and dashboards to support CX operations.", helpUrl:"https://help.mypurecloud.com", tags:["operations","hub"] },
+  { id:"realtime-anomaly-detection", section:"AI Powered", name:"Real-time Anomaly Detection", short:"Detect anomalies in operational metrics/events in near real time.", helpUrl:"https://help.mypurecloud.com", tags:["anomaly","realtime","insights"] },
 
-    // PERFORMANCE MANAGEMENT
-    { id:"realtime", section:"Performance Management", name:"Real-time Reporting", short:"Monitor queues and performance live with real-time views and KPIs.", helpUrl:"https://help.mypurecloud.com/", tags:["realtime","reporting"] },
-    { id:"historical", section:"Performance Management", name:"Historical Reporting", short:"Analyse trends over time using historical views and exports.", helpUrl:"https://help.mypurecloud.com/", tags:["historical","reporting"] },
-  ];
+  // =========================
+  // PERFORMANCE MANAGEMENT
+  // =========================
+  { id:"realtime-reporting", section:"Performance Management", name:"Real-time reporting", short:"Monitor live performance and operational KPIs.", helpUrl:"https://help.mypurecloud.com", tags:["realtime","reporting"] },
+  { id:"historical-reporting", section:"Performance Management", name:"Historical Reporting", short:"Analyse historical trends and performance over time.", helpUrl:"https://help.mypurecloud.com", tags:["historical","reporting"] },
+  { id:"onboarding-learning", section:"Performance Management", name:"Onboarding & Learning", short:"Support onboarding and learning journeys for employees.", helpUrl:"https://help.mypurecloud.com", tags:["learning","onboarding"] },
+  { id:"employee-performance-scorecards", section:"Performance Management", name:"Employee Performance Scorecards", short:"Track performance using scorecards and structured KPIs.", helpUrl:"https://help.mypurecloud.com", tags:["scorecards","performance"] },
+  { id:"skills-knowledge-assessment", section:"Performance Management", name:"Skills & Knowledge Assessment", short:"Assess agent skills and knowledge to guide development.", helpUrl:"https://help.mypurecloud.com", tags:["assessment","skills"] },
+  { id:"external-performance-metrics", section:"Performance Management", name:"External Performance Metrics", short:"Bring in external metrics to complement contact centre reporting.", helpUrl:"https://help.mypurecloud.com", tags:["external","metrics"] },
+  { id:"scheduled-coaching", section:"Performance Management", name:"Scheduled Coaching", short:"Plan and manage coaching sessions to improve performance.", helpUrl:"https://help.mypurecloud.com", tags:["coaching","performance"] },
+  { id:"custom-analytics", section:"Performance Management", name:"Custom Analytics", short:"Create custom analytics views/dashboards tailored to your KPIs.", helpUrl:"https://help.mypurecloud.com", tags:["analytics","custom"] },
+  { id:"voice-of-the-employee", section:"Performance Management", name:"Voice of the Employee", short:"Capture employee feedback and sentiment to improve EX.", helpUrl:"https://help.mypurecloud.com", tags:["voe","employee"] },
+  { id:"gamification-leaderboards", section:"Performance Management", name:"Gamification / Leaderboards", short:"Drive engagement using gamification mechanics and leaderboards.", helpUrl:"https://help.mypurecloud.com", tags:["gamification","leaderboards"] },
+  { id:"contests-challenges", section:"Performance Management", name:"Contests & Challenges", short:"Run contests/challenges to motivate and recognise performance.", helpUrl:"https://help.mypurecloud.com", tags:["contests","challenges"] },
+  { id:"performance-insights-dashboard-pm", section:"Performance Management", name:"Performance Insights Dashboard", short:"Insights dashboard for performance trends and coaching opportunities.", helpUrl:"https://help.mypurecloud.com", tags:["insights","dashboard"] },
+  { id:"rewards-recognition", section:"Performance Management", name:"Rewards & Recognition", short:"Recognise achievements and reward strong performance.", helpUrl:"https://help.mypurecloud.com", tags:["rewards","recognition"] },
+  { id:"apis-data-stream", section:"Performance Management", name:"APIs / Data stream", short:"Access data via APIs and streams for integrations and advanced analytics.", helpUrl:"https://help.mypurecloud.com", tags:["apis","data","stream"] },
+];
 
   const STATUS_LABEL = {
     unassigned: "Unassigned",
