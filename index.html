@@ -324,17 +324,6 @@
       word-break: break-word;
     }
 
-    /* License tier styling */
-    .feature.license-voice{
-      border-left: 6px solid var(--ecx-voice);
-    }
-    .feature.license-omni{
-      border-left: 6px solid var(--ecx-omni);
-    }
-    .feature.license-max{
-      border-left: 6px solid var(--ecx-max);
-    }
-
     /* Add-on styling (dotted border for chargeable features) */
     .feature.add-on{
       border: 2px dotted var(--addon);
@@ -584,11 +573,7 @@
         <div class="key"><span class="sw notopt"></span> In use but not full optimised</div>
         <div class="key"><span class="sw addon"></span> Chargeable add-on</div>
       </div>
-      <div style="margin-top:8px; font-size:11px; display:flex; gap:12px;">
-        <span style="border-left:6px solid var(--ecx-voice); padding-left:6px;">ECX Voice</span>
-        <span style="border-left:6px solid var(--ecx-omni); padding-left:6px;">ECX Omni</span>
-        <span style="border-left:6px solid var(--ecx-max); padding-left:6px;">ECX Max</span>
-      </div>
+      <!-- Removed ECX license indicators from legend as requested -->
     </div>
   </div>
 
@@ -1076,10 +1061,8 @@
     const box = document.createElement("div");
     let boxClass = `feature status-${fs.status}`;
     
-    // Add license tier class for ECX features
-    if (currentPlatform === 'ecx' && f.license) {
-      boxClass += ` license-${f.license}`;
-    }
+    // REMOVED: the block that added license-* classes for ECX tiles.
+    // This ensures no thick left border is applied.
     
     if (f.addon) boxClass += ' add-on';
     box.className = boxClass;
