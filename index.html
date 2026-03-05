@@ -30,6 +30,7 @@
       --inuse:#16a34a;          /* green */
       --notopt:#f59e0b;         /* amber */
       --roadmap:#dc2626;        /* red */
+      --addon:#9333EA;          /* purple for add-ons */
       --shadow:0 1px 3px rgba(0,0,0,.08);
     }
 
@@ -155,6 +156,7 @@
     .sw.roadmap{ background:#fff; border-color: var(--roadmap); }
     .sw.inuse{ background: rgba(22,163,74,.25); border-color: rgba(22,163,74,.65); }
     .sw.notopt{ background: rgba(245,158,11,.25); border-color: rgba(245,158,11,.75); }
+    .sw.addon{ background: rgba(147,51,234,.15); border-color: var(--addon); border-style: dotted; }
 
     /* Controls */
     .controls{
@@ -327,6 +329,29 @@
       word-break: break-word;
     }
 
+    /* Add-on styling (dotted border for chargeable features) */
+    .feature.add-on{
+      border: 2px dotted var(--addon);
+      background: rgba(147,51,234,.05);
+      position: relative;
+    }
+    .feature.add-on::after{
+      content: "💰";
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      font-size: 14px;
+      background: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--addon);
+      box-shadow: var(--shadow);
+    }
+
     /* Status styling (matching your key) */
     .feature.status-unassigned{
       background: var(--tile-bg);
@@ -486,6 +511,38 @@
     .quick-btn.inuse{ background: rgba(22,163,74,.1); border-color: var(--inuse); }
     .quick-btn.notopt{ background: rgba(245,158,11,.1); border-color: var(--notopt); }
     .quick-btn.unavailable{ background: rgba(220,38,38,.1); border-color: var(--roadmap); }
+
+    /* License selector */
+    .license-selector{
+      margin: 0 0 20px;
+      padding: 12px 16px;
+      background: white;
+      border-radius: 12px;
+      border: 2px solid var(--primary);
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .license-selector.elastic{
+      border-color: var(--elastic-primary);
+    }
+    .license-selector label{
+      font-weight: 900;
+      font-size: 14px;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .license-selector select{
+      padding: 8px 16px;
+      border: 2px solid var(--border);
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 14px;
+      outline: none;
+      background: white;
+      min-width: 200px;
+    }
   </style>
 </head>
 
@@ -505,6 +562,7 @@
         <div class="key"><span class="sw inuse"></span> Feature in use</div>
         <div class="key"><span class="sw roadmap"></span> Roadmap item</div>
         <div class="key"><span class="sw notopt"></span> In use but not full optimised</div>
+        <div class="key"><span class="sw addon"></span> Chargeable add-on</div>
       </div>
     </div>
   </div>
@@ -515,10 +573,20 @@
     <button class="tab elastic" id="elasticTab" data-platform="elastic">Elastic CX</button>
   </div>
 
+  <!-- License Selector -->
+  <div class="license-selector" id="licenseSelector">
+    <label for="licenseType">License Type:</label>
+    <select id="licenseType">
+      <option value="all">Show all features</option>
+      <option value="core">Core only (hide add-ons)</option>
+      <option value="addons">Add-ons only</option>
+    </select>
+  </div>
+
   <div class="controls">
     <div class="pill">
       <label for="search">Search</label>
-      <input id="search" type="text" placeholder="Copilot, recording, WFM, analytics..." />
+      <input id="search" type="text" placeholder="Search features..." />
     </div>
 
     <div class="pill">
@@ -607,6 +675,7 @@
 (() => {
   // Current platform: 'genesys' or 'elastic'
   let currentPlatform = 'genesys';
+  let currentLicenseFilter = 'all'; // 'all', 'core', 'addons'
 
   // ===== Genesys Features (existing) =====
   const GENESYS_FEATURES = [
@@ -615,10 +684,10 @@
     { id:"email", section:"Channels & Automation", name:"Email", short:"Email routing and handling as a digital channel.", helpUrl:"https://help.mypurecloud.com" },
     { id:"web-messenger", section:"Channels & Automation", name:"Web Messenger", short:"Web messaging channel routed through digital queues.", helpUrl:"https://help.mypurecloud.com" },
     { id:"social-channels", section:"Channels & Automation", name:"Social Channels", short:"Social messaging channels routed through Genesys Cloud digital.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"voice-bots", section:"Channels & Automation", name:"Voice Bots", short:"Bot automation for voice journeys with escalation to agents.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"voice-bots", section:"Channels & Automation", name:"Voice Bots", short:"Bot automation for voice journeys with escalation to agents.", helpUrl:"https://help.mypurecloud.com", addon:true },
     { id:"whatsapp", section:"Channels & Automation", name:"Whatsapp", short:"WhatsApp digital messaging channel support.", helpUrl:"https://help.mypurecloud.com" },
     { id:"outbound-dialling", section:"Channels & Automation", name:"Outbound Dialling", short:"Outbound calling capabilities including campaign dialling.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"digital-bots", section:"Channels & Automation", name:"Digital Bots", short:"Bot automation for digital messaging channels.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"digital-bots", section:"Channels & Automation", name:"Digital Bots", short:"Bot automation for digital messaging channels.", helpUrl:"https://help.mypurecloud.com", addon:true },
     { id:"crm-integration", section:"Channels & Automation", name:"CRM Integration", short:"Integrations with CRM platforms for context and workflows.", helpUrl:"https://help.mypurecloud.com" },
     { id:"agentless-outbound", section:"Channels & Automation", name:"Agentless Outbound", short:"Automated outbound delivery without a live agent.", helpUrl:"https://help.mypurecloud.com" },
     { id:"crm-cti-integration", section:"Channels & Automation", name:"CRM CTI Integration", short:"Embed CTI controls into CRM systems for calling and context.", helpUrl:"https://help.mypurecloud.com" },
@@ -627,19 +696,19 @@
     { id:"cx-connector", section:"Channels & Automation", name:"CX Connector** e.g. Salesforce ServiceNow", short:"Roadmap item: connectors to external platforms like Salesforce/ServiceNow.", helpUrl:"https://help.mypurecloud.com", unavailable:true },
 
     // Resource Management
-    { id:"ai-forecasting", section:"Resource Management", name:"AI Powered Forecasting (Voice & Digital)", short:"AI-assisted forecasting across voice and digital workloads.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"ai-forecasting", section:"Resource Management", name:"AI Powered Forecasting (Voice & Digital)", short:"AI-assisted forecasting across voice and digital workloads.", helpUrl:"https://help.mypurecloud.com", addon:true },
     { id:"manual-load-scheduling", section:"Resource Management", name:"Manual & Load Based Scheduling", short:"Create schedules manually or via load-based methods.", helpUrl:"https://help.mypurecloud.com" },
     { id:"meeting-planner", section:"Resource Management", name:"Meeting Planner", short:"Plan and schedule meetings within workforce schedules.", helpUrl:"https://help.mypurecloud.com" },
     { id:"schedule-rules", section:"Resource Management", name:"Schedule Rules Management", short:"Define and manage rules/constraints for scheduling.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"work-item-forecasting", section:"Resource Management", name:"Work Item Forecasting & Scheduling", short:"Forecast and schedule work items alongside staffing.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"work-item-forecasting", section:"Resource Management", name:"Work Item Forecasting & Scheduling", short:"Forecast and schedule work items alongside staffing.", helpUrl:"https://help.mypurecloud.com", addon:true },
     { id:"shift-rotations", section:"Resource Management", name:"Shift rotations", short:"Define rotating shift patterns.", helpUrl:"https://help.mypurecloud.com" },
     { id:"capacity-planning", section:"Resource Management", name:"Capacity Planning", short:"Plan staffing capacity based on demand and constraints.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"shift-trading", section:"Resource Management", name:"Shift Trading", short:"Agent shift trading with approvals and rules.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"continuous-forecasting", section:"Resource Management", name:"Continuous Forecasting", short:"Continuously update forecasts using the latest data.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"shift-bidding", section:"Resource Management", name:"Shift Bidding", short:"Agents bid for shifts within defined constraints.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"outbound-forecasting", section:"Resource Management", name:"Outbound Forecasting", short:"Forecast outbound workload for staffing and scheduling.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"shift-trading", section:"Resource Management", name:"Shift Trading", short:"Agent shift trading with approvals and rules.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"continuous-forecasting", section:"Resource Management", name:"Continuous Forecasting", short:"Continuously update forecasts using the latest data.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"shift-bidding", section:"Resource Management", name:"Shift Bidding", short:"Agents bid for shifts within defined constraints.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"outbound-forecasting", section:"Resource Management", name:"Outbound Forecasting", short:"Forecast outbound workload for staffing and scheduling.", helpUrl:"https://help.mypurecloud.com", addon:true },
     { id:"availability-preferences", section:"Resource Management", name:"Availability and Preferences", short:"Capture availability and scheduling preferences.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"overtime-vto", section:"Resource Management", name:"Over Time and Voluntary Time Off", short:"Offer overtime/VTO to manage intraday staffing.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"overtime-vto", section:"Resource Management", name:"Over Time and Voluntary Time Off", short:"Offer overtime/VTO to manage intraday staffing.", helpUrl:"https://help.mypurecloud.com", addon:true },
     { id:"time-off", section:"Resource Management", name:"Time Off Management", short:"Time off requests, balances and approvals.", helpUrl:"https://help.mypurecloud.com" },
     { id:"tempo", section:"Resource Management", name:"Mobile App (Tempo)", short:"Mobile access for schedules and workforce actions.", helpUrl:"https://help.mypurecloud.com" },
     { id:"monitoring-adherence", section:"Resource Management", name:"Monitoring & Adherence", short:"Track adherence and intraday performance vs plans.", helpUrl:"https://help.mypurecloud.com" },
@@ -647,44 +716,44 @@
     // Recording, Quality & Insight
     { id:"voice-digital-recording", section:"Recording, Quality & Insight", name:"Voice and Digital Recording", short:"Record voice and digital interactions.", helpUrl:"https://help.mypurecloud.com" },
     { id:"station-side", section:"Recording, Quality & Insight", name:"Station side recording", short:"Station-side recording options for specific setups.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"speech-text", section:"Recording, Quality & Insight", name:"Speech & Text Analytics", short:"Analytics on interaction content including topics/sentiment.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"transcription", section:"Recording, Quality & Insight", name:"Transcription", short:"Convert voice to text for search and insight.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"screen-recording", section:"Recording, Quality & Insight", name:"Screen Recording", short:"Record agent screens for compliance/training.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"speech-text", section:"Recording, Quality & Insight", name:"Speech & Text Analytics", short:"Analytics on interaction content including topics/sentiment.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"transcription", section:"Recording, Quality & Insight", name:"Transcription", short:"Convert voice to text for search and insight.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"screen-recording", section:"Recording, Quality & Insight", name:"Screen Recording", short:"Record agent screens for compliance/training.", helpUrl:"https://help.mypurecloud.com", addon:true },
     { id:"quality-evaluations", section:"Recording, Quality & Insight", name:"Quality Evaluations", short:"Scorecards/forms to evaluate interactions.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"acoustic-analysis", section:"Recording, Quality & Insight", name:"Acoustic Analysis", short:"Analyse acoustic signals like silence/overlap.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"sensitive-masking", section:"Recording, Quality & Insight", name:"Sensitive Data Masking", short:"Mask sensitive information for compliance.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"acoustic-analysis", section:"Recording, Quality & Insight", name:"Acoustic Analysis", short:"Analyse acoustic signals like silence/overlap.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"sensitive-masking", section:"Recording, Quality & Insight", name:"Sensitive Data Masking", short:"Mask sensitive information for compliance.", helpUrl:"https://help.mypurecloud.com", addon:true },
     { id:"retention-archival", section:"Recording, Quality & Insight", name:"Recording Retention and Archival", short:"Retention policies and archival for recordings.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"qm-assistance", section:"Recording, Quality & Insight", name:"Quality Management / Evaluation assistance", short:"Support evaluation workflows and consistency.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"cust-sentiment", section:"Recording, Quality & Insight", name:"Customer Sentiment Analysis", short:"Sentiment detection and reporting.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"agent-empathy", section:"Recording, Quality & Insight", name:"Agent Empathy Analysis", short:"Analyse empathy signals for coaching.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"qm-assistance", section:"Recording, Quality & Insight", name:"Quality Management / Evaluation assistance", short:"Support evaluation workflows and consistency.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"cust-sentiment", section:"Recording, Quality & Insight", name:"Customer Sentiment Analysis", short:"Sentiment detection and reporting.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"agent-empathy", section:"Recording, Quality & Insight", name:"Agent Empathy Analysis", short:"Analyse empathy signals for coaching.", helpUrl:"https://help.mypurecloud.com", addon:true },
     { id:"consent-securepause", section:"Recording, Quality & Insight", name:"Recording Consent & Secure Pause", short:"Consent handling and secure pause.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"voc-web", section:"Recording, Quality & Insight", name:"Voice of the Customer Web Surveys", short:"Collect feedback via web surveys.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"topic-spotting", section:"Recording, Quality & Insight", name:"Topic Spotting", short:"Identify topics in interactions.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"social-listening-rqi", section:"Recording, Quality & Insight", name:"Social Listening", short:"Listen/analyse social content for insights.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"voc-web", section:"Recording, Quality & Insight", name:"Voice of the Customer Web Surveys", short:"Collect feedback via web surveys.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"topic-spotting", section:"Recording, Quality & Insight", name:"Topic Spotting", short:"Identify topics in interactions.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"social-listening-rqi", section:"Recording, Quality & Insight", name:"Social Listening", short:"Listen/analyse social content for insights.", helpUrl:"https://help.mypurecloud.com", addon:true },
     { id:"rt-voice-mcb", section:"Recording, Quality & Insight", name:"Real Time Voice Monitor, Coach and Barge", short:"Real-time monitor/coach/barge for voice.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"voc-voice", section:"Recording, Quality & Insight", name:"Voice of the Customer Voice Surveys", short:"Collect feedback via voice surveys.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"topic-mining", section:"Recording, Quality & Insight", name:"Topic Mining", short:"Discover emerging topics across interactions.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"transcript-search", section:"Recording, Quality & Insight", name:"Transcript / Content Search", short:"Search transcripts and content.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"voc-voice", section:"Recording, Quality & Insight", name:"Voice of the Customer Voice Surveys", short:"Collect feedback via voice surveys.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"topic-mining", section:"Recording, Quality & Insight", name:"Topic Mining", short:"Discover emerging topics across interactions.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"transcript-search", section:"Recording, Quality & Insight", name:"Transcript / Content Search", short:"Search transcripts and content.", helpUrl:"https://help.mypurecloud.com", addon:true },
     { id:"rt-screen-monitoring", section:"Recording, Quality & Insight", name:"Real Time Screen Monitoring", short:"Monitor screens in real time.", helpUrl:"https://help.mypurecloud.com" },
     { id:"rt-digital-mcb", section:"Recording, Quality & Insight", name:"Real Time Digital Monitor, Coach and Barge", short:"Real-time monitor/coach/barge for digital.", helpUrl:"https://help.mypurecloud.com" },
 
     // AI Powered
     { id:"knowledge-base", section:"AI Powered", name:"Knowledge Base", short:"Author and serve knowledge articles to agents/bots.", helpUrl:"https://help.mypurecloud.com" },
     { id:"support-centre", section:"AI Powered", name:"Support Centre", short:"Support experiences and guidance for users/admins.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"agent-copilot", section:"AI Powered", name:"Agent Copilot", short:"AI assistance for agents: guidance, knowledge surfacing and productivity.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"perf-insights-ai", section:"AI Powered", name:"Performance Insights Dashboard", short:"Insights dashboard for performance signals/trends.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"supervisor-copilot", section:"AI Powered", name:"Supervisor Copilot", short:"AI support for supervisors to speed decision-making.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"admin-copilot", section:"AI Powered", name:"Admin Copilot", short:"AI support for administrators.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"ai-studio", section:"AI Powered", name:"AI Studio", short:"Build/configure AI experiences.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"journey-management", section:"AI Powered", name:"Journey Management", short:"Understand and optimise journeys across touchpoints.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"ai-guides", section:"AI Powered", name:"AI Guides", short:"Guided assistance to support agents/customers.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"virtual-agent", section:"AI Powered", name:"Virtual Agent", short:"Virtual agent self-service experiences.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"ai-qa", section:"AI Powered", name:"AI QA / Automated", short:"Automated QA using AI.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"social-listening-ai", section:"AI Powered", name:"Social Listening**", short:"Roadmap item: AI-powered social listening.", helpUrl:"https://help.mypurecloud.com", unavailable:true },
-    { id:"predictive-routing", section:"AI Powered", name:"Predictive Routing", short:"Route to best agent using predictive models.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"predictive-engagement", section:"AI Powered", name:"Predictive Engagement", short:"Proactively engage based on predicted intent/behaviour.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"agent-copilot", section:"AI Powered", name:"Agent Copilot", short:"AI assistance for agents: guidance, knowledge surfacing and productivity.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"perf-insights-ai", section:"AI Powered", name:"Performance Insights Dashboard", short:"Insights dashboard for performance signals/trends.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"supervisor-copilot", section:"AI Powered", name:"Supervisor Copilot", short:"AI support for supervisors to speed decision-making.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"admin-copilot", section:"AI Powered", name:"Admin Copilot", short:"AI support for administrators.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"ai-studio", section:"AI Powered", name:"AI Studio", short:"Build/configure AI experiences.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"journey-management", section:"AI Powered", name:"Journey Management", short:"Understand and optimise journeys across touchpoints.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"ai-guides", section:"AI Powered", name:"AI Guides", short:"Guided assistance to support agents/customers.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"virtual-agent", section:"AI Powered", name:"Virtual Agent", short:"Virtual agent self-service experiences.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"ai-qa", section:"AI Powered", name:"AI QA / Automated", short:"Automated QA using AI.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"social-listening-ai", section:"AI Powered", name:"Social Listening**", short:"Roadmap item: AI-powered social listening.", helpUrl:"https://help.mypurecloud.com", unavailable:true, addon:true },
+    { id:"predictive-routing", section:"AI Powered", name:"Predictive Routing", short:"Route to best agent using predictive models.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"predictive-engagement", section:"AI Powered", name:"Predictive Engagement", short:"Proactively engage based on predicted intent/behaviour.", helpUrl:"https://help.mypurecloud.com", addon:true },
     { id:"operations-hub", section:"AI Powered", name:"Operations Hub", short:"Operational tooling and dashboards.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"anomaly-detection", section:"AI Powered", name:"Real-time Anomaly Detection", short:"Detect anomalies in operational metrics in near real time.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"anomaly-detection", section:"AI Powered", name:"Real-time Anomaly Detection", short:"Detect anomalies in operational metrics in near real time.", helpUrl:"https://help.mypurecloud.com", addon:true },
 
     // Performance Management
     { id:"rt-reporting", section:"Performance Management", name:"Real-time reporting", short:"Live queue/agent performance monitoring.", helpUrl:"https://help.mypurecloud.com" },
@@ -695,11 +764,11 @@
     { id:"external-metrics", section:"Performance Management", name:"External Performance Metrics", short:"Bring in external metrics for reporting.", helpUrl:"https://help.mypurecloud.com" },
     { id:"scheduled-coaching", section:"Performance Management", name:"Scheduled Coaching", short:"Plan and track coaching.", helpUrl:"https://help.mypurecloud.com" },
     { id:"custom-analytics", section:"Performance Management", name:"Custom Analytics", short:"Custom analytics views/dashboards.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"voe", section:"Performance Management", name:"Voice of the Employee", short:"Capture employee feedback and sentiment.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"gamification", section:"Performance Management", name:"Gamification / Leaderboards", short:"Gamification mechanics and leaderboards.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"contests", section:"Performance Management", name:"Contests & Challenges", short:"Run contests and challenges.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"perf-insights-pm", section:"Performance Management", name:"Performance Insights Dashboard", short:"Performance insights dashboard.", helpUrl:"https://help.mypurecloud.com" },
-    { id:"rewards", section:"Performance Management", name:"Rewards & Recognition", short:"Recognise and reward performance.", helpUrl:"https://help.mypurecloud.com" },
+    { id:"voe", section:"Performance Management", name:"Voice of the Employee", short:"Capture employee feedback and sentiment.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"gamification", section:"Performance Management", name:"Gamification / Leaderboards", short:"Gamification mechanics and leaderboards.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"contests", section:"Performance Management", name:"Contests & Challenges", short:"Run contests and challenges.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"perf-insights-pm", section:"Performance Management", name:"Performance Insights Dashboard", short:"Performance insights dashboard.", helpUrl:"https://help.mypurecloud.com", addon:true },
+    { id:"rewards", section:"Performance Management", name:"Rewards & Recognition", short:"Recognise and reward performance.", helpUrl:"https://help.mypurecloud.com", addon:true },
     { id:"apis-datastream", section:"Performance Management", name:"APIs / Data stream", short:"APIs and data streaming for integrations/analytics.", helpUrl:"https://help.mypurecloud.com" },
   ];
 
@@ -714,17 +783,17 @@
     { id:"elastic-social", section:"Core Capabilities", name:"Social (Facebook, WhatsApp)", short:"Social media messaging channels.", helpUrl:"#" },
     { id:"elastic-intelligent-routing", section:"Core Capabilities", name:"Intelligent Routing", short:"Smart routing based on skills, data and context.", helpUrl:"#" },
     { id:"elastic-contact-blending", section:"Core Capabilities", name:"Contact Blending", short:"Blend inbound/outbound interactions across channels.", helpUrl:"#" },
-    { id:"elastic-ivr-asr", section:"Core Capabilities", name:"IVR – Automatic Speech Recognition (ASR)", short:"Speech recognition for IVR interactions.", helpUrl:"#" },
+    { id:"elastic-ivr-asr", section:"Core Capabilities", name:"IVR – Automatic Speech Recognition (ASR)", short:"Speech recognition for IVR interactions.", helpUrl:"#", addon:true },
     { id:"elastic-ivr-dtmf", section:"Core Capabilities", name:"IVR – DTMF", short:"Touch-tone keypad input for IVR.", helpUrl:"#" },
     { id:"elastic-tts", section:"Core Capabilities", name:"Text-to-speech (TTS)", short:"Convert text to spoken voice in IVR.", helpUrl:"#" },
     { id:"elastic-preview-dialer", section:"Core Capabilities", name:"Preview Dialer", short:"Preview contact details before dialing.", helpUrl:"#" },
     { id:"elastic-agentless-preview", section:"Core Capabilities", name:"Agentless Preview Dialer", short:"Automated preview dialing without agent initiation.", helpUrl:"#" },
-    { id:"elastic-ai-bots", section:"Core Capabilities", name:"AI Powered Bots (Chat & Voice)", short:"AI-powered chatbots and voice bots.", helpUrl:"#" },
+    { id:"elastic-ai-bots", section:"Core Capabilities", name:"AI Powered Bots (Chat & Voice)", short:"AI-powered chatbots and voice bots.", helpUrl:"#", addon:true },
     { id:"elastic-recording", section:"Core Capabilities", name:"Recording", short:"Call and interaction recording.", helpUrl:"#" },
     { id:"elastic-quality-management", section:"Core Capabilities", name:"Quality management", short:"Quality assurance and evaluation tools.", helpUrl:"#" },
     { id:"elastic-post-survey", section:"Core Capabilities", name:"Post Interaction Survey", short:"Collect feedback after interactions.", helpUrl:"#" },
-    { id:"elastic-post-transcription", section:"Core Capabilities", name:"Post call transcription", short:"Transcribe calls after completion.", helpUrl:"#" },
-    { id:"elastic-post-sentiment", section:"Core Capabilities", name:"Post call sentiment analysis", short:"Analyze sentiment from completed calls.", helpUrl:"#" },
+    { id:"elastic-post-transcription", section:"Core Capabilities", name:"Post call transcription", short:"Transcribe calls after completion.", helpUrl:"#", addon:true },
+    { id:"elastic-post-sentiment", section:"Core Capabilities", name:"Post call sentiment analysis", short:"Analyze sentiment from completed calls.", helpUrl:"#", addon:true },
     { id:"elastic-callback", section:"Core Capabilities", name:"Schedule callback", short:"Schedule callbacks at convenient times.", helpUrl:"#" },
     { id:"elastic-followup", section:"Core Capabilities", name:"Schedule follow-up", short:"Schedule follow-up interactions.", helpUrl:"#" },
     { id:"elastic-wfm", section:"Core Capabilities", name:"Workforce Management", short:"Forecast, schedule and manage workforce.", helpUrl:"#" },
@@ -739,7 +808,7 @@
     { id:"elastic-rt-reporting", section:"Core Capabilities", name:"Realtime Reporting", short:"Real-time performance dashboards.", helpUrl:"#" },
     { id:"elastic-historical-reporting", section:"Core Capabilities", name:"Historical Reporting", short:"Historical trend analysis and reporting.", helpUrl:"#" },
     { id:"elastic-contact-history", section:"Core Capabilities", name:"Advanced contact history", short:"Complete interaction history across channels.", helpUrl:"#" },
-    { id:"elastic-speech-analytics", section:"Core Capabilities", name:"Speech Analytics", short:"Analyze speech patterns and content.", helpUrl:"#" },
+    { id:"elastic-speech-analytics", section:"Core Capabilities", name:"Speech Analytics", short:"Analyze speech patterns and content.", helpUrl:"#", addon:true },
 
     // AI Bolt-On – Chargeable add on
     { id:"elastic-ai-insights", section:"AI Bolt-On", name:"AI Insights", short:"Advanced AI-powered insights and analytics.", helpUrl:"#", addon:true },
@@ -747,9 +816,9 @@
     { id:"elastic-ai-autopilot", section:"AI Bolt-On", name:"AI Autopilot", short:"Automated AI-driven interaction handling.", helpUrl:"#", addon:true },
 
     // Google CCAI Products
-    { id:"elastic-cca-assist", section:"Google CCAI", name:"CCA Assist", short:"Google Contact Center AI assistance.", helpUrl:"#", addon:true },
+    { id:"elastic-cca-assist", section:"Google CCAI", name:"CCA Insights", short:"Google Contact Center AI assistance.", helpUrl:"#", addon:true },
     { id:"elastic-dialogue-flow", section:"Google CCAI", name:"Dialogue Flow CX", short:"Google Dialogflow CX for conversational experiences.", helpUrl:"#", addon:true },
-    { id:"elastic-agent-assist", section:"Google CCAI", name:"AgentAssist", short:"Agent assistance powered by Google AI.", helpUrl:"#", addon:true },
+    { id:"elastic-agent-assist", section:"Google CCAI", name:"AgentAssist", short:"Real-time agent assistance powered by Google AI.", helpUrl:"#", addon:true },
 
     // IPI Cloud PCI
     { id:"elastic-agentpay", section:"IPI Cloud PCI", name:"AgentPay", short:"PCI-compliant payment handling by agents.", helpUrl:"#", pci:true },
@@ -861,6 +930,8 @@
   const legend = document.getElementById("legend");
   const modalHeader = document.getElementById("modalHeader");
   const modalNote = document.getElementById("modalNote");
+  const licenseSelector = document.getElementById("licenseSelector");
+  const licenseType = document.getElementById("licenseType");
 
   function switchPlatform(platform) {
     currentPlatform = platform;
@@ -873,6 +944,7 @@
       platformTitle.textContent = 'Genesys CX3 Functional Map Level 1 – CX / WEM';
       legend.classList.remove('elastic');
       modalHeader.classList.remove('elastic');
+      licenseSelector.classList.remove('elastic');
       document.querySelector('.columns')?.classList.remove('elastic');
     } else {
       genesysTab.classList.remove('active');
@@ -881,6 +953,7 @@
       platformTitle.textContent = 'Elastic CX Functional Map – Core + Add-ons';
       legend.classList.add('elastic');
       modalHeader.classList.add('elastic');
+      licenseSelector.classList.add('elastic');
       document.querySelector('.columns')?.classList.add('elastic');
     }
     
@@ -890,8 +963,14 @@
   function matchesFilters(f){
     const fs = state.featureState[f.id] || { status:"unassigned", notes:"" };
 
+    // Apply license filter
+    if (currentLicenseFilter === 'core' && f.addon) return false;
+    if (currentLicenseFilter === 'addons' && !f.addon) return false;
+
+    // Apply status filter
     if (state.statusFilter !== "all" && fs.status !== state.statusFilter) return false;
 
+    // Apply search filter
     const q = state.search.trim().toLowerCase();
     if (!q) return true;
 
@@ -953,7 +1032,10 @@
     wrap.className = "featurewrap";
 
     const box = document.createElement("div");
-    box.className = `feature status-${fs.status}`;
+    let boxClass = `feature status-${fs.status}`;
+    if (f.addon) boxClass += ' add-on';
+    box.className = boxClass;
+    
     box.setAttribute("role","button");
     box.setAttribute("tabindex","0");
     box.innerHTML = `<div class="label">${escapeHtml(f.name)}</div>`;
@@ -1052,8 +1134,8 @@
     modalDesc.textContent = f.short || "No description provided yet.";
     
     let metaText = `<strong>Status:</strong> ${STATUS_LABEL[fs.status] || fs.status}`;
-    if (f.addon) metaText += '<br><strong>Add-on:</strong> Chargeable additional feature';
-    if (f.pci) metaText += '<br><strong>PCI:</strong> IPI Cloud PCI product';
+    if (f.addon) metaText += '<br><strong>💰 Add-on:</strong> Chargeable additional feature';
+    if (f.pci) metaText += '<br><strong>🔒 PCI:</strong> IPI Cloud PCI product';
     modalMeta.innerHTML = metaText;
 
     modalStatus.value = fs.status;
@@ -1136,6 +1218,7 @@
     const exportData = {
       exportedAt: new Date().toISOString(),
       platform: currentPlatform,
+      licenseFilter: currentLicenseFilter,
       features: getCurrentFeatures(),
       featureState: state.featureState
     };
@@ -1146,6 +1229,12 @@
     a.download = `cx-heatmap-${currentPlatform}-${new Date().toISOString().slice(0,10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
+  });
+
+  // License filter change
+  licenseType.addEventListener("change", () => {
+    currentLicenseFilter = licenseType.value;
+    render();
   });
 
   // Tab switching
