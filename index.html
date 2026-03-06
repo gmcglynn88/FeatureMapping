@@ -608,7 +608,7 @@
     }
     .stats-grid{
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: 15px;
       margin-top: 15px;
     }
@@ -617,6 +617,16 @@
       border-radius: 10px;
       background: var(--bg);
       text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .stat-card:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .stat-card.active{
+      outline: 3px solid var(--elastic-primary);
+      outline-offset: 2px;
     }
     .stat-value{
       font-size: 32px;
@@ -634,6 +644,117 @@
     .stat-card.different{ border-left: 4px solid var(--match-different); }
     .stat-card.ecx-only{ border-left: 4px solid var(--match-ecx-only); }
     .stat-card.genesys-only{ border-left: 4px solid var(--match-genesys-only); }
+
+    /* Match filter dropdown */
+    .match-filter {
+      margin: 0 0 20px;
+      padding: 12px 16px;
+      background: white;
+      border-radius: 12px;
+      border: 2px solid var(--elastic-primary);
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .match-filter label {
+      font-weight: 900;
+      font-size: 14px;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .match-filter select {
+      padding: 8px 16px;
+      border: 2px solid var(--border);
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 14px;
+      outline: none;
+      background: white;
+      min-width: 200px;
+    }
+
+    /* Breadcrumb navigation */
+    .breadcrumb {
+      margin: 10px 0;
+      padding: 8px 12px;
+      background: white;
+      border-radius: 30px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .breadcrumb a {
+      color: var(--elastic-primary);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    .breadcrumb span {
+      color: var(--muted);
+    }
+
+    /* Drill-down view */
+    .drill-down-view {
+      margin-top: 20px;
+    }
+    .drill-down-header {
+      background: white;
+      border-radius: 12px;
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      border-left: 4px solid var(--elastic-primary);
+    }
+    .drill-down-header h3 {
+      margin: 0 0 5px;
+      color: var(--elastic-primary);
+    }
+    .drill-down-header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .drill-down-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+    .drill-down-card {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      border: 1px solid var(--border);
+    }
+    .drill-down-card.genesys {
+      border-left: 4px solid var(--match-genesys-only);
+    }
+    .drill-down-card.ecx {
+      border-left: 4px solid var(--match-ecx-only);
+    }
+    .drill-down-card h4 {
+      margin: 0 0 8px;
+      font-size: 14px;
+      font-weight: 900;
+    }
+    .drill-down-card p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .drill-down-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 900;
+      margin-top: 8px;
+      background: var(--bg);
+    }
   </style>
 </head>
 
@@ -677,34 +798,39 @@
     </select>
   </div>
 
-  <!-- Comparison summary stats (hidden by default) -->
-  <div id="comparisonStats" class="comparison-stats" style="display: none;">
-    <h3 style="margin:0; color: var(--elastic-primary);">Feature Parity Summary</h3>
-    <div class="stats-grid" id="statsGrid"></div>
-  </div>
-
-  <div class="controls">
-    <div class="pill">
-      <label for="search">Search</label>
-      <input id="search" type="text" placeholder="Search features..." />
+  <!-- Comparison specific controls -->
+  <div id="comparisonControls" style="display: none;">
+    <!-- Breadcrumb navigation -->
+    <div class="breadcrumb" id="breadcrumb" style="display: none;">
+      <a id="breadcrumbHome">All Comparisons</a>
+      <span>/</span>
+      <span id="breadcrumbCurrent"></span>
     </div>
 
-    <div class="pill">
-      <label for="statusFilter">Status</label>
-      <select id="statusFilter">
-        <option value="all">All</option>
-        <option value="unassigned">Existing not in use</option>
-        <option value="inuse">In use</option>
-        <option value="notopt">Not fully optimised</option>
-        <option value="unavailable">Roadmap</option>
+    <!-- Match type filter -->
+    <div class="match-filter" id="matchFilter">
+      <label for="matchType">Filter by Match Type:</label>
+      <select id="matchType">
+        <option value="all">All Matches</option>
+        <option value="match-success">Full Match</option>
+        <option value="match-partial">Partial Match</option>
+        <option value="match-different">Different</option>
+        <option value="match-genesys-only">Genesys Only</option>
+        <option value="match-ecx-only">ECX Only</option>
       </select>
     </div>
 
-    <button class="secondary" id="toggleEdit">✏️ Edit mode: On</button>
-    <button class="danger" id="resetAll">🧽 Reset</button>
-    <button id="exportJson">📤 Export JSON</button>
+    <!-- Comparison summary stats -->
+    <div id="comparisonStats" class="comparison-stats">
+      <h3 style="margin:0; color: var(--elastic-primary);">Feature Parity Summary (click to filter)</h3>
+      <div class="stats-grid" id="statsGrid"></div>
+    </div>
   </div>
 
+  <!-- Drill-down view (hidden by default) -->
+  <div id="drillDownView" class="drill-down-view" style="display: none;"></div>
+
+  <!-- Main columns view -->
   <div id="columns" class="columns"></div>
 
   <div class="footer">Click a box to open details • Saved in your browser (localStorage) • Hover for quick actions in edit mode</div>
@@ -776,6 +902,9 @@
   // Current platform: 'genesys', 'ecx', or 'compare'
   let currentPlatform = 'genesys';
   let currentLicenseFilter = 'all'; // 'all', 'voice', 'omni', 'max', 'addons'
+  let currentMatchFilter = 'all';
+  let drillDownMode = null; // { type: 'matchType', value: 'match-success', features: [] }
+  let comparisonData = null;
 
   // ===== Genesys Features (existing) =====
   const GENESYS_FEATURES = [
@@ -1078,6 +1207,14 @@
     genesysOnly: "Genesys Only"
   };
 
+  const MATCH_TYPE_DISPLAY = {
+    'match-success': { label: 'Full Match', color: '#4CAF50' },
+    'match-partial': { label: 'Partial Match', color: '#FFC107' },
+    'match-different': { label: 'Different', color: '#F44336' },
+    'match-genesys-only': { label: 'Genesys Only', color: '#2196F3' },
+    'match-ecx-only': { label: 'ECX Only', color: '#9C27B0' }
+  };
+
   let state = {
     editMode: true,
     search: "",
@@ -1172,6 +1309,10 @@
         genesys: gf,
         ecx: ecxFeature || null,
         matchType,
+        matchClass: matchType === 'match' ? 'match-success' : 
+                     matchType === 'partial' ? 'match-partial' :
+                     matchType === 'different' ? 'match-different' :
+                     matchType === 'ecxOnly' ? 'match-ecx-only' : 'match-genesys-only',
         section: gf.section
       });
       stats[matchType]++;
@@ -1186,6 +1327,7 @@
           genesys: null,
           ecx: ef,
           matchType: 'ecxOnly',
+          matchClass: 'match-ecx-only',
           section: 'Add-ons & Premium Features'
         });
         stats.ecxOnly++;
@@ -1213,11 +1355,19 @@
   const modalNote = document.getElementById("modalNote");
   const licenseSelector = document.getElementById("licenseSelector");
   const licenseType = document.getElementById("licenseType");
+  const comparisonControls = document.getElementById("comparisonControls");
+  const matchFilter = document.getElementById("matchFilter");
+  const matchType = document.getElementById("matchType");
   const comparisonStats = document.getElementById("comparisonStats");
   const statsGrid = document.getElementById("statsGrid");
+  const drillDownView = document.getElementById("drillDownView");
+  const breadcrumb = document.getElementById("breadcrumb");
+  const breadcrumbHome = document.getElementById("breadcrumbHome");
+  const breadcrumbCurrent = document.getElementById("breadcrumbCurrent");
 
   function switchPlatform(platform) {
     currentPlatform = platform;
+    drillDownMode = null;
     
     // Update UI
     if (platform === 'genesys') {
@@ -1231,7 +1381,9 @@
       licenseSelector.classList.remove('ecx');
       document.querySelector('.columns')?.classList.remove('ecx', 'compare');
       licenseSelector.style.display = 'none';
-      comparisonStats.style.display = 'none';
+      comparisonControls.style.display = 'none';
+      drillDownView.style.display = 'none';
+      breadcrumb.style.display = 'none';
     } else if (platform === 'ecx') {
       genesysTab.classList.remove('active');
       ecxTab.classList.add('active');
@@ -1246,7 +1398,9 @@
       document.querySelector('.columns')?.classList.add('ecx');
       document.querySelector('.columns')?.classList.remove('compare');
       licenseSelector.style.display = 'inline-flex';
-      comparisonStats.style.display = 'none';
+      comparisonControls.style.display = 'none';
+      drillDownView.style.display = 'none';
+      breadcrumb.style.display = 'none';
     } else {
       genesysTab.classList.remove('active');
       ecxTab.classList.remove('active');
@@ -1261,7 +1415,7 @@
       document.querySelector('.columns')?.classList.add('compare');
       document.querySelector('.columns')?.classList.remove('ecx');
       licenseSelector.style.display = 'none';
-      comparisonStats.style.display = 'block';
+      comparisonControls.style.display = 'block';
       
       // Update comparison legend
       const legendGrid = legend.querySelector('.legend-grid');
@@ -1272,9 +1426,9 @@
         <div class="key"><span class="sw match-ecx-only"></span> ECX Only</div>
         <div class="key"><span class="sw match-genesys-only"></span> Genesys Only</div>
       `;
+      
+      renderComparison();
     }
-    
-    render();
   }
 
   function matchesFilters(f){
@@ -1355,39 +1509,81 @@
   }
 
   function renderComparison() {
-    const { comparison, stats } = getFeatureComparison();
+    comparisonData = getFeatureComparison();
     
     // Update stats
+    updateStatsGrid(comparisonData.stats);
+
+    if (drillDownMode) {
+      renderDrillDown();
+    } else {
+      renderComparisonGrid();
+    }
+  }
+
+  function updateStatsGrid(stats) {
     statsGrid.innerHTML = `
-      <div class="stat-card success">
+      <div class="stat-card success ${currentMatchFilter === 'match-success' ? 'active' : ''}" data-match="match-success">
         <div class="stat-value">${stats.match}</div>
         <div class="stat-label">Full Matches</div>
       </div>
-      <div class="stat-card partial">
+      <div class="stat-card partial ${currentMatchFilter === 'match-partial' ? 'active' : ''}" data-match="match-partial">
         <div class="stat-value">${stats.partial}</div>
         <div class="stat-label">Partial Matches</div>
       </div>
-      <div class="stat-card different">
+      <div class="stat-card different ${currentMatchFilter === 'match-different' ? 'active' : ''}" data-match="match-different">
         <div class="stat-value">${stats.different}</div>
         <div class="stat-label">Different</div>
       </div>
-      <div class="stat-card genesys-only">
+      <div class="stat-card genesys-only ${currentMatchFilter === 'match-genesys-only' ? 'active' : ''}" data-match="match-genesys-only">
         <div class="stat-value">${stats.genesysOnly}</div>
         <div class="stat-label">Genesys Only</div>
       </div>
-      <div class="stat-card ecx-only">
+      <div class="stat-card ecx-only ${currentMatchFilter === 'match-ecx-only' ? 'active' : ''}" data-match="match-ecx-only">
         <div class="stat-value">${stats.ecxOnly}</div>
         <div class="stat-label">ECX Only</div>
       </div>
     `;
 
+    // Add click handlers to stat cards
+    document.querySelectorAll('.stat-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const matchType = card.dataset.match;
+        currentMatchFilter = currentMatchFilter === matchType ? 'all' : matchType;
+        matchType.value = currentMatchFilter;
+        renderComparison();
+      });
+    });
+  }
+
+  function renderComparisonGrid() {
     columnsEl.innerHTML = "";
     columnsEl.className = "columns compare";
+    drillDownView.style.display = 'none';
+    breadcrumb.style.display = 'none';
+
+    const { comparison } = comparisonData;
+    
+    // Filter by match type
+    let filtered = comparison;
+    if (currentMatchFilter !== 'all') {
+      filtered = comparison.filter(c => c.matchClass === currentMatchFilter);
+    }
+
+    // Filter by search
+    const q = state.search.trim().toLowerCase();
+    if (q) {
+      filtered = filtered.filter(c => {
+        const genesysName = c.genesys?.name || '';
+        const ecxName = c.ecx?.name || '';
+        return genesysName.toLowerCase().includes(q) || ecxName.toLowerCase().includes(q);
+      });
+    }
 
     const sectionOrder = getCurrentSectionOrder();
     
     sectionOrder.forEach(section => {
-      const items = comparison.filter(c => c.section === section);
+      const items = filtered.filter(c => c.section === section);
       const colCount = 2;
 
       const col = document.createElement("div");
@@ -1418,31 +1614,97 @@
     });
   }
 
+  function renderDrillDown() {
+    columnsEl.style.display = 'none';
+    drillDownView.style.display = 'block';
+    breadcrumb.style.display = 'inline-flex';
+
+    const { comparison } = comparisonData;
+    const matchInfo = MATCH_TYPE_DISPLAY[drillDownMode.value];
+    
+    breadcrumbCurrent.textContent = matchInfo.label;
+
+    // Filter features by match type
+    const features = comparison.filter(c => c.matchClass === drillDownMode.value);
+
+    let html = `
+      <div class="drill-down-header">
+        <h3>${matchInfo.label} Features</h3>
+        <p>${features.length} features found with this match type</p>
+      </div>
+    `;
+
+    if (drillDownMode.value === 'match-genesys-only') {
+      html += '<div class="drill-down-grid">';
+      features.forEach(f => {
+        html += `
+          <div class="drill-down-card genesys">
+            <h4>${f.genesys.name}</h4>
+            <p>${f.genesys.short}</p>
+            <div class="drill-down-badge">Section: ${f.section}</div>
+          </div>
+        `;
+      });
+      html += '</div>';
+    } else if (drillDownMode.value === 'match-ecx-only') {
+      html += '<div class="drill-down-grid">';
+      features.forEach(f => {
+        html += `
+          <div class="drill-down-card ecx">
+            <h4>${f.ecx.name}</h4>
+            <p>${f.ecx.short}</p>
+            <div class="drill-down-badge">${f.ecx.license ? f.ecx.license.toUpperCase() + ' License' : ''}</div>
+          </div>
+        `;
+      });
+      html += '</div>';
+    } else {
+      html += '<div class="drill-down-grid">';
+      features.forEach(f => {
+        html += `
+          <div class="drill-down-card">
+            <h4>Genesys: ${f.genesys.name}</h4>
+            <p>${f.genesys.short}</p>
+            <hr style="margin: 10px 0; border-color: var(--border);">
+            <h4>ECX: ${f.ecx.name}</h4>
+            <p>${f.ecx.short}</p>
+            <div class="drill-down-badge">Section: ${f.section}</div>
+          </div>
+        `;
+      });
+      html += '</div>';
+    }
+
+    drillDownView.innerHTML = html;
+  }
+
   function renderComparisonFeature(item) {
     const wrap = document.createElement("div");
     wrap.className = "featurewrap";
 
     const box = document.createElement("div");
-    const boxClass = `feature comparison-${item.matchType}`;
+    const boxClass = `feature comparison-${item.matchClass}`;
     box.className = boxClass;
     
     let displayName = '';
     if (item.genesys && item.ecx) {
-      displayName = `${item.genesys.name} ↔ ${item.ecx.name}`;
+      displayName = `${item.genesys.name}`;
     } else if (item.genesys) {
-      displayName = `${item.genesys.name} (Genesys Only)`;
+      displayName = `${item.genesys.name}`;
     } else if (item.ecx) {
-      displayName = `${item.ecx.name} (ECX Only)`;
+      displayName = `${item.ecx.name}`;
     }
     
     box.innerHTML = `<div class="label">${escapeHtml(displayName)}</div>`;
 
     box.addEventListener("click", () => {
-      alert(`Comparison: ${COMPARISON_LABEL[item.matchType]}\n\n${
-        item.genesys ? `Genesys: ${item.genesys.short}\n\n` : ''
-      }${
-        item.ecx ? `ECX: ${item.ecx.short}` : ''
-      }`);
+      // Drill down into this match type
+      drillDownMode = {
+        type: 'matchType',
+        value: item.matchClass,
+        features: [item]
+      };
+      renderComparison();
     });
 
     wrap.appendChild(box);
@@ -1657,7 +1919,7 @@
       licenseFilter: currentLicenseFilter,
       features: getCurrentFeatures(),
       featureState: state.featureState,
-      ...(currentPlatform === 'compare' && { comparison: getFeatureComparison() })
+      ...(currentPlatform === 'compare' && { comparison: comparisonData })
     };
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -1672,6 +1934,19 @@
   licenseType.addEventListener("change", () => {
     currentLicenseFilter = licenseType.value;
     render();
+  });
+
+  // Match type filter change
+  matchType.addEventListener("change", () => {
+    currentMatchFilter = matchType.value;
+    drillDownMode = null;
+    renderComparison();
+  });
+
+  // Breadcrumb home click
+  breadcrumbHome.addEventListener("click", () => {
+    drillDownMode = null;
+    renderComparison();
   });
 
   // Tab switching
