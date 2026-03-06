@@ -1384,6 +1384,10 @@
       comparisonControls.style.display = 'none';
       drillDownView.style.display = 'none';
       breadcrumb.style.display = 'none';
+      
+      // Reset match filter when leaving compare mode
+      if (matchType) matchType.value = 'all';
+      currentMatchFilter = 'all';
     } else if (platform === 'ecx') {
       genesysTab.classList.remove('active');
       ecxTab.classList.add('active');
@@ -1522,6 +1526,8 @@
   }
 
   function updateStatsGrid(stats) {
+    if (!statsGrid) return;
+    
     statsGrid.innerHTML = `
       <div class="stat-card success ${currentMatchFilter === 'match-success' ? 'active' : ''}" data-match="match-success">
         <div class="stat-value">${stats.match}</div>
@@ -1548,15 +1554,18 @@
     // Add click handlers to stat cards
     document.querySelectorAll('.stat-card').forEach(card => {
       card.addEventListener('click', () => {
-        const matchType = card.dataset.match;
-        currentMatchFilter = currentMatchFilter === matchType ? 'all' : matchType;
-        matchType.value = currentMatchFilter;
+        const matchTypeValue = card.dataset.match;
+        currentMatchFilter = currentMatchFilter === matchTypeValue ? 'all' : matchTypeValue;
+        if (matchType) matchType.value = currentMatchFilter;
+        drillDownMode = null;
         renderComparison();
       });
     });
   }
 
   function renderComparisonGrid() {
+    if (!columnsEl) return;
+    
     columnsEl.innerHTML = "";
     columnsEl.className = "columns compare";
     drillDownView.style.display = 'none';
@@ -1615,6 +1624,8 @@
   }
 
   function renderDrillDown() {
+    if (!columnsEl || !drillDownView || !breadcrumb || !breadcrumbCurrent) return;
+    
     columnsEl.style.display = 'none';
     drillDownView.style.display = 'block';
     breadcrumb.style.display = 'inline-flex';
@@ -1639,9 +1650,9 @@
       features.forEach(f => {
         html += `
           <div class="drill-down-card genesys">
-            <h4>${f.genesys.name}</h4>
-            <p>${f.genesys.short}</p>
-            <div class="drill-down-badge">Section: ${f.section}</div>
+            <h4>${escapeHtml(f.genesys.name)}</h4>
+            <p>${escapeHtml(f.genesys.short)}</p>
+            <div class="drill-down-badge">Section: ${escapeHtml(f.section)}</div>
           </div>
         `;
       });
@@ -1651,8 +1662,8 @@
       features.forEach(f => {
         html += `
           <div class="drill-down-card ecx">
-            <h4>${f.ecx.name}</h4>
-            <p>${f.ecx.short}</p>
+            <h4>${escapeHtml(f.ecx.name)}</h4>
+            <p>${escapeHtml(f.ecx.short)}</p>
             <div class="drill-down-badge">${f.ecx.license ? f.ecx.license.toUpperCase() + ' License' : ''}</div>
           </div>
         `;
@@ -1663,12 +1674,12 @@
       features.forEach(f => {
         html += `
           <div class="drill-down-card">
-            <h4>Genesys: ${f.genesys.name}</h4>
-            <p>${f.genesys.short}</p>
+            <h4>Genesys: ${escapeHtml(f.genesys.name)}</h4>
+            <p>${escapeHtml(f.genesys.short)}</p>
             <hr style="margin: 10px 0; border-color: var(--border);">
-            <h4>ECX: ${f.ecx.name}</h4>
-            <p>${f.ecx.short}</p>
-            <div class="drill-down-badge">Section: ${f.section}</div>
+            <h4>ECX: ${escapeHtml(f.ecx.name)}</h4>
+            <p>${escapeHtml(f.ecx.short)}</p>
+            <div class="drill-down-badge">Section: ${escapeHtml(f.section)}</div>
           </div>
         `;
       });
@@ -1895,69 +1906,85 @@
   });
 
   // ===== Controls =====
-  searchEl.addEventListener("input", () => { state.search = searchEl.value; render(); });
-  statusFilterEl.addEventListener("change", () => { state.statusFilter = statusFilterEl.value; render(); });
+  if (searchEl) searchEl.addEventListener("input", () => { state.search = searchEl.value; render(); });
+  if (statusFilterEl) statusFilterEl.addEventListener("change", () => { state.statusFilter = statusFilterEl.value; render(); });
 
-  toggleEditBtn.addEventListener("click", () => {
-    state.editMode = !state.editMode;
-    toggleEditBtn.textContent = state.editMode ? "✏️ Edit mode: On" : "✏️ Edit mode: Off";
-    render();
-  });
+  if (toggleEditBtn) {
+    toggleEditBtn.addEventListener("click", () => {
+      state.editMode = !state.editMode;
+      toggleEditBtn.textContent = state.editMode ? "✏️ Edit mode: On" : "✏️ Edit mode: Off";
+      render();
+    });
+  }
 
-  resetAllBtn.addEventListener("click", () => {
-    if (!confirm("Reset all statuses/notes back to defaults?")) return;
-    localStorage.removeItem(STORAGE_KEY);
-    state.featureState = {};
-    loadState();
-    render();
-  });
+  if (resetAllBtn) {
+    resetAllBtn.addEventListener("click", () => {
+      if (!confirm("Reset all statuses/notes back to defaults?")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      state.featureState = {};
+      loadState();
+      render();
+    });
+  }
 
-  exportBtn.addEventListener("click", () => {
-    const exportData = {
-      exportedAt: new Date().toISOString(),
-      platform: currentPlatform,
-      licenseFilter: currentLicenseFilter,
-      features: getCurrentFeatures(),
-      featureState: state.featureState,
-      ...(currentPlatform === 'compare' && { comparison: comparisonData })
-    };
-    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `cx-${currentPlatform}-${new Date().toISOString().slice(0,10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  });
+  if (exportBtn) {
+    exportBtn.addEventListener("click", () => {
+      const exportData = {
+        exportedAt: new Date().toISOString(),
+        platform: currentPlatform,
+        licenseFilter: currentLicenseFilter,
+        features: getCurrentFeatures(),
+        featureState: state.featureState,
+        ...(currentPlatform === 'compare' && { comparison: comparisonData })
+      };
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `cx-${currentPlatform}-${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  }
 
   // License filter change
-  licenseType.addEventListener("change", () => {
-    currentLicenseFilter = licenseType.value;
-    render();
-  });
+  if (licenseType) {
+    licenseType.addEventListener("change", () => {
+      currentLicenseFilter = licenseType.value;
+      render();
+    });
+  }
 
   // Match type filter change
-  matchType.addEventListener("change", () => {
-    currentMatchFilter = matchType.value;
-    drillDownMode = null;
-    renderComparison();
-  });
+  if (matchType) {
+    matchType.addEventListener("change", () => {
+      currentMatchFilter = matchType.value;
+      drillDownMode = null;
+      if (currentPlatform === 'compare') {
+        renderComparison();
+      }
+    });
+  }
 
   // Breadcrumb home click
-  breadcrumbHome.addEventListener("click", () => {
-    drillDownMode = null;
-    renderComparison();
-  });
+  if (breadcrumbHome) {
+    breadcrumbHome.addEventListener("click", () => {
+      drillDownMode = null;
+      if (currentPlatform === 'compare') {
+        renderComparison();
+      }
+    });
+  }
 
   // Tab switching
-  genesysTab.addEventListener("click", () => switchPlatform('genesys'));
-  ecxTab.addEventListener("click", () => switchPlatform('ecx'));
-  compareTab.addEventListener("click", () => switchPlatform('compare'));
+  if (genesysTab) genesysTab.addEventListener("click", () => switchPlatform('genesys'));
+  if (ecxTab) ecxTab.addEventListener("click", () => switchPlatform('ecx'));
+  if (compareTab) compareTab.addEventListener("click", () => switchPlatform('compare'));
 
   // Init
   loadState();
   render();
-  licenseSelector.style.display = 'none'; // Hide license selector initially (Genesys tab)
+  if (licenseSelector) licenseSelector.style.display = 'none'; // Hide license selector initially (Genesys tab)
 })();
 </script>
 </body>
