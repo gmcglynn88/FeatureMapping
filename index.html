@@ -33,6 +33,13 @@
       --roadmap:#dc2626;        /* red */
       --addon:#9333EA;          /* purple for add-ons */
       --shadow:0 1px 3px rgba(0,0,0,.08);
+
+      /* Comparison colors */
+      --match-success:#4CAF50;
+      --match-partial:#FFC107;
+      --match-different:#F44336;
+      --match-ecx-only:#9C27B0;
+      --match-genesys-only:#2196F3;
     }
 
     body, h1, h2, h3, h4, h5, h6, p, div, span, label, button, input, select, textarea {
@@ -84,6 +91,7 @@
       margin:0 0 20px;
       border-bottom: 2px solid var(--border);
       padding-bottom: 0;
+      flex-wrap: wrap;
     }
     .tab{
       padding: 12px 28px;
@@ -111,6 +119,10 @@
       color: var(--ecx-max);
       border-bottom-color: var(--ecx-max);
     }
+    .tab.compare.active{
+      color: var(--elastic-primary);
+      border-bottom-color: var(--elastic-primary);
+    }
 
     /* Legend box like screenshot */
     .legend{
@@ -123,6 +135,9 @@
     }
     .legend.ecx{
       border-color: var(--ecx-max);
+    }
+    .legend.compare{
+      border-color: var(--elastic-primary);
     }
     .legend h3{
       margin:0 0 8px;
@@ -158,6 +173,13 @@
     .sw.inuse{ background: rgba(22,163,74,.25); border-color: rgba(22,163,74,.65); }
     .sw.notopt{ background: rgba(245,158,11,.25); border-color: rgba(245,158,11,.75); }
     .sw.addon{ background: rgba(147,51,234,.15); border-color: var(--addon); border-style: dotted; }
+    
+    /* Comparison legend */
+    .sw.match-success{ background: var(--match-success); border-color: var(--match-success); }
+    .sw.match-partial{ background: var(--match-partial); border-color: var(--match-partial); }
+    .sw.match-different{ background: var(--match-different); border-color: var(--match-different); }
+    .sw.match-ecx-only{ background: var(--match-ecx-only); border-color: var(--match-ecx-only); }
+    .sw.match-genesys-only{ background: var(--match-genesys-only); border-color: var(--match-genesys-only); }
 
     /* Controls */
     .controls{
@@ -278,6 +300,12 @@
       border-right-color: var(--ecx-max);
     }
 
+    .compare .col::before{
+      border-top-color: var(--elastic-primary);
+      border-left-color: var(--elastic-primary);
+      border-right-color: var(--elastic-primary);
+    }
+
     .col-title{
       text-align:center;
       font-weight: 900;
@@ -369,6 +397,33 @@
       border-style: dashed;
     }
 
+    /* Comparison tile styling */
+    .feature.comparison-match-success{
+      background: rgba(76, 175, 80, 0.2);
+      border-color: var(--match-success);
+      border-width: 3px;
+    }
+    .feature.comparison-match-partial{
+      background: rgba(255, 193, 7, 0.2);
+      border-color: var(--match-partial);
+      border-width: 3px;
+    }
+    .feature.comparison-match-different{
+      background: rgba(244, 67, 54, 0.2);
+      border-color: var(--match-different);
+      border-width: 3px;
+    }
+    .feature.comparison-ecx-only{
+      background: rgba(156, 39, 176, 0.2);
+      border-color: var(--match-ecx-only);
+      border-width: 3px;
+    }
+    .feature.comparison-genesys-only{
+      background: rgba(33, 150, 243, 0.2);
+      border-color: var(--match-genesys-only);
+      border-width: 3px;
+    }
+
     .featurewrap{ 
       position:relative; 
       display:inline-block;
@@ -416,6 +471,9 @@
     .modal-header.ecx{
       background: var(--ecx-max);
     }
+    .modal-header.compare{
+      background: var(--elastic-primary);
+    }
     .modal-header h2{
       margin:0;
       font-size: 18px;
@@ -446,6 +504,7 @@
     }
     .panel h3{ margin:0 0 10px; color: var(--primary-dark); font-size: 14px; font-weight: 900; }
     .ecx .panel h3{ color: var(--ecx-max); }
+    .compare .panel h3{ color: var(--elastic-primary); }
     .desc{ margin:0; color: var(--text); font-weight: 600; line-height: 1.5; font-size: 14px; }
     .muted{ margin-top: 10px; color: var(--muted); font-size: 12px; font-weight: 700; }
     .field{ margin-bottom: 12px; }
@@ -539,19 +598,42 @@
       min-width: 200px;
     }
 
-    /* License badges */
-    .license-badge{
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 20px;
-      font-size: 10px;
-      font-weight: 900;
-      margin-left: 6px;
-      color: white;
+    /* Comparison summary stats */
+    .comparison-stats{
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 2px solid var(--elastic-primary);
     }
-    .badge-voice{ background: var(--ecx-voice); }
-    .badge-omni{ background: var(--ecx-omni); }
-    .badge-max{ background: var(--ecx-max); }
+    .stats-grid{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+    .stat-card{
+      padding: 15px;
+      border-radius: 10px;
+      background: var(--bg);
+      text-align: center;
+    }
+    .stat-value{
+      font-size: 32px;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+    .stat-label{
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .stat-card.success{ border-left: 4px solid var(--match-success); }
+    .stat-card.partial{ border-left: 4px solid var(--match-partial); }
+    .stat-card.different{ border-left: 4px solid var(--match-different); }
+    .stat-card.ecx-only{ border-left: 4px solid var(--match-ecx-only); }
+    .stat-card.genesys-only{ border-left: 4px solid var(--match-genesys-only); }
   </style>
 </head>
 
@@ -573,7 +655,6 @@
         <div class="key"><span class="sw notopt"></span> In use but not full optimised</div>
         <div class="key"><span class="sw addon"></span> Chargeable add-on</div>
       </div>
-      <!-- Removed ECX license indicators from legend as requested -->
     </div>
   </div>
 
@@ -581,9 +662,10 @@
   <div class="tabs">
     <button class="tab active" id="genesysTab" data-platform="genesys">Genesys</button>
     <button class="tab ecx" id="ecxTab" data-platform="ecx">ECX License Model</button>
+    <button class="tab compare" id="compareTab" data-platform="compare">Feature Comparison</button>
   </div>
 
-  <!-- License Selector -->
+  <!-- License Selector (only shown for ECX tab) -->
   <div class="license-selector" id="licenseSelector">
     <label for="licenseType">View by License:</label>
     <select id="licenseType">
@@ -593,6 +675,12 @@
       <option value="max">ECX Max only</option>
       <option value="addons">Add-ons only</option>
     </select>
+  </div>
+
+  <!-- Comparison summary stats (hidden by default) -->
+  <div id="comparisonStats" class="comparison-stats" style="display: none;">
+    <h3 style="margin:0; color: var(--elastic-primary);">Feature Parity Summary</h3>
+    <div class="stats-grid" id="statsGrid"></div>
   </div>
 
   <div class="controls">
@@ -685,7 +773,7 @@
 
 <script>
 (() => {
-  // Current platform: 'genesys' or 'ecx'
+  // Current platform: 'genesys', 'ecx', or 'compare'
   let currentPlatform = 'genesys';
   let currentLicenseFilter = 'all'; // 'all', 'voice', 'omni', 'max', 'addons'
 
@@ -848,6 +936,98 @@
     { id:"ecx-pauseable-pci", section:"IPI Cloud PCI", name:"Pauseable Automated PCI", short:"Pause recording for PCI-compliant payment collection.", helpUrl:"#", pci:true, license:"max" },
   ];
 
+  // Feature mapping for comparison (Genesys feature ID -> ECX feature ID)
+  const FEATURE_MAPPING = {
+    // Channels & Automation
+    "voice": "ecx-voice-basic",
+    "email": "ecx-email",
+    "web-messenger": "ecx-chat",
+    "social-channels": "ecx-social",
+    "voice-bots": "ecx-ai-bots",
+    "whatsapp": "ecx-social",
+    "outbound-dialling": "ecx-preview-dialer",
+    "digital-bots": "ecx-ai-bots",
+    "crm-integration": "ecx-crm-integration",
+    "agentless-outbound": "ecx-agentless-preview",
+    "crm-cti-integration": "ecx-crm-integration",
+    
+    // Resource Management
+    "ai-forecasting": "ecx-wfm",
+    "manual-load-scheduling": "ecx-wfm",
+    "meeting-planner": "ecx-wfm",
+    "schedule-rules": "ecx-wfm",
+    "work-item-forecasting": "ecx-wfm",
+    "shift-rotations": "ecx-wfm",
+    "capacity-planning": "ecx-wfm",
+    "shift-trading": "ecx-wfm",
+    "continuous-forecasting": "ecx-wfm",
+    "shift-bidding": "ecx-wfm",
+    "outbound-forecasting": "ecx-wfm",
+    "availability-preferences": "ecx-wfm",
+    "overtime-vto": "ecx-wfm",
+    "time-off": "ecx-wfm",
+    "tempo": "ecx-mobile-app",
+    "monitoring-adherence": "ecx-wfm",
+    
+    // Recording, Quality & Insight
+    "voice-digital-recording": "ecx-recording",
+    "station-side": "ecx-recording",
+    "speech-text": "ecx-speech-analytics",
+    "transcription": "ecx-post-transcription",
+    "screen-recording": "ecx-recording",
+    "quality-evaluations": "ecx-quality-management",
+    "acoustic-analysis": "ecx-speech-analytics",
+    "sensitive-masking": "ecx-recording",
+    "retention-archival": "ecx-recording",
+    "qm-assistance": "ecx-quality-management",
+    "cust-sentiment": "ecx-post-sentiment",
+    "agent-empathy": "ecx-ai-insights",
+    "consent-securepause": "ecx-recording",
+    "voc-web": "ecx-post-survey",
+    "topic-spotting": "ecx-ai-insights",
+    "social-listening-rqi": "ecx-ai-insights",
+    "rt-voice-mcb": "ecx-monitoring",
+    "voc-voice": "ecx-post-survey",
+    "topic-mining": "ecx-ai-insights",
+    "transcript-search": "ecx-speech-analytics",
+    "rt-screen-monitoring": "ecx-monitoring",
+    "rt-digital-mcb": "ecx-monitoring",
+    
+    // AI Powered
+    "knowledge-base": "ecx-ai-insights",
+    "support-centre": "ecx-ai-insights",
+    "agent-copilot": "ecx-ai-sidekick",
+    "perf-insights-ai": "ecx-ai-insights",
+    "supervisor-copilot": "ecx-ai-sidekick",
+    "admin-copilot": "ecx-ai-sidekick",
+    "ai-studio": "ecx-ai-autopilot",
+    "journey-management": "ecx-ai-insights",
+    "ai-guides": "ecx-ai-sidekick",
+    "virtual-agent": "ecx-ai-autopilot",
+    "ai-qa": "ecx-ai-insights",
+    "social-listening-ai": "ecx-ai-insights",
+    "predictive-routing": "ecx-intelligent-routing",
+    "predictive-engagement": "ecx-ai-insights",
+    "operations-hub": "ecx-max-core",
+    "anomaly-detection": "ecx-ai-insights",
+    
+    // Performance Management
+    "rt-reporting": "ecx-rt-reporting",
+    "hist-reporting": "ecx-historical-reporting",
+    "onboarding-learning": "ecx-max-core",
+    "perf-scorecards": "ecx-quality-management",
+    "skills-assessment": "ecx-quality-management",
+    "external-metrics": "ecx-historical-reporting",
+    "scheduled-coaching": "ecx-quality-management",
+    "custom-analytics": "ecx-ai-insights",
+    "voe": "ecx-ai-insights",
+    "gamification": "ecx-ai-insights",
+    "contests": "ecx-ai-insights",
+    "perf-insights-pm": "ecx-ai-insights",
+    "rewards": "ecx-ai-insights",
+    "apis-datastream": "ecx-max-core"
+  };
+
   // Section layouts for ECX
   const ECX_SECTION_LAYOUT = {
     "Capability": 4,
@@ -871,6 +1051,16 @@
     "Performance Management"
   ];
 
+  // Comparison sections
+  const COMPARISON_SECTIONS = [
+    "Channels & Automation",
+    "Resource Management",
+    "Recording, Quality & Insight",
+    "AI Powered",
+    "Performance Management",
+    "Add-ons & Premium Features"
+  ];
+
   const STORAGE_KEY = "cx_heatmap_v3";
 
   const STATUS_LABEL = {
@@ -878,6 +1068,14 @@
     inuse: "Feature in use",
     notopt: "In use but not full optimised",
     unavailable: "Roadmap item"
+  };
+
+  const COMPARISON_LABEL = {
+    match: "Full Match",
+    partial: "Partial Match",
+    different: "Different",
+    ecxOnly: "ECX Only",
+    genesysOnly: "Genesys Only"
   };
 
   let state = {
@@ -888,11 +1086,14 @@
   };
 
   function getCurrentFeatures() {
-    return currentPlatform === 'genesys' ? GENESYS_FEATURES : ECX_FEATURES;
+    return currentPlatform === 'genesys' ? GENESYS_FEATURES : 
+           currentPlatform === 'ecx' ? ECX_FEATURES : [];
   }
 
   function getCurrentSectionOrder() {
-    return currentPlatform === 'genesys' ? GENESIS_SECTION_ORDER : ECX_SECTION_ORDER;
+    if (currentPlatform === 'genesys') return GENESIS_SECTION_ORDER;
+    if (currentPlatform === 'ecx') return ECX_SECTION_ORDER;
+    return COMPARISON_SECTIONS;
   }
 
   function getCurrentSectionLayout(section) {
@@ -905,8 +1106,10 @@
         "Performance Management": 2
       };
       return layout[section] || 2;
-    } else {
+    } else if (currentPlatform === 'ecx') {
       return ECX_SECTION_LAYOUT[section] || 2;
+    } else {
+      return 2; // Comparison view - 2 columns
     }
   }
 
@@ -937,6 +1140,62 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ featureState: state.featureState }));
   }
 
+  // ===== Comparison Logic =====
+  function getFeatureComparison() {
+    const comparison = [];
+    const stats = {
+      match: 0,
+      partial: 0,
+      different: 0,
+      ecxOnly: 0,
+      genesysOnly: 0,
+      total: 0
+    };
+
+    // Compare Genesys features to ECX
+    GENESYS_FEATURES.forEach(gf => {
+      const ecxId = FEATURE_MAPPING[gf.id];
+      const ecxFeature = ECX_FEATURES.find(ef => ef.id === ecxId);
+      
+      let matchType = 'genesysOnly';
+      if (ecxFeature) {
+        // Check if it's a direct match (same capability)
+        if (gf.name.toLowerCase().includes(ecxFeature.name.toLowerCase()) || 
+            ecxFeature.name.toLowerCase().includes(gf.name.toLowerCase())) {
+          matchType = 'match';
+        } else {
+          matchType = 'partial';
+        }
+      }
+      
+      comparison.push({
+        genesys: gf,
+        ecx: ecxFeature || null,
+        matchType,
+        section: gf.section
+      });
+      stats[matchType]++;
+      stats.total++;
+    });
+
+    // Find ECX-only features
+    ECX_FEATURES.forEach(ef => {
+      const isMapped = Object.values(FEATURE_MAPPING).includes(ef.id);
+      if (!isMapped) {
+        comparison.push({
+          genesys: null,
+          ecx: ef,
+          matchType: 'ecxOnly',
+          section: 'Add-ons & Premium Features'
+        });
+        stats.ecxOnly++;
+        stats.total++;
+      }
+    });
+
+    return { comparison, stats };
+  }
+
   // ===== UI Elements =====
   const columnsEl = document.getElementById("columns");
   const searchEl = document.getElementById("search");
@@ -946,6 +1205,7 @@
   const exportBtn = document.getElementById("exportJson");
   const genesysTab = document.getElementById("genesysTab");
   const ecxTab = document.getElementById("ecxTab");
+  const compareTab = document.getElementById("compareTab");
   const platformKicker = document.getElementById("platformKicker");
   const platformTitle = document.getElementById("platformTitle");
   const legend = document.getElementById("legend");
@@ -953,6 +1213,8 @@
   const modalNote = document.getElementById("modalNote");
   const licenseSelector = document.getElementById("licenseSelector");
   const licenseType = document.getElementById("licenseType");
+  const comparisonStats = document.getElementById("comparisonStats");
+  const statsGrid = document.getElementById("statsGrid");
 
   function switchPlatform(platform) {
     currentPlatform = platform;
@@ -961,23 +1223,55 @@
     if (platform === 'genesys') {
       genesysTab.classList.add('active');
       ecxTab.classList.remove('active');
+      compareTab.classList.remove('active');
       platformKicker.textContent = 'IPI CUSTOMER SUCCESS – GENESYS HEATMAP';
       platformTitle.textContent = 'Genesys CX3 Functional Map Level 1 – CX / WEM';
-      legend.classList.remove('ecx');
-      modalHeader.classList.remove('ecx');
+      legend.classList.remove('ecx', 'compare');
+      modalHeader.classList.remove('ecx', 'compare');
       licenseSelector.classList.remove('ecx');
-      document.querySelector('.columns')?.classList.remove('ecx');
-      licenseSelector.style.display = 'none'; // Hide license selector for Genesys
-    } else {
+      document.querySelector('.columns')?.classList.remove('ecx', 'compare');
+      licenseSelector.style.display = 'none';
+      comparisonStats.style.display = 'none';
+    } else if (platform === 'ecx') {
       genesysTab.classList.remove('active');
       ecxTab.classList.add('active');
+      compareTab.classList.remove('active');
       platformKicker.textContent = 'IPI CUSTOMER SUCCESS – ECX LICENSE MODEL';
       platformTitle.textContent = 'ECX License Model – Voice, Omni & Max';
       legend.classList.add('ecx');
+      legend.classList.remove('compare');
       modalHeader.classList.add('ecx');
+      modalHeader.classList.remove('compare');
       licenseSelector.classList.add('ecx');
       document.querySelector('.columns')?.classList.add('ecx');
-      licenseSelector.style.display = 'inline-flex'; // Show license selector for ECX
+      document.querySelector('.columns')?.classList.remove('compare');
+      licenseSelector.style.display = 'inline-flex';
+      comparisonStats.style.display = 'none';
+    } else {
+      genesysTab.classList.remove('active');
+      ecxTab.classList.remove('active');
+      compareTab.classList.add('active');
+      platformKicker.textContent = 'IPI CUSTOMER SUCCESS – FEATURE COMPARISON';
+      platformTitle.textContent = 'Genesys vs ECX – Feature Parity Analysis';
+      legend.classList.add('compare');
+      legend.classList.remove('ecx');
+      modalHeader.classList.add('compare');
+      modalHeader.classList.remove('ecx');
+      licenseSelector.classList.remove('ecx');
+      document.querySelector('.columns')?.classList.add('compare');
+      document.querySelector('.columns')?.classList.remove('ecx');
+      licenseSelector.style.display = 'none';
+      comparisonStats.style.display = 'block';
+      
+      // Update comparison legend
+      const legendGrid = legend.querySelector('.legend-grid');
+      legendGrid.innerHTML = `
+        <div class="key"><span class="sw match-success"></span> Full Feature Match</div>
+        <div class="key"><span class="sw match-partial"></span> Partial Match</div>
+        <div class="key"><span class="sw match-different"></span> Different Implementation</div>
+        <div class="key"><span class="sw match-ecx-only"></span> ECX Only</div>
+        <div class="key"><span class="sw match-genesys-only"></span> Genesys Only</div>
+      `;
     }
     
     render();
@@ -1012,6 +1306,14 @@
   }
 
   function render(){
+    if (currentPlatform === 'compare') {
+      renderComparison();
+    } else {
+      renderHeatmap();
+    }
+  }
+
+  function renderHeatmap(){
     columnsEl.innerHTML = "";
     columnsEl.className = `columns ${currentPlatform === 'ecx' ? 'ecx' : ''}`;
 
@@ -1052,6 +1354,101 @@
     });
   }
 
+  function renderComparison() {
+    const { comparison, stats } = getFeatureComparison();
+    
+    // Update stats
+    statsGrid.innerHTML = `
+      <div class="stat-card success">
+        <div class="stat-value">${stats.match}</div>
+        <div class="stat-label">Full Matches</div>
+      </div>
+      <div class="stat-card partial">
+        <div class="stat-value">${stats.partial}</div>
+        <div class="stat-label">Partial Matches</div>
+      </div>
+      <div class="stat-card different">
+        <div class="stat-value">${stats.different}</div>
+        <div class="stat-label">Different</div>
+      </div>
+      <div class="stat-card genesys-only">
+        <div class="stat-value">${stats.genesysOnly}</div>
+        <div class="stat-label">Genesys Only</div>
+      </div>
+      <div class="stat-card ecx-only">
+        <div class="stat-value">${stats.ecxOnly}</div>
+        <div class="stat-label">ECX Only</div>
+      </div>
+    `;
+
+    columnsEl.innerHTML = "";
+    columnsEl.className = "columns compare";
+
+    const sectionOrder = getCurrentSectionOrder();
+    
+    sectionOrder.forEach(section => {
+      const items = comparison.filter(c => c.section === section);
+      const colCount = 2;
+
+      const col = document.createElement("div");
+      col.className = "col";
+
+      col.innerHTML = `
+        <div class="col-title">${section}</div>
+        <div class="feature-grid" style="grid-template-columns: repeat(${colCount}, 140px);"></div>
+      `;
+
+      const grid = col.querySelector(".feature-grid");
+
+      if (items.length === 0){
+        const ghost = document.createElement("div");
+        ghost.style.color = "var(--muted)";
+        ghost.style.fontWeight = "800";
+        ghost.style.fontSize = "12px";
+        ghost.style.textAlign = "center";
+        ghost.style.gridColumn = `span ${colCount}`;
+        ghost.style.padding = "6px 0 10px";
+        ghost.textContent = "No matches";
+        grid.appendChild(ghost);
+      } else {
+        items.forEach(item => grid.appendChild(renderComparisonFeature(item)));
+      }
+
+      columnsEl.appendChild(col);
+    });
+  }
+
+  function renderComparisonFeature(item) {
+    const wrap = document.createElement("div");
+    wrap.className = "featurewrap";
+
+    const box = document.createElement("div");
+    const boxClass = `feature comparison-${item.matchType}`;
+    box.className = boxClass;
+    
+    let displayName = '';
+    if (item.genesys && item.ecx) {
+      displayName = `${item.genesys.name} ↔ ${item.ecx.name}`;
+    } else if (item.genesys) {
+      displayName = `${item.genesys.name} (Genesys Only)`;
+    } else if (item.ecx) {
+      displayName = `${item.ecx.name} (ECX Only)`;
+    }
+    
+    box.innerHTML = `<div class="label">${escapeHtml(displayName)}</div>`;
+
+    box.addEventListener("click", () => {
+      alert(`Comparison: ${COMPARISON_LABEL[item.matchType]}\n\n${
+        item.genesys ? `Genesys: ${item.genesys.short}\n\n` : ''
+      }${
+        item.ecx ? `ECX: ${item.ecx.short}` : ''
+      }`);
+    });
+
+    wrap.appendChild(box);
+    return wrap;
+  }
+
   function renderFeature(f){
     const fs = state.featureState[f.id] || { status:"unassigned", notes:"" };
 
@@ -1060,9 +1457,6 @@
 
     const box = document.createElement("div");
     let boxClass = `feature status-${fs.status}`;
-    
-    // REMOVED: the block that added license-* classes for ECX tiles.
-    // This ensures no thick left border is applied.
     
     if (f.addon) boxClass += ' add-on';
     box.className = boxClass;
@@ -1077,7 +1471,7 @@
     });
 
     // Add quick status change buttons in edit mode
-    if (state.editMode) {
+    if (state.editMode && currentPlatform !== 'compare') {
       const actions = document.createElement("div");
       actions.style.position = "absolute";
       actions.style.bottom = "-20px";
@@ -1156,6 +1550,11 @@
   let activeFeatureId = null;
 
   function openModal(id){
+    if (currentPlatform === 'compare') {
+      alert('Feature details are not available in comparison mode.');
+      return;
+    }
+
     activeFeatureId = id;
     const features = getCurrentFeatures();
     const f = features.find(x => x.id === id);
@@ -1257,13 +1656,14 @@
       platform: currentPlatform,
       licenseFilter: currentLicenseFilter,
       features: getCurrentFeatures(),
-      featureState: state.featureState
+      featureState: state.featureState,
+      ...(currentPlatform === 'compare' && { comparison: getFeatureComparison() })
     };
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `cx-heatmap-${currentPlatform}-${new Date().toISOString().slice(0,10)}.json`;
+    a.download = `cx-${currentPlatform}-${new Date().toISOString().slice(0,10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
   });
@@ -1277,6 +1677,7 @@
   // Tab switching
   genesysTab.addEventListener("click", () => switchPlatform('genesys'));
   ecxTab.addEventListener("click", () => switchPlatform('ecx'));
+  compareTab.addEventListener("click", () => switchPlatform('compare'));
 
   // Init
   loadState();
